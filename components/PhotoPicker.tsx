@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Alert, TouchableOpacity } from 'react-native';
+import { Image, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 // object literal reflects the info of an image from library for typescript purposes in usestate
