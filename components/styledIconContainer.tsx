@@ -11,7 +11,7 @@ const StyledIconContainer: React.FC<StyledIconContainerProps> = ({ children }) =
       <>
         {React.Children.map(children, child => (
           <View style={styles.iconContainer}>
-            {child}
+             {child}
           </View>
         ))}
       </>
@@ -21,11 +21,18 @@ const StyledIconContainer: React.FC<StyledIconContainerProps> = ({ children }) =
 
 const styles = StyleSheet.create({
 iconContainer: {
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 10,  
-    borderRadius: 5, 
-},
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#000',
+  padding: 10,  
+  borderRadius: 5, 
+  width: 60,
+  height: 60,
+  backgroundColor: '#f9f3e5',
+}
 });
 
 export default StyledIconContainer;

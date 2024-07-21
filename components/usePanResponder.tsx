@@ -10,6 +10,7 @@ type PathData = Point[];
 
 // custom hook for pan responder
 function usePanResponder(onPathUpdate: (newPath: PathData) => void) { // ?
+  console.log("use Pan Responder");
   
   const currentPathRef = useRef<PathData>([]);
 

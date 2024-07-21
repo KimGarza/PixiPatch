@@ -44,7 +44,6 @@ const DrawTool: React.FC<DrawToolProps> = ({ children }) => {
 return (
     <View>
         <TouchableOpacity onPress={handleDrawTool}>
-            <Text>{isDrawing ? 'Stop Drawing' : 'Start Drawing'}</Text>
             {children}
         </TouchableOpacity>
 
@@ -61,19 +60,6 @@ return (
                 </Svg>
             </View>
         )}
-        {/* {isDrawing && (
-            /// ???
-            <View {...panResponder.panHandlers}> / /When you attach panHandlers to a View, that View becomes the touchable area that responds to gestures.
-                <Svg height="100%" width="100%">
-                    <Path
-                        d={`M${currentPath.map(p => `${p.x},${p.y}`).join(' L ')}`} // ???
-                        stroke="black"
-                        strokeWidth="3"
-                        fill="none"
-                    />
-                </Svg>
-            </View>
-        )} */}
     </View>
 );
 }
