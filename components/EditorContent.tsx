@@ -9,16 +9,11 @@ import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import StyledIconContainer from './styledIconContainer';
 import { ImageCtx } from './ImageCtx';
-import RandomizePercentage from './RandomizePercentage';
 
 
 const EditorContent = () => {
     
-    const { imagesCtx } = useContext(ImageCtx); // used to pull the current images from it
-    
-    useEffect(() => {
-      const randomPercentage = RandomizePercentage();
-    })
+    const { imagesData } = useContext(ImageCtx);
 
 return (
     <View style={styles.screenContainer}>
@@ -31,16 +26,23 @@ return (
 
           <View style={styles.canvasContainer}>
 
-            {imagesCtx.length > 0 &&
+            {imagesData.length > 0 &&
               <View style={styles.canvas}>
-                {imagesCtx.map((ImageCtx, index) => (
-                  <Image 
+                {imagesData.map((imageCtx, index) => (
+                  <View>
+                    {/* image will need to have set default randomized scattered location data, and if user moves it, that will be updated location data top/left 
+                    Thinking that I will make an Image object and it will contain an imageInfo and top, left values. if the imageInfo in the particular object matches 
+                    this index here it will use the corresponding top and left data. Can't jsut add it to image info bc that has known specific data*/}
+                    <Image 
                     key={ index }
-                    source={{ uri: ImageCtx.uri }}
-                    style={{ width: 100, height: 100, }}
-                    // top: `${Math.floor(Math.random() * (30 - 20 + 1)) + 20}%`, // from 5%-95% top will decide where to add photo
-                    // left: `${Math.floor(Math.random() * (30 - 10 + 1)) + 10}%`}} 
+                    source={{ uri: imageCtx.imageInfo.uri }}
+                    style={{ width: 100, height: 100, 
+                    flexDirection: 'column', // idk why but this helps with the scattering
+                    top: `${imageCtx.top}%`,
+                    left: `${imageCtx.left}%` }} 
                   />  
+                </View>
+
                 ))}
               </View>
             }
@@ -97,6 +99,8 @@ const styles = StyleSheet.create({
     canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
       display: 'flex',
       flexWrap: 'wrap',
+      flexDirection: 'row',
+      gap: 10,
       position: 'absolute',
       overflow: 'hidden',
       height: '100%', // 100% of parent which is canvas container

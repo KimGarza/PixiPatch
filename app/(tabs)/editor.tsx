@@ -6,12 +6,12 @@ import EditorContent from '@/components/EditorContent';
 
 export default function EditorScreen() {
 
-  const { imagesCtx } = useContext(ImageCtx);
+  const { imagesData } = useContext(ImageCtx);
 
   useEffect(() => {
     console.log("use effect re rendered by images ctx")
-    console.log("imagesCtx:", imagesCtx)
-  }, [imagesCtx])
+    console.log("imagesCtx:", imagesData)
+  }, [imagesData])
 
   return (
     // putting imageProvider wrap around editor return content with all the actual content here doesn't work bc
