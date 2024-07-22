@@ -1,19 +1,25 @@
-import { useContext, useEffect } from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
-import PhotoSelectTool from './PhotoSelectTool';
-import DrawTool from './/DrawTool';
+import { useContext } from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+import { ImageCtx } from './ImageSelection/ImageCtx';
+
+import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
+import DrawTool from './Drawing/DrawTool';
+import StickerTool from './Stickers/StickerTool';
+
+import StyledIconContainer from './styledIconContainer';
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
-import StyledIconContainer from './styledIconContainer';
-import { ImageCtx } from './ImageCtx';
+import { FontAwesome } from '@expo/vector-icons';
+import { DrawCtx } from './Drawing/DrawCtx';
 
 
 const EditorContent = () => {
     
     const { imagesData } = useContext(ImageCtx);
+    const { drawingData } = useContext(DrawCtx);
 
 return (
     <View style={styles.screenContainer}>
@@ -32,20 +38,21 @@ return (
                   <View>
                     {/* image will need to have set default randomized scattered location data, and if user moves it, that will be updated location data top/left 
                     Thinking that I will make an Image object and it will contain an imageInfo and top, left values. if the imageInfo in the particular object matches 
-                    this index here it will use the corresponding top and left data. Can't jsut add it to image info bc that has known specific data*/}
+                    this index here it will use the corresponding top and left data. Can't jsut add it to image info bc that has known specific data */}
                     <Image 
-                    key={ index }
-                    source={{ uri: imageCtx.imageInfo.uri }}
-                    style={{ width: 100, height: 100, 
-                    flexDirection: 'column', // idk why but this helps with the scattering
-                    top: `${imageCtx.top}%`,
-                    left: `${imageCtx.left}%` }} 
+                      key={ index }
+                      source={{ uri: imageCtx.imageInfo.uri }}
+                      style={{ 
+                        width: 100, height: 100, 
+                        flexDirection: 'column', // idk why but this helps with the scattering
+                        top: `${imageCtx.top}%`,
+                        left: `${imageCtx.left}%` }} 
                   />  
-                </View>
-
+                  </View>
                 ))}
               </View>
             }
+
           </View>
 
           <View style={styles.editorTools}>
@@ -62,7 +69,11 @@ return (
               </DrawTool>
 
               <Feather name='layout' size={35}/>
-              <Octicons name='smiley' size={35}/>
+
+              <StickerTool>
+                <Octicons name='smiley' size={35}/>
+              </StickerTool>
+                            
             </StyledIconContainer>
 
             </View>

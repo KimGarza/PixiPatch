@@ -17,8 +17,11 @@ interface ImageData {
   left: number;
 }
 
-const ImagePickerUtil = (toggle: boolean) => {
+interface ImagePickerUtilProps {
+  toggle: boolean;
+}
 
+const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   const { imagesData, setImagesData } = useContext(ImageCtx); // importing ability to set imageData array in context
 
   // converts arg of imageInfo (basic img from photo lib) and converts it to ImageData which just adds top/left values

@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
+import React, { createContext, useState, Dispatch, SetStateAction } from "react";
 
 // actual photo from lib
 interface ImageInfo {
@@ -41,16 +41,6 @@ interface ImageProviderProps {
 export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
   const [imagesData, setImagesData] = useState<ImageData[]>([]);
 
-  // const addImage = (imageInfo: ImageInfo) => {
-  //   const initialTop = Math.floor(Math.random() * (51 - 10)) + 10; // 51 for inclusive range
-  //   const initialLeft = Math.floor(Math.random() * (61 - 20)) + 20; // 61 for inclusive range
-
-  //   setImagesData((prevImagesData) => [
-  //     ...prevImagesData,
-  //     { imageInfo, top: `${initialTop}%`, left: `${initialLeft}%` },
-  //   ]);
-  // };
-
   const updateImagePosition = (index: number, newTop: number, newLeft: number): void => { // void is return type
     setImagesData((prevImagesData) => {
       const updatedImagesData = [...prevImagesData];
@@ -65,7 +55,7 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
     <ImageCtx.Provider
       value={{ // value is a prop
         imagesData,
-        setImagesData, // Use the `addImage` function for adding
+        setImagesData,
         updateImagePosition,
       }}
     >
