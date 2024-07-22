@@ -14,12 +14,14 @@ import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { DrawCtx } from './Drawing/DrawCtx';
+import { StickerCtx } from './Stickers/StickersCtx';
 
 
 const EditorContent = () => {
     
     const { imagesData } = useContext(ImageCtx);
     const { drawingData } = useContext(DrawCtx);
+    const { stickers } = useContext(StickerCtx);
 
 return (
     <View style={styles.screenContainer}>
@@ -32,6 +34,7 @@ return (
 
           <View style={styles.canvasContainer}>
 
+{/* PHOTOS */}
             {imagesData.length > 0 &&
               <View style={styles.canvas}>
                 {imagesData.map((imageCtx, index) => (
@@ -52,6 +55,23 @@ return (
                 ))}
               </View>
             }
+
+{/* STICKERS */}
+<View>
+  {stickers.map((stickerCtx, index) => ( // review everything here
+    <View>
+        <Image
+          key={ index }
+          source={{ uri: stickerCtx.sticker.uri }}
+          style={{
+            width: 50, height: 50, 
+            flexDirection: 'column', // idk why but this helps with the scattering
+            top: `${stickerCtx.top}%`,
+            left: `${stickerCtx.left}%` }} 
+            />
+    </View>
+  ))}
+</View>
 
           </View>
 
