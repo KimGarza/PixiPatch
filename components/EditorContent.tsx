@@ -83,7 +83,6 @@ return (
       </View>
 
       <View style={styles.editorTools}>
-
         {/* STICKER SELECTION MENU either this or editor toolbar*/}
         {stickerMenuToggle ? (
           <View>
