@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
 import { ImageCtx } from './ImageSelection/ImageCtx';
 
 import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
@@ -65,31 +65,32 @@ return (
           </View>
         }
 
-        {/* STICKERS - where they show up after selection, this is not the sticker toolbar*/}
-        {/* <View>
+        {/* Stickers provided from context in parent (editor) */}
+        <View>
           {stickers.map((stickerCtx, index) => ( // review everything here
             <View>
                 <Image
                   key={ index }
-                  source={{ uri: stickerCtx.sticker.uri }}
+                  source={ stickerCtx.sticker }
                   style={{
                     width: 50, height: 50, 
-                    flexDirection: 'column', // idk why but this helps with the scattering
+                    flexDirection: 'column',
+                    position: 'relative',
                     top: `${stickerCtx.top}%`,
-                    left: `${stickerCtx.left}%` }} 
+                    left: `${stickerCtx.left}%` 
+                  }} 
                     />
             </View>
           ))}
-        </View> */}
+        </View>
 
-          <StickerMenu/>
       </View>
-
+       
+      {/* sticker menu or editor toolbar */}
       <View style={styles.editorTools}>
-        {/* STICKER SELECTION MENU either this or editor toolbar*/}
         {stickerMenuToggle ? (
           <View>
-            <Text>STICKER OPTIONS WILL COME FROM A FILE DIR OF PHOTOS</Text>
+            <StickerMenu menuToggle={handleToggleStickerMenu}/>
           </View>
           ) : (
             <StyledIconContainer>
@@ -106,7 +107,8 @@ return (
 
               <Feather name='layout' size={35}/>
 
-              <StickerTool menuToggle={handleToggleStickerMenu}>
+            {/* callback activates true for toggleStickerMenu since user clicked icon */}
+              <StickerTool menuToggle={handleToggleStickerMenu}> 
                 <Octicons name='smiley' size={35}/>
               </StickerTool>
                             
@@ -122,59 +124,48 @@ return (
 export default EditorContent;
 
 const styles = StyleSheet.create({
-    headerImg: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
-      top: '10%',
-    },
-    screenContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-    },
-    canvasContainer: {
-      position: 'absolute',
-      top: '11%',
-      borderColor: 'blue',
-      borderWidth: 2,
-      height: '59%',
-      width: '100%'
-    },
-    canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      gap: 10,
-      position: 'absolute',
-      overflow: 'hidden',
-      height: '100%', // 100% of parent which is canvas container
-      width: '100%', // 100% of parent which is canvas container
-    },
-    editorTools: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      gap: 50,
-      rowGap: 15,
-      top: '130%',
-      borderTopWidth: 1,
-      padding: 15,
-    },
-    stickerMenu: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      gap: 50,
-      rowGap: 15,
-      top: '130%',
-      borderTopWidth: 1,
-      padding: 15,
-    },
-  });
+  headerImg: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    top: '10%',
+  },
+  screenContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  canvasContainer: {
+    position: 'absolute',
+    top: '11%',
+    borderColor: 'blue',
+    borderWidth: 2,
+    height: '59%',
+    width: '100%'
+  },
+  canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: 10,
+    position: 'absolute',
+    overflow: 'hidden',
+    height: '100%', // 100% of parent which is canvas container
+    width: '100%', // 100% of parent which is canvas container
+  },
+  editorTools: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 50,
+    rowGap: 15,
+    top: '130%',
+    borderTopWidth: 1,
+    padding: 15,
+  },
+});
   

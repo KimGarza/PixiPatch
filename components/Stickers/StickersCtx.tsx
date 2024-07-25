@@ -5,19 +5,16 @@
 // return the 
 import { useState } from "react";
 import { Dispatch, SetStateAction, createContext } from "react";
+import { ImageSourcePropType } from 'react-native';
 
 interface Sticker {
     uri: string;
-    width: number;
-    height: number;
-    type: string | undefined;
-}
-
-interface StickerData {
-    sticker: Sticker;
+  }
+  interface StickerData {
+    sticker: ImageSourcePropType;
     top: number;
     left: number;
-}
+  }
 
 interface StickerCtxType {
     stickers: StickerData[];
@@ -60,5 +57,4 @@ export const StickerProvider: React.FC<StickerProviderProps> = ({ children }) =>
             {children}
         </StickerCtx.Provider>
     )
-
 }
