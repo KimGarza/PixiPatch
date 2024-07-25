@@ -5,6 +5,7 @@ import { ImageCtx } from './ImageSelection/ImageCtx';
 import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
 import DrawTool from './Drawing/DrawTool';
 import StickerTool from './Stickers/StickerTool';
+import StickerMenu from './Stickers/StickerMenu';
 
 import StyledIconContainer from './styledIconContainer';
 import { Fontisto } from '@expo/vector-icons';
@@ -65,7 +66,7 @@ return (
         }
 
         {/* STICKERS - where they show up after selection, this is not the sticker toolbar*/}
-        <View>
+        {/* <View>
           {stickers.map((stickerCtx, index) => ( // review everything here
             <View>
                 <Image
@@ -79,7 +80,9 @@ return (
                     />
             </View>
           ))}
-        </View>
+        </View> */}
+
+          <StickerMenu/>
       </View>
 
       <View style={styles.editorTools}>
