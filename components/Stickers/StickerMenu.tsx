@@ -68,7 +68,6 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   }
 
   const handleCloseMenu = () => {
-    console.log("handleCloseMenu")
     menuToggle();
   }
 

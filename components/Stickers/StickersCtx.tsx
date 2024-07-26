@@ -7,9 +7,6 @@ import { useState } from "react";
 import { Dispatch, SetStateAction, createContext } from "react";
 import { ImageSourcePropType } from 'react-native';
 
-interface Sticker {
-    uri: string;
-  }
   interface StickerData {
     sticker: ImageSourcePropType;
     top: number;

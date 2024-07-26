@@ -6,6 +6,7 @@ import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
 import DrawTool from './Drawing/DrawTool';
 import StickerTool from './Stickers/StickerTool';
 import StickerMenu from './Stickers/StickerMenu';
+import BackgroundMenu from './background/BackgroundMenu';
 
 import StyledIconContainer from './styledIconContainer';
 import { Fontisto } from '@expo/vector-icons';
@@ -16,20 +17,28 @@ import { Octicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { DrawCtx } from './Drawing/DrawCtx';
 import { StickerCtx } from './Stickers/StickersCtx';
+import BackgroundTool from './background/BackgroundTool';
+import { BackgroundCtx, useBackground } from './background/BackgroundCtx';
 
-
+// pic collage: standard 1800 x 1800 and HD 3600 x 3600 
+// photo i took on pixel: 3072 x 4080
 const EditorContent = () => {
     
     const { imagesData } = useContext(ImageCtx);
     const { drawingData } = useContext(DrawCtx);
     const { stickers } = useContext(StickerCtx);
+    const { background } = useContext(BackgroundCtx);
 
     const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
+    const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
 
     // call back to be handled as prop value upon using the stickerTool comp
     const handleToggleStickerMenu = () => {
       setStickerMenuToggle(!stickerMenuToggle);
-      console.log("menu toggle", !stickerMenuToggle);
+    }
+
+    const handleToggleBackgroundMenu = () => {
+      setBackgroundMenuToggle(!backgroundMenuToggle);
     }
 
 return (
@@ -83,14 +92,31 @@ return (
             </View>
           ))}
         </View>
+        
+        {/* Background provided from context in parent (editor) */}
+        <View>
+            <Image
+              source={ background }
+              style={{
+                width: '100%', height: '100%', 
+                flexDirection: 'column',
+                position: 'relative',
+              }} 
+                />
+        </View>
 
       </View>
        
       {/* sticker menu or editor toolbar */}
       <View style={styles.editorTools}>
-        {stickerMenuToggle ? (
+
+        { stickerMenuToggle ? (
           <View>
             <StickerMenu menuToggle={handleToggleStickerMenu}/>
+          </View>
+          ) : backgroundMenuToggle ? (
+          <View>
+            <BackgroundMenu menuToggle={handleToggleBackgroundMenu}/>
           </View>
           ) : (
             <StyledIconContainer>
@@ -99,7 +125,9 @@ return (
                 <Fontisto name='photograph' size={35}/> 
               </PhotoSelectTool>
               
+              <BackgroundTool menuToggle={handleToggleBackgroundMenu}> 
               <Ionicons name='image-outline' size={35}/>
+              </BackgroundTool>
 
               <DrawTool>
                 <SimpleLineIcons name='pencil' size={35}/>
