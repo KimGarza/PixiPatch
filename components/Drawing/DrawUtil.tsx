@@ -9,23 +9,21 @@ type Point = {
   };
   type PathData = Point[];
 
-// if an updated props value is passed in bc user clicked the pencil again, whatever strokes were being made will now be grouped as one and that drawing is now finished
+// if an updated props value is passed in bc user clicked the close menu, whatever strokes were being made will now be grouped as one and that drawing is now finished
 interface DrawUtilProps {
     isDrawing: boolean;
   }
   
-  const DrawUtil: React.FC<DrawUtilProps> = ({ isDrawing }) => {
+const DrawUtil: React.FC<DrawUtilProps> = ({ isDrawing }) => {
 
     const [activePath, setActivePath] = useState<PathData>([]); // this is the LIVE stroke/gesture, the current path being drawn
 
-    const handlePathUpdate = (newActivePath: PathData) => { // ??? it's a callback
+    const handlePathUpdate = (newActivePath: PathData) => {
         console.log("newActivePath", newActivePath);
         setActivePath(newActivePath);
     }
 
-    // // by passing in the function, the return data will return as the arg for the func and (i forget how it returns that value speicifcally to the prop), but
-    // // that allows above handlepathupdate to have a newPath t set as the current active path
-    // const { panResponder } = usePanResponder(handlePathUpdate); THIS IS THE PROBLEM CHILD
+    const { panResponder } = usePanResponder(handlePathUpdate);
 
     const pathData = activePath.length
     ? `M${activePath.map(p => `${p.x},${p.y}`).join(' L ')}`
@@ -33,7 +31,7 @@ interface DrawUtilProps {
 
 return (
     <View>
-        {/* {isDrawing ? (
+        {isDrawing ? (
             <View {...panResponder.panHandlers}>
                 <Svg height="100%" width="100%">
                     <Path
@@ -46,7 +44,7 @@ return (
                     />
                 </Svg>
             </View>
-        ) : (<></>)} */}
+        ) : (<></>)}
  
     </View>
 );

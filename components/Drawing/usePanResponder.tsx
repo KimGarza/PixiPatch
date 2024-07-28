@@ -16,7 +16,8 @@ interface DrawingData {
 }
 
 // custom hook for pan responder
-function usePanResponder(onPathUpdate: (newPath: PathData) => void) { // ?
+function usePanResponder(onPathUpdate: (newPath: PathData) => void) { 
+// basically within usePanResponder, we pass new useRef.current values to onPathUpdate function with each new gesture, this in turn sends it up to DrawUtil which
 
   const { setDrawingData } = useContext(DrawCtx);
   const currentPathRef = useRef<PathData>([]);
@@ -49,13 +50,11 @@ function usePanResponder(onPathUpdate: (newPath: PathData) => void) { // ?
         onPathUpdate(currentPathRef.current);
       },
       onPanResponderRelease: () => {
-        // Optionally handle the end of the gesture
+        const drawing = convertToDrawingData(currentPathRef.current); 
+        setDrawingData(prevDrawingData => [...prevDrawingData, drawing]);
       },
     })
   ).current;
-
-  const drawing = convertToDrawingData(currentPathRef.current); 
-  setDrawingData(prevDrawingData => [...prevDrawingData, drawing]);
 
   return { panResponder, currentPathRef };
 }

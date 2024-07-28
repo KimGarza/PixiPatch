@@ -29,6 +29,8 @@ const EditorContent = () => {
 
     const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
     const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
+    const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
+
     const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData>();
 
     interface ImageData {
@@ -50,6 +52,10 @@ const EditorContent = () => {
 
     const handleToggleBackgroundMenu = () => {
       setBackgroundMenuToggle(!backgroundMenuToggle);
+    }
+
+    const handleToggleDrawMenu = () => {
+      setDrawMenuToggle(!drawMenuToggle);
     }
 
     const handleImageTapToEdit = (image: ImageData) => {
@@ -139,7 +145,8 @@ return (
             <BackgroundMenu menuToggle={handleToggleBackgroundMenu}/>
           </View>
           ) : (
-          <StyledIconContainer>
+          // editor toolbar
+          <StyledIconContainer> 
 
             <PhotoSelectTool>
               <Fontisto name='photograph' size={35}/> 
@@ -150,7 +157,7 @@ return (
             <Ionicons name='image-outline' size={35}/>
             </BackgroundTool>
 
-            <DrawTool>
+            <DrawTool menuToggle={handleToggleDrawMenu}>
               <SimpleLineIcons name='pencil' size={35}/>
             </DrawTool>
 
