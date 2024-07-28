@@ -15,6 +15,7 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
     require('../../assets/images/backgrounds/background1.png'),
     require('../../assets/images/backgrounds/background2.png'),
     require('../../assets/images/backgrounds/background3.png'),
+    require('../../assets/images/backgrounds/background4.png'),
   ];
 
 

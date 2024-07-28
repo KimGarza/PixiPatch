@@ -60,8 +60,8 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
     const converted: StickerData = { // this is not making a new random vaues each time :(
       sticker: sticker,
-      top: Math.floor(Math.random() * (51 - 10)) + 10,
-      left: Math.floor(Math.random() * (61 - 20)) + 20
+      top: Math.floor(Math.random() * (300 - 50)) + 50,
+      left: Math.floor(Math.random() * (300 - 30)) + 30
     }
 
     return converted;

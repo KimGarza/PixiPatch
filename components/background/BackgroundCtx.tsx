@@ -9,7 +9,7 @@ interface BackgroundCtxType {
 
 // default value for use with creation of context
 const defaultValue: BackgroundCtxType = {
-    background: {} as ImageSourcePropType,
+    background: require('../../assets/images/backgrounds/background4.png') as ImageSourcePropType,
     setBackground: () => {},
 }
 
@@ -25,6 +25,7 @@ interface BackgroundCtxProps {
 export const BackgroundProvider: React.FC<BackgroundCtxProps> = ({ children }) => {
     const [background, setBackground] = useState<ImageSourcePropType>(defaultValue.background); // reason for this is bc since we must define something for initial value
 
+    console.log("background", background)
     return (
         <BackgroundCtx.Provider
         value={{

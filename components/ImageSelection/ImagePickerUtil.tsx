@@ -28,8 +28,8 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   const convertToImageData = (image: ImageInfo) => {
     const imageData: ImageData = {
       imageInfo: image,
-      top: Math.floor(Math.random() * (51 - 10)) + 10,
-      left: Math.floor(Math.random() * (61 - 20)) + 20
+      top: Math.floor(Math.random() * (100 - 30)) + 30,
+      left: Math.floor(Math.random() * (200 - 30)) + 30
     }
     return imageData;
   }
