@@ -23,7 +23,6 @@ return (
         <TouchableOpacity onPress={handleDrawTool}>
             {children}
         </TouchableOpacity>
-        {isDrawing && <DrawUtil isDrawing={isDrawing} />}
     </View>
 );
 }

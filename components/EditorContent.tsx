@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ImageCtx } from './ImageSelection/ImageCtx';
 import { DrawCtx } from './Drawing/DrawCtx';
 import { StickerCtx } from './Stickers/StickersCtx';
@@ -17,6 +17,8 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { ImageBackground } from 'react-native';
+import usePanResponder from './Drawing/usePanResponder';
+import DrawUtil from './Drawing/DrawUtil';
 
 // pic collage: standard 1800 x 1800 and HD 3600 x 3600 
 // photo i took on pixel: 3072 x 4080
@@ -32,7 +34,6 @@ const EditorContent = () => {
     const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
 
     const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData>();
-
     interface ImageData {
       imageInfo: ImageInfo;
       top: number;
@@ -56,6 +57,7 @@ const EditorContent = () => {
 
     const handleToggleDrawMenu = () => {
       setDrawMenuToggle(!drawMenuToggle);
+      console.log("menu toggle for draw actiavated");
     }
 
     const handleImageTapToEdit = (image: ImageData) => {
@@ -84,6 +86,29 @@ return (
 
         <View style={styles.canvas}>
 
+          {/* Stickers */}
+          <View>
+            {stickers.map((stickerCtx, index) => (
+              <View>
+                  <Image
+                    key={ index }
+                    source={ stickerCtx.sticker }
+                    style={{
+                      width: 50, height: 50, 
+                      zIndex: 9999, 
+                      flexDirection: 'column',
+                      position: 'absolute',
+                      top: stickerCtx.top, 
+                      left: stickerCtx.left,
+                    }} 
+                      />
+              </View>
+            ))}
+          </View>
+
+          {/* Drawing */}
+          {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
+
           {/* Pictures */}
           {imagesData.length > 0 &&
             <View>
@@ -108,25 +133,6 @@ return (
             </View>
           }
 
-          {/* Stickers */}
-          <View>
-            {stickers.map((stickerCtx, index) => (
-              <View>
-                  <Image
-                    key={ index }
-                    source={ stickerCtx.sticker }
-                    style={{
-                      width: 50, height: 50, 
-                      zIndex: 9999, 
-                      flexDirection: 'column',
-                      position: 'absolute',
-                      top: stickerCtx.top, 
-                      left: stickerCtx.left,
-                    }} 
-                      />
-              </View>
-            ))}
-          </View>
           
           </View>
         </ImageBackground>
@@ -208,6 +214,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
+    borderWidth: 1,
+    borderColor: 'blue'
   },
   editorTools: {
     display: 'flex',

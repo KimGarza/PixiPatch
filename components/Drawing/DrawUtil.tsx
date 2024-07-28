@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import usePanResponder from "./usePanResponder";
 import Svg, { Path } from 'react-native-svg';
 
@@ -30,7 +30,7 @@ const DrawUtil: React.FC<DrawUtilProps> = ({ isDrawing }) => {
     : '';
 
 return (
-    <View>
+    <View style={styles.drawSpace}>
         {isDrawing ? (
             <View {...panResponder.panHandlers}>
                 <Svg height="100%" width="100%">
@@ -51,3 +51,12 @@ return (
 }
 
 export default DrawUtil;
+
+const styles = StyleSheet.create({
+    drawSpace: {
+        width: '100%',
+        height: '100%',
+        borderWidth: 1,
+        borderColor: 'blue'
+    }
+})
