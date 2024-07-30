@@ -17,8 +17,8 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { ImageBackground } from 'react-native';
-import usePanResponder from './Drawing/usePanResponder';
 import DrawUtil from './Drawing/DrawUtil';
+import ImageEditTools from './ImageEditTools';
 
 // pic collage: standard 1800 x 1800 and HD 3600 x 3600 
 // photo i took on pixel: 3072 x 4080
@@ -62,6 +62,7 @@ const EditorContent = () => {
 
     const handleImageTapToEdit = (image: ImageData) => {
       setActiveImageToEdit(image);
+      console.log("active image:", image);
     }
 
 return (
@@ -109,74 +110,77 @@ return (
           {/* Drawing */}
           {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
-          {/* Pictures */}
-          {imagesData.length > 0 &&
-            <View>
-              {imagesData.map((imageCtx, index) => (
-                <View style={[styles.image, activeImageToEdit == imageCtx && styles.imageSelected]}>
-                  <TouchableOpacity onPress={() => handleImageTapToEdit(imageCtx)}>
-                  <Image 
-                    key={ index }
-                    source={{ uri: imageCtx.imageInfo.uri }}
-                    style={{ 
-                      width: 200, height: 200,
-                      position: 'absolute',
-                      zIndex: 99, 
-                      flexDirection: 'column', // idk why but this helps with the scattering
-                      top: imageCtx.top,
-                      left: imageCtx.left,
-                    }}
-                  />  
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          }
-
-          
+            {/* Pictures */}
+            {imagesData.length > 0 &&
+              <View>
+                {imagesData.map((imageCtx, index) => (
+                  <View>
+                    <TouchableOpacity onPress={() => handleImageTapToEdit(imageCtx)}>
+                      <Image 
+                        key={ index }
+                        source={{ uri: imageCtx.imageInfo.uri }}
+                        style={[{ 
+                          width: 200, height: 200,
+                          position: 'absolute',
+                          zIndex: 99, 
+                          flexDirection: 'column', // idk why but this helps with the scattering
+                          top: imageCtx.top,
+                          left: imageCtx.left,
+                        }, activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
+                      />  
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            }
+            
           </View>
         </ImageBackground>
 
       </View>
        
+
       {/* Bottom Toolbar - alternates between editing tools and menu for specific tools in use */}
-      <View style={styles.editorTools}>
+      { activeImageToEdit == undefined ? (
+        <View style={styles.editorTools}>
 
-        { stickerMenuToggle ? ( // sticker menu
-          <View>
-            <StickerMenu menuToggle={handleToggleStickerMenu}/>
+          { stickerMenuToggle ? ( // sticker menu
+            <View>
+              <StickerMenu menuToggle={handleToggleStickerMenu}/>
+            </View>
+            ) : backgroundMenuToggle ? ( // background menu
+            <View>
+              <BackgroundMenu menuToggle={handleToggleBackgroundMenu}/>
+            </View>
+            ) : (  // actively selected image
+              
+            // editor toolbar
+            <StyledIconContainer dimensions={60}> 
+
+              <PhotoSelectTool>
+                <Fontisto name='photograph' size={35}/> 
+              </PhotoSelectTool>
+              
+              {/* callback used to toggle background menu if x to close is clicked from child */}
+              <BackgroundTool menuToggle={handleToggleBackgroundMenu}>
+              <Ionicons name='image-outline' size={35}/>
+              </BackgroundTool>
+
+              <DrawTool menuToggle={handleToggleDrawMenu}>
+                <SimpleLineIcons name='pencil' size={35}/>
+              </DrawTool>
+
+              <Feather name='layout' size={35}/>
+
+              <StickerTool menuToggle={handleToggleStickerMenu}> 
+                <Octicons name='smiley' size={35}/>
+              </StickerTool>
+                            
+            </StyledIconContainer>
+            )}
           </View>
-          ) : backgroundMenuToggle ? ( // background menu
-          <View>
-            <BackgroundMenu menuToggle={handleToggleBackgroundMenu}/>
-          </View>
-          ) : (
-          // editor toolbar
-          <StyledIconContainer> 
+          ) : ( <ImageEditTools />)}
 
-            <PhotoSelectTool>
-              <Fontisto name='photograph' size={35}/> 
-            </PhotoSelectTool>
-            
-            {/* callback used to toggle background menu if x to close is clicked from child */}
-            <BackgroundTool menuToggle={handleToggleBackgroundMenu}>
-            <Ionicons name='image-outline' size={35}/>
-            </BackgroundTool>
-
-            <DrawTool menuToggle={handleToggleDrawMenu}>
-              <SimpleLineIcons name='pencil' size={35}/>
-            </DrawTool>
-
-            <Feather name='layout' size={35}/>
-
-            <StickerTool menuToggle={handleToggleStickerMenu}> 
-              <Octicons name='smiley' size={35}/>
-            </StickerTool>
-                          
-          </StyledIconContainer>
-          )}
-
-        </View>
       </View>
     </View>
   );
@@ -214,8 +218,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
-    borderWidth: 1,
-    borderColor: 'blue'
   },
   editorTools: {
     display: 'flex',
@@ -228,13 +230,20 @@ const styles = StyleSheet.create({
     borderTopWidth: .5,
     padding: 15,
   },
-  image: {
+  imageEditorTools: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 50,
+    rowGap: 15,
+    top: '130%',
     borderTopWidth: .5,
-    borderColor: 'blue'
+    padding: 15,
   },
   imageSelected: {
-    borderTopWidth: 1,
-    borderColor: 'red'
+    borderWidth: 2,
+    borderColor: 'red',
   },
 });
   
