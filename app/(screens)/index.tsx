@@ -1,20 +1,32 @@
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+
+  const router = useRouter();
+
+  const handleStartEditing = () => {
+    console.log("navigate to editor")
+  }
+
   return (
     <View style={styles.screenContainer}>
 
-       <Image style={styles.headerImg}
-          source={require('../../assets/images/ElementalEditorBanner.png')}
-        />
+    <Image style={styles.headerImg}
+      source={require('../../assets/images/ElementalEditorBanner.png')}
+    />
 
       <View style={styles.pageContent}>
 
         {/* Start creating! */}
         <View style={styles.groupStart}>
           <Text>Edit, collage, do it all!</Text>
+
+        <TouchableOpacity onPress={() => router.push('/editor')}>
           <Fontisto name='photograph' size={150}/>
+        </TouchableOpacity>
+          
           <Text>Start Creating! *arrow to icon* </Text>
         </View>
         {/* ------------- */}

@@ -19,6 +19,8 @@ import { Octicons } from '@expo/vector-icons';
 import { ImageBackground } from 'react-native';
 import DrawUtil from './Drawing/DrawUtil';
 import ImageEditTools from './ImageEditTools';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useRouter } from 'expo-router';
 
 // pic collage: standard 1800 x 1800 and HD 3600 x 3600 
 // photo i took on pixel: 3072 x 4080
@@ -65,12 +67,26 @@ const EditorContent = () => {
       console.log("active image:", image);
     }
 
+    const router = useRouter();
+
 return (
   <View style={styles.screenContainer}>
 
-    <Image style={styles.headerImg}
-      source={require('../assets/images/ElementalEditorBanner.png')}
-    />
+    <View style={styles.headerNav}>
+      <Image
+        style={styles.headerImg}
+        source={require('../assets/images/ElementalEditorBanner.png')}
+      />
+      <TouchableOpacity 
+        onPress={() => router.push('/(screens)')}
+        style={styles.homeIcon}
+      >
+        <FontAwesome6 
+          name={'house-chimney'}
+          size={30}
+          />
+        </TouchableOpacity>
+    </View>
 
     <View style={styles.screenContainer}>
 
@@ -189,12 +205,27 @@ return (
 export default EditorContent;
 
 const styles = StyleSheet.create({
+  headerNav: {
+    position: 'relative',
+    width: '100%',
+  },
   headerImg: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
     top: '10%',
+  },
+  homeIcon: {
+    position: 'absolute', // Absolute positioning to overlay the icon on top of the image
+    left: '4%', // Adjust this value to position the icon horizontally
+    top: '50%', // Adjust this value to position the icon vertically (e.g., halfway of the image)
+    transform: [{ translateY: -15 }], // Adjust this value to align the icon vertically centered on the image
+    color: 'black',
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: 'black',
+    padding: 8
   },
   screenContainer: {
     display: 'flex',
