@@ -15,19 +15,17 @@ return (
     // editor toolbar
     <View style={styles.both}>
         <View style={styles.editorToolBox}>
-            <StyledIconContainer dimensions={40}> 
+            <StyledIconContainer dimensions={60}> 
 
-
-                <Feather name='crop' size={20}/>
-                <MaterialCommunityIcons name='tune-variant' size={20}/>
-                <Feather name='filter' size={20}/>
-                <MaterialCommunityIcons name='checkerboard-remove' size={20}/>
-                <FontAwesome5 name='eraser' size={20}/>
-                <MaterialCommunityIcons name='mirror' size={20}/>
+                <Feather name='crop' size={30}/>
+                <MaterialCommunityIcons name='tune-variant' size={30}/>
+                <Feather name='filter' size={30}/>
+                <MaterialCommunityIcons name='checkerboard-remove' size={30}/>
+                <FontAwesome5 name='eraser' size={30}/>
+                <MaterialCommunityIcons name='mirror' size={30}/>
                             
             </StyledIconContainer>
         </View>
-        <View style={styles.secondBox}></View>
     </View>
 );
 }
@@ -39,35 +37,19 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexWrap: 'wrap',
         top: '130%',
-        padding: 15,
+        padding: 10,
         flexDirection: 'row',
-        gap: 15,
+        gap: 10,
     },
     editorToolBox: {
         display: 'flex',
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 25,
-        rowGap: 15,
-        top: '130%',
-        width: '45%',
-        height: '95%',
-        padding: 20,
-        borderWidth: 1,
-        borderColor: '#7cb88b',
-        borderRadius: 30,
-        zIndex: 1
-      },
-      secondBox: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 25,
-        rowGap: 15,
-        top: '130%',
-        width: '45%',
+        gap: 35,
+        rowGap: 20,
+        top: '120%',
+        width: '100%',
         height: '95%',
         padding: 20,
         borderWidth: 1,
