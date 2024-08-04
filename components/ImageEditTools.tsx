@@ -1,15 +1,25 @@
 import {View, StyleSheet} from 'react-native';
 import StyledIconContainer from './styledIconContainer';
-import { Fontisto } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
 
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useState } from 'react';
 
-const ImageEditTools = () => {
+import FilterTool from './Filters/FilterTool';
+
+interface ImageEditToolsProps {
+    activeImageTool: (toolName: string) => void; // passes back to editor content the name of the image setting in order to effect how somethings are displayed
+}
+
+const ImageEditTools: React.FC<ImageEditToolsProps> = ({activeImageTool}) => {
+    const [toggleFilterMenu, setToggleFilterMenu] = useState<boolean>();
+
+    const handleFilterMenuToggle = () => {
+        setToggleFilterMenu(!toggleFilterMenu);
+        activeImageTool('filter');
+        console.log('filter');
+    }
 
 return (
     // editor toolbar
@@ -19,7 +29,11 @@ return (
 
                 <Feather name='crop' size={30}/>
                 <MaterialCommunityIcons name='tune-variant' size={30}/>
-                <Feather name='filter' size={30}/>
+
+                <FilterTool menuToggle={handleFilterMenuToggle}>
+                    <Feather name='filter' size={30}/>
+                </FilterTool>
+
                 <MaterialCommunityIcons name='checkerboard-remove' size={30}/>
                 <FontAwesome5 name='eraser' size={30}/>
                 <MaterialCommunityIcons name='mirror' size={30}/>

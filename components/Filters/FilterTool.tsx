@@ -1,25 +1,22 @@
 import React from 'react';
-import { useState } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
-interface StickerToolProps {
+interface FilterToolProps {
   children?: React.ReactNode;
   menuToggle: () => void;
 }
 
-const StickerTool: React.FC<StickerToolProps> = ({children, menuToggle}) => {
-  const [toggleStickerSelect, setToggleStickerSelect] = useState<boolean>(false);
+const FilterTool: React.FC<FilterToolProps> = ({children, menuToggle}) => {
 
-  const handleSelectStickers = () => {
-    setToggleStickerSelect(!toggleStickerSelect);
-    menuToggle(); // menu toggle comes in as false, so by ! it sets it to true same as the toggle for sticker select, then turns to false when icon is clicked again
+  const handleSelectFilters = () => {
+    menuToggle(); // menu toggle comes in as false, so by ! it sets it to true same as the toggle for Filter select, then turns to false when icon is clicked again
   };
 
   return (
-    <TouchableOpacity onPress={handleSelectStickers}>
+    <TouchableOpacity onPress={handleSelectFilters}>
         {children}
     </TouchableOpacity>
   );
 }
 
-export default StickerTool;
+export default FilterTool;

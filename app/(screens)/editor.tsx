@@ -7,7 +7,7 @@ import { BackgroundProvider } from '@/components/background/BackgroundCtx';
 export default function EditorScreen() {
 
   return (
-    // wrapping context providers around editor content bc it actually needs to be a level above (here) where the comp is wrapped not the comp's return content
+    // wrapping context providers around editor bc wrapping context providers around comps within EditorContent does not work
     <BackgroundProvider>
       <ImageProvider>
         <StickerProvider>
@@ -17,6 +17,5 @@ export default function EditorScreen() {
         </StickerProvider>
       </ImageProvider>
     </BackgroundProvider>
-
   );
 }
