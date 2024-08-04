@@ -1,24 +1,23 @@
 import {View, StyleSheet} from 'react-native';
-import StyledIconContainer from './styledIconContainer';
+import StyledIconContainer from '../styledIconContainer';
 
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useState } from 'react';
 
-import FilterTool from './Filters/FilterTool';
+import FilterTool from '../Filters/FilterTool';
 
-interface ImageEditToolsProps {
-    activeImageTool: (toolName: string) => void; // passes back to editor content the name of the image setting in order to effect how somethings are displayed
+interface viewImageToolsProps {
+    filterMenuToggle: () => void; // passes back to editor content the name of the image setting in order to effect how somethings are displayed
 }
 
-const ImageEditTools: React.FC<ImageEditToolsProps> = ({activeImageTool}) => {
+const ViewImageTools: React.FC<viewImageToolsProps> = ({filterMenuToggle}) => {
     const [toggleFilterMenu, setToggleFilterMenu] = useState<boolean>();
 
     const handleFilterMenuToggle = () => {
         setToggleFilterMenu(!toggleFilterMenu);
-        activeImageTool('filter');
-        console.log('filter');
+        filterMenuToggle();
     }
 
 return (
@@ -44,7 +43,7 @@ return (
 );
 }
 
-export default ImageEditTools;
+export default ViewImageTools;
 
 const styles = StyleSheet.create({
     both: {

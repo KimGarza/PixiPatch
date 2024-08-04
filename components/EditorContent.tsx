@@ -7,14 +7,10 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ImageCtx } from './ImageSelection/ImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
-import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
-import DrawTool from './Drawing/DrawTool';
-import StickerTool from './Stickers/StickerTool';
-import BackgroundTool from './background/BackgroundTool';
 import StickerMenu from './Stickers/StickerMenu';
 import BackgroundMenu from './background/BackgroundMenu';
 import DrawUtil from './Drawing/DrawUtil';
-import ImageEditTools from './ImageEditTools';
+import ViewImageTools from './views/viewImageTools';
 import FilterMenu from './Filters/FilterMenu';
 // misc
 import ViewEditorTools from './views/viewEditorTools';
@@ -32,10 +28,9 @@ const EditorContent = () => {
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
+  const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
   // misc
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
-  const [ activeImageTool, setActiveImageTool ] = useState<string>('');
-
   interface ImageData {
     imageInfo: ImageInfo;
     top: number;
@@ -59,15 +54,15 @@ const EditorContent = () => {
 
   const handleToggleDrawMenuCallback = () => {
     setDrawMenuToggle(!drawMenuToggle);
-    console.log("menu toggle for draw actiavated");
+  }
+
+  const handleToggleFilterMenuCallback = () => {
+    setFilterMenuToggle(!filterMenuToggle);
+    console.log("menu toggle for filter actiavated");
   }
 
   const handleImageTapToEdit = (image: ImageData | null) => {
     setActiveImageToEdit(image);
-  }
-
-  const handleUpdateImageTool = (toolName: string) => {
-    setActiveImageTool(toolName);
   }
 
   const router = useRouter();
@@ -75,6 +70,7 @@ const EditorContent = () => {
 return (
   <View style={styles.screenContainer}>
 
+    {/* header */}
     <View style={styles.headerNav}>
       <Image
         style={styles.headerImg}
@@ -93,6 +89,8 @@ return (
     </View>
 
       <View style={styles.screenContainer}>
+
+        {/* main canvas */}
         <View style={styles.canvasContainer}>
 
           <ImageBackground
@@ -137,9 +135,13 @@ return (
               stickerMenuToggle={handleToggleStickerMenuCallback}
               />
 
-          // activeImageToEdit != undefined
-          ) :
-          (<ImageEditTools activeImageTool={handleUpdateImageTool}/>)}
+          // activeImageToEdit != undefined which means image is currently selected for editing
+          ) : filterMenuToggle ? (
+            <FilterMenu menuToggle={handleToggleFilterMenuCallback}/>
+          ) : 
+          ( <ViewImageTools 
+            filterMenuToggle={handleToggleFilterMenuCallback} />
+          )}
         </View>
         
       </View>
