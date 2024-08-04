@@ -2,11 +2,9 @@
 import { useContext, useState } from 'react';
 import { StyleSheet, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 // context
 import { ImageCtx } from './ImageSelection/ImageCtx';
-import { StickerProvider } from './Stickers/StickersCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
 import PhotoSelectTool from './ImageSelection/PhotoSelectTool';
@@ -19,7 +17,6 @@ import DrawUtil from './Drawing/DrawUtil';
 import ImageEditTools from './ImageEditTools';
 import FilterMenu from './Filters/FilterMenu';
 // misc
-import StyledIconContainer from './styledIconContainer';
 import ViewEditorTools from './views/viewEditorTools';
 import ViewStickers from './views/viewStickers';
 import { StickerCtx } from './Stickers/StickersCtx';
@@ -36,7 +33,7 @@ const EditorContent = () => {
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
   // misc
-  const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData>();
+  const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
   const [ activeImageTool, setActiveImageTool ] = useState<string>('');
 
   interface ImageData {
@@ -65,9 +62,8 @@ const EditorContent = () => {
     console.log("menu toggle for draw actiavated");
   }
 
-  const handleImageTapToEdit = (image: ImageData) => {
+  const handleImageTapToEdit = (image: ImageData | null) => {
     setActiveImageToEdit(image);
-    console.log("active image:", image);
   }
 
   const handleUpdateImageTool = (toolName: string) => {
@@ -96,82 +92,56 @@ return (
         </TouchableOpacity>
     </View>
 
-    <View style={styles.screenContainer}>
-      <View style={styles.canvasContainer}>
+      <View style={styles.screenContainer}>
+        <View style={styles.canvasContainer}>
 
-        <ImageBackground
-        source={background}
-        style={{
-          width: '100%', height: '100%', 
-          flexDirection: 'column',
-          position: 'relative',
-          zIndex: 1
-        }} >
+          <ImageBackground
+          source={background}
+          style={{
+            width: '100%', height: '100%', 
+            flexDirection: 'column',
+            position: 'relative',
+            zIndex: 1
+          }} >
+            <View style={styles.canvas}>
 
-        <View style={styles.canvas}>
+              {/* Stickers */}
+              <ViewStickers stickers={stickers}/>
 
-          {/* Stickers */}
-          <ViewStickers stickers={stickers}/>
+              {/* Drawing */}
+              {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
-          {/* Drawing */}
-          {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
-
-          {/* Pictures */}
-          {imagesData.length > 0 &&
-            <ViewImages images={imagesData}/>
-          }
-            {/* <View>
-              {imagesData.map((imageCtx, index) => (
-                <TouchableOpacity onPress={() => handleImageTapToEdit(imageCtx)}>
-                  <Image 
-                    key={ index }
-                    source={{ uri: imageCtx.imageInfo.uri }}
-                    style={[{ 
-                      width: 200, height: 200,
-                      position: 'absolute',
-                      zIndex: 99, 
-                      flexDirection: 'column', // idk why but this helps with the scattering
-                      top: imageCtx.top,
-                      left: imageCtx.left,
-                    }, activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
-                  />  
-                </TouchableOpacity>
-              ))}
+              {/* Pictures */}
+              <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
+              
             </View>
-          } */}
-            
-          </View>
-        </ImageBackground>
+          </ImageBackground>
 
-      </View>
+        </View>
        
 
-      {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-      { activeImageToEdit == undefined ? (
+        {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
         <View style={styles.bottomToolbar}>
-
           {/* specific tool menus */}
-          { stickerMenuToggle ? (
-            <View>
+          {activeImageToEdit == null ? (
+
+            stickerMenuToggle ? (
               <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
-            </View>
             ) : backgroundMenuToggle ? (
-            <View>
               <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
-            </View>
-            ) : (
-              
-            // primary tools
-            <ViewEditorTools 
+            ) : 
+              // primary tools
+              <ViewEditorTools 
               backgroundMenuToggle={handleToggleBackgroundMenuCallback} 
               drawMenuToggle={handleToggleDrawMenuCallback}
               stickerMenuToggle={handleToggleStickerMenuCallback}
-            />
-            )}
+              />
 
-          </View>
-          ) : ( <ImageEditTools activeImageTool={handleUpdateImageTool}/>)}
-
+          // activeImageToEdit != undefined
+          ) :
+          (<ImageEditTools activeImageTool={handleUpdateImageTool}/>)}
+        </View>
+        
       </View>
     </View>
   );

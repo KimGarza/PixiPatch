@@ -15,16 +15,21 @@ interface ImageInfo {
   }
   
   interface ViewImagesProps {
-    images: ImageData[];
+    images: ImageData[],
+    activeImage: (image: ImageData | null) => void
 }
 
-const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
+const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
 
-    const [activeImageToEdit, setActiveImageToEdit] = useState<ImageData>();
+    const [activeImageToEdit, setActiveImageToEdit] = useState<ImageData |  null>();
 
     const handleImageTapToEdit = (image: ImageData) => {
-        setActiveImageToEdit(image);
-        console.log("active image:", image);
+        if (image.imageInfo.uri == activeImageToEdit?.imageInfo.uri) { // if the image clicked is the same image that is already the active image, the user intends to deactivate it
+            activeImage(null);
+        } else {
+            activeImage(image);
+            setActiveImageToEdit(image);
+        }
     }
 
     return (
@@ -41,7 +46,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
                     flexDirection: 'column', // idk why but this helps with the scattering
                     top: imageCtx.top,
                     left: imageCtx.left,
-                }, activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
+                }, activeImageToEdit != null && activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
                 />  
             </TouchableOpacity>
             ))}
