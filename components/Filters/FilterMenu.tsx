@@ -1,25 +1,50 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import StyledIconContainer from '../styledIconContainer';
 import { Fontisto } from '@expo/vector-icons';
-
+import { ImageFilter } from 'react-native-image-filter-kit';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useState } from 'react';
+interface ImageInfo {
+  uri: string;
+  width: number;
+  height: number;
+  type: string | undefined;
+}
+interface ImageData {
+  imageInfo: ImageInfo;
+  // String for %age of each for positioning
+  top: number;
+  left: number;
+}
 interface FilterMenuProps {
-  menuToggle: () => void;
+  menuToggle: () => void,
+  activeImage: ImageData
 }
 
+
 const FilterMenu: React.FC<FilterMenuProps> = ({menuToggle}) => {
+
+  const [toggleFilter1, setToggleFilter1] = useState<boolean>(false);
+  
+  const [brightness, setBrightness] = useState(1);
 
   const handleCloseMenu = () => {
     menuToggle();
   }
+  
+  const handleToggleFilter1 = () => {
+    setToggleFilter1(!toggleFilter1);
+  }
+  const localImage = require('../../assets/images/welcome.png');
 
   return (
     <View style={styles.menuLayout}>
-
+    
       <View style={styles.close}>
 
           <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
+            <Fontisto name={'close'} size={25}/>
           </TouchableOpacity>
 
       </View>
@@ -27,14 +52,22 @@ const FilterMenu: React.FC<FilterMenuProps> = ({menuToggle}) => {
       <View style={styles.bottomToolbar}>
 
         <StyledIconContainer dimensions={40}>
+
+        <TouchableOpacity onPress={() => handleToggleFilter1()}>
           <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
-          <Feather name={'sunrise'} size={15}/>
+        </TouchableOpacity>
+
+        
+          
+          <FontAwesome5 name={'eraser'} size={15}/>
+          <FontAwesome5 name={'eraser'} size={15}/>
+          <FontAwesome5 name={'eraser'} size={15}/>
+          <FontAwesome5 name={'eraser'} size={15}/>
+          <FontAwesome5 name={'eraser'} size={15}/>
+          <FontAwesome5 name={'eraser'} size={15}/>
+
+          {/* <ImageFilter config={{name: 'Brightness', amount: 1, image: <Image source={require('../../assets/images/welcome.png')}/>}}/> */}
+
         </StyledIconContainer>
 
       </View>
@@ -45,6 +78,9 @@ const FilterMenu: React.FC<FilterMenuProps> = ({menuToggle}) => {
 export default FilterMenu;
 
 const styles = StyleSheet.create({
+  image: {
+    display: 'flex'
+  },
   bottomToolbar: {
     display: 'flex',
     flexWrap: 'wrap',

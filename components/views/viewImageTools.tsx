@@ -9,7 +9,7 @@ import { useState } from 'react';
 import FilterTool from '../Filters/FilterTool';
 
 interface viewImageToolsProps {
-    filterMenuToggle: () => void; // passes back to editor content the name of the image setting in order to effect how somethings are displayed
+    filterMenuToggle: () => void, // passes back to editor content the name of the image setting in order to effect how somethings are displayed
 }
 
 const ViewImageTools: React.FC<viewImageToolsProps> = ({filterMenuToggle}) => {

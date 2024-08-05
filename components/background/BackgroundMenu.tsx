@@ -3,7 +3,15 @@ import { BackgroundCtx } from './BackgroundCtx';
 import { useContext } from 'react';
 import { ImageSourcePropType } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
 
+const screenWidth = Dimensions.get('screen').width; // or 'window'
+  const screenHeight = Dimensions.get('screen').height; // or 'window' // for some reason this is 22 larger with get window and 50 too large with screen! And using useDimensions from react same result. Using 100% in styling as opposed to this works not sure why
+  const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
+  const canvasHeight = screenWidth / aspectRatio;
+  var headerImageHeight = 0;
+  var toolbarHeight = 0;
+  if (headerImageHeight) { toolbarHeight = screenHeight - canvasHeight - headerImageHeight;}
 interface BackgroundMenuProps {
   menuToggle: () => void;
 }
@@ -56,16 +64,18 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 export default BackgroundMenu;
 
 const styles = StyleSheet.create({
-  backgrounds: {
+  backgrounds: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 30,
     rowGap: 15,
-    padding: 13,
     borderWidth: 1,
-    borderColor: 'red'
+    borderColor: 'red',
+    width: '100%',
+    height: '100%',
+    zIndex: 99999,
   },
   menuLayout: {
     display: 'flex',

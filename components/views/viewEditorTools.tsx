@@ -28,25 +28,25 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
         }
 
     return (
-    <StyledIconContainer dimensions={60}> 
+    <StyledIconContainer dimensions={40}> 
 
         <PhotoSelectTool>
-        <Fontisto name='photograph' size={35}/> 
+            <Fontisto name='photograph' size={30}/> 
         </PhotoSelectTool>
         
         {/* callback used to toggle background menu if x to close is clicked from child */}
         <BackgroundTool menuToggle={handleToggleBackgroundMenu}>
-        <Ionicons name='image-outline' size={35}/>
+            <Ionicons name='image-outline' size={30}/>
         </BackgroundTool>
 
         <DrawTool menuToggle={handleToggleDrawMenu}>
-        <SimpleLineIcons name='pencil' size={35}/>
+            <SimpleLineIcons name='pencil' size={30}/>
         </DrawTool>
 
-        <Feather name='layout' size={35}/>
+        <Feather name='layout' size={30}/>
 
         <StickerTool menuToggle={handleToggleStickerMenu}> 
-        <Octicons name='smiley' size={35}/>
+            <Octicons name='smiley' size={30}/>
         </StickerTool>
                   
     </StyledIconContainer>
