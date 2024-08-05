@@ -66,9 +66,21 @@ export default BackgroundMenu;
 
 const styles = StyleSheet.create({
   backgroundTools: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
     flexWrap: 'wrap',
+    position: 'relative',
+    width: screenWidth,
+    height: screenHeight - canvasHeight - headerImageHeight + 95, // THIS HARDCODED VALUE NEEDS FIXED
+    top: '-50%',
     gap: 30,
     zIndex: 99999,
+    padding: 5,
+    borderWidth: 1,
+    borderRadius: 15,
+    borderColor: 'blue',
+    backgroundColor: 'white'
   },
   menuLayout: {
     display: 'flex',
@@ -77,8 +89,7 @@ const styles = StyleSheet.create({
     gap: 100,
     height: '100%',
     width: '100%',
-    borderWidth: 5,
-    borderColor: 'purple',
+    padding: 5
   },
   backgrounds: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
@@ -87,8 +98,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 30,
     rowGap: 15,
-    borderWidth: 1,
-    borderColor: 'red',
     width: '100%',
     height: '100%',
   },

@@ -140,7 +140,6 @@ return (
        
 
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-    <View style={styles.bottomToolbar}>
       {/* specific tool menus */}
       {activeImageToEdit == null ? (
 
@@ -169,7 +168,6 @@ return (
         {/* <ImageFilter config={{name: 'Brightness', amount: 1, image: <Image source={require('../assets/images/welcome.png')}/>}}/> */}
     </View>
         
-  </View>
   );
 }
       
@@ -221,22 +219,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
-    borderWidth: 1,
-    borderColor: 'gray'
   },
-  bottomToolbar: { // narrowed out all the other styling to seperate out what things were NO LONGER EFFECTIVE WITH THE VIEW WRAPPER NEW AND VICE VERSA 
+  primaryTools: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    flexWrap: 'wrap',
     width: screenWidth,
     height: screenHeight - canvasHeight - headerImageHeight - 100, // WHY THE 100 OMG
-    zIndex: 99999,
-  },
-  primaryTools: {
-    flexWrap: 'wrap',
     gap: 30,
     zIndex: 99999,
     padding: 15,
+    borderBottomWidth: 5,
+    borderColor: 'blue'
   },
   imageEditorTools: {
     display: 'flex',
@@ -248,8 +243,6 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenHeight - canvasHeight - headerImageHeight,
     padding: 15,
-    borderWidth: 1,
-    borderColor: 'teal',
     zIndex: 99999,
   },
   imageSelected: {
@@ -262,8 +255,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'green',
   },
 });
   
