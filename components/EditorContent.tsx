@@ -147,14 +147,16 @@ return (
         stickerMenuToggle ? (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
-          <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
+            <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
         ) : 
           // primary tools
-          <ViewEditorTools 
-          backgroundMenuToggle={handleToggleBackgroundMenuCallback} 
-          drawMenuToggle={handleToggleDrawMenuCallback}
-          stickerMenuToggle={handleToggleStickerMenuCallback}
-          />
+          <View style={styles.primaryTools}>
+            <ViewEditorTools
+              backgroundMenuToggle={handleToggleBackgroundMenuCallback} 
+              drawMenuToggle={handleToggleDrawMenuCallback}
+              stickerMenuToggle={handleToggleStickerMenuCallback}
+            />
+          </View>
 
       // activeImageToEdit != undefined which means image is currently selected for editing
       ) : filterMenuToggle ? (
@@ -222,19 +224,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray'
   },
-  bottomToolbar: {
+  bottomToolbar: { // narrowed out all the other styling to seperate out what things were NO LONGER EFFECTIVE WITH THE VIEW WRAPPER NEW AND VICE VERSA 
     display: 'flex',
-    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 30,
-    rowGap: 15,
     width: screenWidth,
     height: screenHeight - canvasHeight - headerImageHeight - 100, // WHY THE 100 OMG
-    padding: 15,
-    borderWidth: 5,
-    borderColor: 'teal',
     zIndex: 99999,
+  },
+  primaryTools: {
+    flexWrap: 'wrap',
+    gap: 30,
+    zIndex: 99999,
+    padding: 15,
   },
   imageEditorTools: {
     display: 'flex',

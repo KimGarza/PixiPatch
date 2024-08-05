@@ -41,22 +41,23 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
   }
 
     return (
-      <View style={styles.menuLayout}>
+      <View style={styles.backgroundTools}>
+        <View style={styles.menuLayout}>
 
-        <View style={styles.close}>
-          <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.backgrounds}>
-            {backgroundDir.map((background, index: number) => (
-            <TouchableOpacity key={index} onPress={() => handleBackgroundSelect(background)}>
-              <Image source={background} style={styles.background}/>
+          <View style={styles.close}>
+            <TouchableOpacity onPress={() => handleCloseMenu()}>
+            <Fontisto name={'close'} size={25}/>
             </TouchableOpacity>
-          ))}
+          </View>
+
+          <View style={styles.backgrounds}>
+              {backgroundDir.map((background, index: number) => (
+              <TouchableOpacity key={index} onPress={() => handleBackgroundSelect(background)}>
+                <Image source={background} style={styles.background}/>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-        
       </View>
     );
 }
@@ -64,6 +65,21 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 export default BackgroundMenu;
 
 const styles = StyleSheet.create({
+  backgroundTools: {
+    flexWrap: 'wrap',
+    gap: 30,
+    zIndex: 99999,
+  },
+  menuLayout: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: 100,
+    height: '100%',
+    width: '100%',
+    borderWidth: 5,
+    borderColor: 'purple',
+  },
   backgrounds: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
     flexWrap: 'wrap',
@@ -75,19 +91,12 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     width: '100%',
     height: '100%',
-    zIndex: 99999,
-  },
-  menuLayout: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    gap: 100,
   },
   close: {
     position: 'absolute',
     right: '-1%',
     top: '-1%',
-    zIndex: 9999 
+    zIndex: 99999
   },
   background: {
     height: 50,

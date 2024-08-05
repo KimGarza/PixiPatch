@@ -72,22 +72,25 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   }
 
     return (
-      <View style={styles.menuLayout}>
+      <View style={styles.stickerTools}>
 
-        <View style={styles.close}>
-          <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.menuLayout}>
 
-        <View style={styles.stickers}>
-            {stickerDir.map((sticker, index: number) => (
-            <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker)}>
-              <Image source={sticker} style={styles.sticker}/>
+          <View style={styles.close}>
+            <TouchableOpacity onPress={() => handleCloseMenu()}>
+            <Fontisto name={'close'} size={25}/>
             </TouchableOpacity>
-          ))}
+          </View>
+
+          <View style={styles.stickers}>
+              {stickerDir.map((sticker, index: number) => (
+              <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker)}>
+                <Image source={sticker} style={styles.sticker}/>
+              </TouchableOpacity>
+            ))}
+          </View>
+          
         </View>
-        
       </View>
     );
 }
@@ -95,16 +98,24 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 export default StickerMenu;
 
 const styles = StyleSheet.create({
-  stickers: {
+  stickerTools: {
+    flexWrap: 'wrap',
+    gap: 30,
+    zIndex: 99999,
+    padding: 5
+  },
+  stickers: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 30,
     rowGap: 15,
-    padding: 13,
     borderWidth: 1,
-    borderColor: 'red'
+    borderColor: 'red',
+    width: '100%',
+    height: '100%',
+    zIndex: 99999,
   },
   menuLayout: {
     display: 'flex',
