@@ -1,7 +1,4 @@
-import { View, Image, ImageSourcePropType } from 'react-native';
-import { StickerCtx } from '../Stickers/StickersCtx';
-import { useContext } from 'react';
-
+import { View, Image, ImageSourcePropType, StyleSheet} from 'react-native';
 interface StickerData {
     sticker: ImageSourcePropType;
     top: number;
@@ -17,7 +14,7 @@ const ViewStickers: React.FC<ViewStickersProps> = ({stickers}) => {
     console.log("stickers view");
 
     return (
-        <View style={{borderWidth: 1, borderColor: 'green', width: '100%', height: '100%', top: 1, position: 'relative' }}>
+        <View style={styles.stickers}>
         {stickers.map((stickerCtx, index) => (
             <Image
             key={ index }
@@ -37,3 +34,14 @@ const ViewStickers: React.FC<ViewStickersProps> = ({stickers}) => {
 }
 
 export default ViewStickers;
+
+
+const styles = StyleSheet.create({
+    stickers: {
+        zIndex: 1,
+        width: '100%',
+        height: '100%',
+        top: 1,
+        position: 'relative'
+      },
+})
