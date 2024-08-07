@@ -1,8 +1,6 @@
 // react & expo
 import { useContext, useState } from 'react';
 import { StyleSheet, View, ImageBackground, Image, TouchableOpacity, LayoutChangeEvent } from 'react-native';
-import { useRouter } from 'expo-router';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 // context
 import { ImageCtx } from './ImageSelection/ImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
@@ -12,12 +10,16 @@ import BackgroundMenu from './background/BackgroundMenu';
 import DrawUtil from './Drawing/DrawUtil';
 import ViewImageTools from './views/viewImageTools';
 import FilterMenu from './Filters/FilterMenu';
+import SaveWorkButton from './save/saveWorkButton';
+import HomeButton from './utils/homeButton';
 // misc
 import ViewEditorTools from './views/viewEditorTools';
 import ViewStickers from './views/viewStickers';
 import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
 import { Dimensions } from 'react-native';
+import SaveMenu from './save/saveMenu';
+
 
 // PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
   // obtaining screen width and height dimensions dynamically using a specified aspect ratio to contrain canvas size.
@@ -41,6 +43,8 @@ const EditorContent = () => {
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
   const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
+  // const [toggleSaveMenu, setToggleSaveMenu] = useState<boolean>(false);
+
   // misc
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
 
@@ -56,7 +60,7 @@ const EditorContent = () => {
     type: string | undefined;
   }
 
-  // callback to be handled as prop value upon using the stickerTool comp
+  // Menu Callbacks
   const handleToggleStickerMenuCallback = () => {
     setStickerMenuToggle(!stickerMenuToggle);
   }
@@ -78,15 +82,20 @@ const EditorContent = () => {
     setActiveImageToEdit(image);
   }
 
+  // gets the height of the header image
   const handleLayout = (event: LayoutChangeEvent) => {
     const height = event.nativeEvent.layout.height;
     setHeaderHeight(height);
     headerImageHeight = height;
+    console.log("header image height: ", headerImageHeight)
+    console.log("header height: ", headerHeight)
+
   }
 
-  const router = useRouter();
-
-  console.log("height", screenHeight);
+  // const handleSave = () => {
+  //   setToggleSaveMenu(!toggleSaveMenu);
+  //   console.log("save modal toggle result ", !toggleSaveMenu);
+  // }
 
 return (
   <View style={styles.screenContainer}>
@@ -97,21 +106,14 @@ return (
         style={styles.headerImg}
         source={require('../assets/images/ElementalEditorBanner.png')}
       />
-      {/* home icon */}
-      <TouchableOpacity 
-        onPress={() => router.push('/(screens)')}
-        style={styles.homeIcon}
-      >
-        <FontAwesome6 
-          name={'house-chimney'}
-          size={20}
-          />
-      </TouchableOpacity>
+        <HomeButton/>
+        <SaveWorkButton/>
     </View>
 
-
-        {/* main canvas */}
+    {/* main canvas */}
     <View style={styles.canvasContainer}>
+      
+      {/* {toggleSaveMenu && <SaveMenu />} */}
 
       <ImageBackground
       source={background}
@@ -130,6 +132,7 @@ return (
           {/* Drawing */}
           {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
+
           {/* Pictures */}
           <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
           
@@ -138,36 +141,32 @@ return (
 
     </View>
        
-
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-    <View style={styles.bottomToolbar}>
-      {/* specific tool menus */}
-      {activeImageToEdit == null ? (
-
+    {/* specific tool menus */}
+    {/* {!toggleSaveMenu && ( */}
+    { 1 + 1 == 2 && (
+      activeImageToEdit == null ? (
         stickerMenuToggle ? (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
           <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
-        ) : 
+        ) : (
           // primary tools
-          <ViewEditorTools 
+      <View style={styles.primaryTools}>
+        <ViewEditorTools
           backgroundMenuToggle={handleToggleBackgroundMenuCallback} 
           drawMenuToggle={handleToggleDrawMenuCallback}
           stickerMenuToggle={handleToggleStickerMenuCallback}
-          />
-
-      // activeImageToEdit != undefined which means image is currently selected for editing
-      ) : filterMenuToggle ? (
-        <FilterMenu menuToggle={handleToggleFilterMenuCallback} activeImage={activeImageToEdit}/>
-      ) : 
-      ( <ViewImageTools 
-        filterMenuToggle={handleToggleFilterMenuCallback} />
-      )}
-
-        {/* <ImageFilter config={{name: 'Brightness', amount: 1, image: <Image source={require('../assets/images/welcome.png')}/>}}/> */}
+        />
+      </View>
+    )
+  ) : filterMenuToggle ? (
+    <FilterMenu menuToggle={handleToggleFilterMenuCallback} activeImage={activeImageToEdit}/>
+  ) : (
+    <ViewImageTools filterMenuToggle={handleToggleFilterMenuCallback} />
+  )
+)}
     </View>
-        
-  </View>
   );
 }
       
@@ -180,12 +179,12 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: '100%', // this is the only way to actually get 100% accuracy so far
     // height: screenHeight - 50, // see top where screenHeight is created for more details
-    borderWidth: 1,
-    borderColor: 'pink'
   },
   headerNav: {
     width: screenWidth,
-    zIndex: 9999
+    zIndex: 9999,
+    position: 'relative',
+    height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
   },
   headerImg: {
     display: 'flex',
@@ -193,22 +192,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  homeIcon: {
-    position: 'absolute',
-    left: '4%',
-    top: '45%',
-    transform: [{ translateY: -15 }],
-    color: 'black',
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: 'black',
-    padding: 8,
-  },
   canvasContainer: {
     height: canvasHeight,
     width: screenWidth,
-    borderWidth: 1,
-    borderColor: 'gold',
+    position: 'relative'
   },
   canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
     display: 'flex',
@@ -219,49 +206,29 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
-    borderWidth: 1,
-    borderColor: 'gray'
   },
-  bottomToolbar: {
+  primaryTools: {
     display: 'flex',
-    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 30,
-    rowGap: 15,
+    flexWrap: 'wrap',
     width: screenWidth,
     height: screenHeight - canvasHeight - headerImageHeight - 100, // WHY THE 100 OMG
-    padding: 15,
-    borderWidth: 5,
-    borderColor: 'teal',
-    zIndex: 99999,
-  },
-  imageEditorTools: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'center',
     gap: 30,
-    rowGap: 15,
-    width: screenWidth,
-    height: screenHeight - canvasHeight - headerImageHeight,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: 'teal',
     zIndex: 99999,
+    padding: 15,
+    borderTopWidth: .5, borderColor: 'black'
   },
   imageSelected: {
     borderWidth: 2,
     borderColor: 'red',
-    zIndex: 1
+    zIndex: 2
   },
   filterImage: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'green',
   },
 });
   

@@ -3,7 +3,7 @@ import { StickerCtx } from './StickersCtx';
 import { useContext } from 'react';
 import { ImageSourcePropType } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
-
+import { Dimensions } from 'react-native';
 interface Sticker {
   uri: string;
   width: number;
@@ -20,6 +20,14 @@ interface StickerData {
 interface StickerMenuProps {
   menuToggle: () => void;
 }
+
+const screenWidth = Dimensions.get('screen').width; // or 'window'
+  const screenHeight = Dimensions.get('screen').height; // or 'window' // for some reason this is 22 larger with get window and 50 too large with screen! And using useDimensions from react same result. Using 100% in styling as opposed to this works not sure why
+  const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
+  const canvasHeight = screenWidth / aspectRatio;
+  var headerImageHeight = 0;
+  var toolbarHeight = 0;
+  if (headerImageHeight) { toolbarHeight = screenHeight - canvasHeight - headerImageHeight;}
 
 const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
@@ -72,22 +80,25 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   }
 
     return (
-      <View style={styles.menuLayout}>
+      <View style={styles.stickerTools}>
 
-        <View style={styles.close}>
-          <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.menuLayout}>
 
-        <View style={styles.stickers}>
-            {stickerDir.map((sticker, index: number) => (
-            <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker)}>
-              <Image source={sticker} style={styles.sticker}/>
+          <View style={styles.close}>
+            <TouchableOpacity onPress={() => handleCloseMenu()}>
+            <Fontisto name={'close'} size={25}/>
             </TouchableOpacity>
-          ))}
+          </View>
+
+          <View style={styles.stickers}>
+              {stickerDir.map((sticker, index: number) => (
+              <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker)}>
+                <Image source={sticker} style={styles.sticker}/>
+              </TouchableOpacity>
+            ))}
+          </View>
+          
         </View>
-        
       </View>
     );
 }
@@ -95,28 +106,45 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 export default StickerMenu;
 
 const styles = StyleSheet.create({
-  stickers: {
+  stickerTools: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    position: 'relative',
+    width: screenWidth,
+    height: screenHeight - canvasHeight - headerImageHeight + 95, // THIS HARDCODED VALUE NEEDS FIXED
+    top: '-48%',
+    zIndex: 99999,
+    padding: 10,
+    gap: 10,
+    borderWidth: .5,
+    borderRadius: 15,
+    borderColor: 'black',
+    backgroundColor: '#fffaf8'
+  },
+  stickers: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 30,
+    gap: 35,
     rowGap: 15,
-    padding: 13,
-    borderWidth: 1,
-    borderColor: 'red'
+    width: '100%',
+    height: '100%',
+    zIndex: 9999,
   },
   menuLayout: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    gap: 100,
+    padding: 15,
   },
   close: {
     position: 'absolute',
     right: '-1%',
     top: '-1%',
-    zIndex: 9999 
+    zIndex: 99999 
   },
   sticker: {
     height: 50,

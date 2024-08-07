@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
-import StyledIconContainer from '../styledIconContainer';
+import StyledIconContainer from '../utils/styledIconContainer';
 import { Fontisto } from '@expo/vector-icons';
 import { ImageFilter } from 'react-native-image-filter-kit';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
