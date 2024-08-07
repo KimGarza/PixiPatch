@@ -113,8 +113,6 @@ return (
     {/* main canvas */}
     <View style={styles.canvasContainer}>
       
-      {/* {toggleSaveMenu && <SaveMenu />} */}
-
       <ImageBackground
       source={background}
       style={{
@@ -131,7 +129,6 @@ return (
 
           {/* Drawing */}
           {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
-
 
           {/* Pictures */}
           <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
@@ -201,6 +198,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
+    borderTopWidth: 3, borderColor: 'green',
     gap: 10,
     position: 'absolute',
     overflow: 'hidden',
@@ -217,18 +215,7 @@ const styles = StyleSheet.create({
     gap: 30,
     zIndex: 99999,
     padding: 15,
-    borderTopWidth: .5, borderColor: 'black'
-  },
-  imageSelected: {
-    borderWidth: 2,
-    borderColor: 'red',
-    zIndex: 2
-  },
-  filterImage: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    borderTopWidth: .5, borderColor: 'black',
   },
 });
   

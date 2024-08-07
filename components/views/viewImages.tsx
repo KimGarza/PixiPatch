@@ -24,6 +24,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
     const [activeImageToEdit, setActiveImageToEdit] = useState<ImageData |  null>();
 
     const handleImageTapToEdit = (image: ImageData) => {
+        console.log("we trying anything here")
         if (image.imageInfo.uri == activeImageToEdit?.imageInfo.uri) { // if the image clicked is the same image that is already the active image, the user intends to deactivate it
             activeImage(null);
             setActiveImageToEdit(null);
@@ -61,6 +62,6 @@ const styles = StyleSheet.create({
     imageSelected: {
         borderWidth: 2,
         borderColor: 'red',
-        zIndex: 1
+        zIndex: 999
       },
 })
