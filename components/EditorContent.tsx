@@ -1,6 +1,6 @@
 // react & expo
 import { useContext, useState, useRef } from 'react';
-import { StyleSheet, View, ImageBackground, Image, TouchableOpacity, LayoutChangeEvent } from 'react-native';
+import { StyleSheet, View, ImageBackground, Image, LayoutChangeEvent } from 'react-native';
 // context
 import { ImageCtx } from './ImageSelection/ImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
@@ -10,7 +10,7 @@ import BackgroundMenu from './background/BackgroundMenu';
 import DrawUtil from './Drawing/DrawUtil';
 import ViewImageTools from './views/viewImageTools';
 import FilterMenu from './Filters/FilterMenu';
-import SaveWorkButton from './save/saveWorkButton';
+import SaveButtonAndMenu from './save/saveButtonAndMenu';
 import HomeButton from './utils/homeButton';
 // misc
 import ViewEditorTools from './views/viewEditorTools';
@@ -18,22 +18,18 @@ import ViewStickers from './views/viewStickers';
 import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
 import { Dimensions } from 'react-native';
-import SaveMenu from './save/saveMenu';
 
 
 // PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
-  // obtaining screen width and height dimensions dynamically using a specified aspect ratio to contrain canvas size.
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-  const aspectRatio = 9/14.5; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
+  const aspectRatio = 9/14.5; // 9:16 is typical
   const canvasHeight = width / aspectRatio;
   var headerHeight = 0;
-  var toolbarHeight = 0;
-  if (headerHeight) { toolbarHeight = height - canvasHeight - headerHeight;}
 
 const EditorContent = () => {
 
-  // contexts provided to EditorContent
+  // contexts
   const { stickers } = useContext(StickerCtx);
   const { imagesData } = useContext(ImageCtx);
   const { background } = useContext(BackgroundCtx);
@@ -42,11 +38,9 @@ const EditorContent = () => {
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
   const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
-  // const [toggleSaveMenu, setToggleSaveMenu] = useState<boolean>(false);
-
   // misc
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
-  const viewRef = useRef(null); // this ref will be used to capture the canvasContainer elemenet
+  const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   interface ImageData {
     imageInfo: ImageInfo;
@@ -60,7 +54,7 @@ const EditorContent = () => {
     type: string | undefined;
   }
 
-  // Menu Callbacks
+  // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
     setStickerMenuToggle(!stickerMenuToggle);
   }
@@ -75,23 +69,20 @@ const EditorContent = () => {
 
   const handleToggleFilterMenuCallback = () => {
     setFilterMenuToggle(!filterMenuToggle);
-    console.log("menu toggle for filter actiavated");
   }
 
+  // user selected image
   const handleImageTapToEdit = (image: ImageData | null) => {
     setActiveImageToEdit(image);
   }
 
-  // gets the height of the header image
+  // gets height of the entire header
   const handleLayout = (event: LayoutChangeEvent) => {
     headerHeight = event.nativeEvent.layout.height;
     console.log("header image height: ", headerHeight)
     console.log("header height: ", headerHeight)
-
   }
 
-  console.log("height: ", width)
-  console.log("height: ", canvasHeight)
 return (
   <View style={styles.screenContainer}>
 
@@ -102,19 +93,17 @@ return (
         source={require('../assets/images/ElementalEditorBanner.png')}
       />
         <HomeButton/>
-        {/* pass the capture ref which captures the view canvas container to be passed, for saving this particular element */}
-        <SaveWorkButton viewRef={viewRef.current}/> 
+        {/* viewRef is ref of canvas container 'View' element. Passing into SaveWorkButton bc this contains the user's beautiful creation that will be saved! */}
+        <SaveButtonAndMenu viewRef={viewRef.current}/>
     </View>
 
     {/* main canvas */}
     <View style={styles.canvasContainer} ref={viewRef}>
-      
-    <ImageBackground 
-          source={background}
-          style={styles.imageBackground}>
+
+      <ImageBackground source={background} style={styles.imageBackground}>
 
         <View style={styles.canvas} >
-         
+
             {/* Stickers */}
             <ViewStickers stickers={stickers}/>
 
@@ -125,13 +114,10 @@ return (
             <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
 
         </View>
-        </ImageBackground>
-
+      </ImageBackground>
     </View>
-       
+
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-    {/* specific tool menus */}
-    {/* {!toggleSaveMenu && ( */}
     { 1 + 1 == 2 && (
       activeImageToEdit == null ? (
         stickerMenuToggle ? (
@@ -142,7 +128,7 @@ return (
           // primary tools
       <View style={styles.primaryTools}>
         <ViewEditorTools
-          backgroundMenuToggle={handleToggleBackgroundMenuCallback} 
+          backgroundMenuToggle={handleToggleBackgroundMenuCallback}
           drawMenuToggle={handleToggleDrawMenuCallback}
           stickerMenuToggle={handleToggleStickerMenuCallback}
         />
@@ -157,7 +143,7 @@ return (
     </View>
   );
 }
-      
+
 export default EditorContent;
 
 const styles = StyleSheet.create({
@@ -199,7 +185,7 @@ const styles = StyleSheet.create({
     zIndex: 1
   },
   imageBackground: {
-    width: '100%', height: '100%', 
+    width: '100%', height: '100%',
     flexDirection: 'column',
     position: 'relative',
     zIndex: -1
@@ -210,11 +196,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexWrap: 'wrap',
     width: width,
-    height: height - canvasHeight - headerHeight - 100, // WHY THE 100 OMG
+    height: height - canvasHeight - headerHeight - 100, // WHY THE 100
     gap: 30,
     zIndex: 99999,
     padding: 15,
     borderTopWidth: .5, borderColor: 'black',
   },
 });
-  

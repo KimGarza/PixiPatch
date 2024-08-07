@@ -2,6 +2,7 @@ import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Dimensions } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 // PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
   // obtaining screen width and height dimensions dynamically using a specified aspect ratio to contrain canvas size.
@@ -36,6 +37,14 @@ export default function HomeScreen() {
           </TouchableOpacity>
           
           <Text>Start Creating! *arrow to icon* </Text>
+
+        </View>
+        {/* ------------- */}
+        <View style={styles.drafts}>
+          <TouchableOpacity onPress={() => router.push('/editor')}>
+            <Text>Drafts</Text>
+            <FontAwesome5 name={'drafting-compass'}/>
+          </TouchableOpacity>
         </View>
         {/* ------------- */}
 
@@ -77,6 +86,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 25,
+  },
+  drafts: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    fontSize: 16,
+    gap: 10
   },
   links: {
     display: 'flex',

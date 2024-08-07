@@ -2,14 +2,12 @@ import { View, Alert } from "react-native";
 import { RefObject } from "react";
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
 
 // captures view element (user's work within canvas) as image
-const CaptureAndSave = async (viewRef: RefObject<View>): Promise<void> => { // view is at current
+const CaptureAndSave = async (viewRef: RefObject<View>, height: number, width: number, draft: boolean): Promise<void> => { // view is at current
 
-  console.log("viewRef.current IN CAPTURE AND SAVE BEFORE TRY", viewRef.current);
- 
   try {
-    console.log("viewRef.current within the capture and save", viewRef.current);
 
     if (viewRef != null) {
       // capture the view
@@ -17,30 +15,44 @@ const CaptureAndSave = async (viewRef: RefObject<View>): Promise<void> => { // v
         format: 'png',
         quality: 1,
         result: 'tmpfile', // ??
-        width: 978.75, // NEED TO MAKE 9:11 NOT 9:16 OR 16:9 OR MAKE 1080 BUT WILL HAVE BLACK AROUND IT NOT PREFERABLE
-        height: 1740
+        width: width, // NEED TO MAKE 9:11 NOT 9:16 OR 16:9 OR MAKE 1080 BUT WILL HAVE BLACK AROUND IT NOT PREFERABLE
+        height: height
       });
 
-      // request media library permissions
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Media library access is required to save images.');
-        return;
-      }
 
-      // create an asset from the captured image
-      const asset = await MediaLibrary.createAssetAsync(uri);
-
-      const album = await MediaLibrary.getAlbumAsync('Elemental Editor'); // looks for this album name
-      if (album == null) {
-        // if the album does not exist, create it
-        await MediaLibrary.createAlbumAsync('My App Photos', asset, false);
+      if (draft) { // if saving as draft
+        const fileName = `draft_${Date.now()}.png`;
+        const localUri = `${FileSystem.documentDirectory}${fileName}`;
+  
+        await FileSystem.moveAsync({
+          from: uri,
+          to: localUri,
+        });
+  
+        console.log('Image saved to drafts!');
       } else {
-        // if the album exists, add the asset to it
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+        // request media library permissions
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Media library access is required to save images.');
+          return;
+        }
+
+        // create an asset from the captured image
+        const asset = await MediaLibrary.createAssetAsync(uri);
+
+        const album = await MediaLibrary.getAlbumAsync('Elemental Editor'); // looks for this album name
+        if (album == null) {
+          // if the album does not exist, create it
+          await MediaLibrary.createAlbumAsync('My App Photos', asset, false);
+        } else {
+          // if the album exists, add the asset to it
+          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+        }
+
+        console.log('Image saved to photo library!');
       }
 
-      console.log('Image saved to photo library!');
     } else {
       Alert.alert("Error within captureAndSave.tsx: ", "View ref is not set or the view is not mounted.");
       return;
