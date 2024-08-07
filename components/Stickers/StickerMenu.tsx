@@ -114,21 +114,21 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: screenWidth,
     height: screenHeight - canvasHeight - headerImageHeight + 95, // THIS HARDCODED VALUE NEEDS FIXED
-    top: '-50%',
+    top: '-48%',
     zIndex: 99999,
     padding: 10,
     gap: 10,
-    borderWidth: 1,
+    borderWidth: .5,
     borderRadius: 15,
-    borderColor: 'blue',
-    backgroundColor: 'white'
+    borderColor: 'black',
+    backgroundColor: '#fffaf8'
   },
   stickers: { // this already fits within bounds of bottomTooblar styles
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 25,
+    gap: 35,
     rowGap: 15,
     width: '100%',
     height: '100%',
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
+    padding: 15,
   },
   close: {
     position: 'absolute',

@@ -184,8 +184,6 @@ const styles = StyleSheet.create({
     width: screenWidth,
     zIndex: 9999,
     position: 'relative',
-    borderWidth: 1,
-    borderColor: 'red',
     height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
   },
   headerImg: {
@@ -219,11 +217,12 @@ const styles = StyleSheet.create({
     gap: 30,
     zIndex: 99999,
     padding: 15,
+    borderTopWidth: .5, borderColor: 'black'
   },
   imageSelected: {
     borderWidth: 2,
     borderColor: 'red',
-    zIndex: 1
+    zIndex: 2
   },
   filterImage: {
     display: 'flex',

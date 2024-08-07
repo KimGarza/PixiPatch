@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     padding: 5,
     borderWidth: 1,
     borderRadius: 15,
-    borderColor: 'blue',
-    backgroundColor: 'white'
+    borderColor: 'black',
+    backgroundColor: '#fffaf8'
   },
   menuLayout: {
     display: 'flex',

@@ -15,6 +15,10 @@ const SaveWorkButton = () => {
     }).start();
   };
 
+  const saveStandard = () => {
+    
+  }
+
   const menuHeight = animationValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 100] // Adjust the height as needed
@@ -22,16 +26,21 @@ const SaveWorkButton = () => {
 
   const iconSize = saveMenuVisible ? 40 : 20;
 
+
   return(
     <View style={[styles.container, saveMenuVisible && styles.menuContainer]}>
         <TouchableOpacity onPress={menuToggle} style={styles.saveIcon}>
            <Entypo name={'save'} size={iconSize}/>
        </TouchableOpacity>
        {saveMenuVisible && <Animated.View style={[styles.menu, { height: menuHeight }]}>
-            <Text>testing</Text>
-            <Text>testingggggggggggg</Text>
-            <Text>testing</Text>
-            <Text>testing</Text>
+
+        <TouchableOpacity onPress={saveStandard}>
+            <Text style={styles.saveOption}>Save as Standard</Text>
+        </TouchableOpacity>
+
+            <Text style={styles.saveOption}>Save as HD</Text>
+            <Text style={styles.saveOption}>Save as Draft</Text>
+            <Text style={styles.saveOption}>close</Text>
        </Animated.View>}
     </View>
     
@@ -66,12 +75,26 @@ const styles = StyleSheet.create({
         right: 1,
         top: 0,
         height: 290,
-        gap: 30,
-        borderWidth: 1, borderColor: 'black', borderRadius: 10,
+        gap: 1,
+        borderWidth: .5, borderColor: '#b46141', borderRadius: 10,
+        borderBottomWidth: 3,
         padding: 8,
-        backgroundColor: "#ffcab0"
+        backgroundColor: "#ffc9b5"
     },
     menu: {
-        gap: 15,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 25,
+        padding: 5,
+        top: 30
+    },
+    saveOption: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        textAlign: 'center',
+        fontSize: 16,
+        borderWidth: .5, borderColor: '#803c22', borderRadius: 10,
+        padding: 2,
+        backgroundColor: '#ffb79c'
     }
 })
