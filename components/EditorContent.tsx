@@ -1,5 +1,5 @@
 // react & expo
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { StyleSheet, View, ImageBackground, Image, TouchableOpacity, LayoutChangeEvent } from 'react-native';
 // context
 import { ImageCtx } from './ImageSelection/ImageCtx';
@@ -23,17 +23,16 @@ import SaveMenu from './save/saveMenu';
 
 // PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
   // obtaining screen width and height dimensions dynamically using a specified aspect ratio to contrain canvas size.
-  const screenWidth = Dimensions.get('screen').width; // or 'window'
-  const screenHeight = Dimensions.get('screen').height; // or 'window' // for some reason this is 22 larger with get window and 50 too large with screen! And using useDimensions from react same result. Using 100% in styling as opposed to this works not sure why
-  const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-  const canvasHeight = screenWidth / aspectRatio;
-  var headerImageHeight = 0;
+  const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
+  const aspectRatio = 9/14.5; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
+  const canvasHeight = width / aspectRatio;
+  var headerHeight = 0;
   var toolbarHeight = 0;
-  if (headerImageHeight) { toolbarHeight = screenHeight - canvasHeight - headerImageHeight;}
+  if (headerHeight) { toolbarHeight = height - canvasHeight - headerHeight;}
 
 const EditorContent = () => {
 
-  const [headerHeight, setHeaderHeight] = useState(0);
   // contexts provided to EditorContent
   const { stickers } = useContext(StickerCtx);
   const { imagesData } = useContext(ImageCtx);
@@ -47,6 +46,7 @@ const EditorContent = () => {
 
   // misc
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
+  const viewRef = useRef(null); // this ref will be used to capture the canvasContainer elemenet
 
   interface ImageData {
     imageInfo: ImageInfo;
@@ -84,19 +84,14 @@ const EditorContent = () => {
 
   // gets the height of the header image
   const handleLayout = (event: LayoutChangeEvent) => {
-    const height = event.nativeEvent.layout.height;
-    setHeaderHeight(height);
-    headerImageHeight = height;
-    console.log("header image height: ", headerImageHeight)
+    headerHeight = event.nativeEvent.layout.height;
+    console.log("header image height: ", headerHeight)
     console.log("header height: ", headerHeight)
 
   }
 
-  // const handleSave = () => {
-  //   setToggleSaveMenu(!toggleSaveMenu);
-  //   console.log("save modal toggle result ", !toggleSaveMenu);
-  // }
-
+  console.log("height: ", width)
+  console.log("height: ", canvasHeight)
 return (
   <View style={styles.screenContainer}>
 
@@ -107,34 +102,30 @@ return (
         source={require('../assets/images/ElementalEditorBanner.png')}
       />
         <HomeButton/>
-        <SaveWorkButton/>
+        {/* pass the capture ref which captures the view canvas container to be passed, for saving this particular element */}
+        <SaveWorkButton viewRef={viewRef.current}/> 
     </View>
 
     {/* main canvas */}
-    <View style={styles.canvasContainer}>
+    <View style={styles.canvasContainer} ref={viewRef}>
       
-      <ImageBackground
-      source={background}
-      style={{
-        width: '100%', height: '100%', 
-        flexDirection: 'column',
-        position: 'relative',
-        zIndex: 1
-      }} >
+    <ImageBackground 
+          source={background}
+          style={styles.imageBackground}>
 
-        <View style={styles.canvas}>
+        <View style={styles.canvas} >
+         
+            {/* Stickers */}
+            <ViewStickers stickers={stickers}/>
 
-          {/* Stickers */}
-          <ViewStickers stickers={stickers}/>
+            {/* Drawing */}
+            {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
-          {/* Drawing */}
-          {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
+            {/* Pictures */}
+            <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
 
-          {/* Pictures */}
-          <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
-          
         </View>
-      </ImageBackground>
+        </ImageBackground>
 
     </View>
        
@@ -173,12 +164,12 @@ const styles = StyleSheet.create({
   screenContainer: {
     display: 'flex',
     alignItems: 'center',
-    width: screenWidth,
+    width: width,
     height: '100%', // this is the only way to actually get 100% accuracy so far
     // height: screenHeight - 50, // see top where screenHeight is created for more details
   },
   headerNav: {
-    width: screenWidth,
+    width: width,
     zIndex: 9999,
     position: 'relative',
     height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
@@ -191,8 +182,9 @@ const styles = StyleSheet.create({
   },
   canvasContainer: {
     height: canvasHeight,
-    width: screenWidth,
-    position: 'relative'
+    width: width,
+    position: 'relative',
+    zIndex: 1
   },
   canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
     display: 'flex',
@@ -204,14 +196,21 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
+    zIndex: 1
+  },
+  imageBackground: {
+    width: '100%', height: '100%', 
+    flexDirection: 'column',
+    position: 'relative',
+    zIndex: -1
   },
   primaryTools: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    width: screenWidth,
-    height: screenHeight - canvasHeight - headerImageHeight - 100, // WHY THE 100 OMG
+    width: width,
+    height: height - canvasHeight - headerHeight - 100, // WHY THE 100 OMG
     gap: 30,
     zIndex: 99999,
     padding: 15,

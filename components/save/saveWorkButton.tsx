@@ -1,8 +1,14 @@
-import { StyleSheet, TouchableOpacity, Animated, Text, View } from "react-native";
+import { StyleSheet, TouchableOpacity, Animated, Text, View, Alert } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
-import { useState, useRef } from "react";
+import { useState, useRef, RefObject } from "react";
+import CaptureAndSave from "./captureAndSave";
 
-const SaveWorkButton = () => {
+interface SaveWorkButtonProps {
+  viewRef: RefObject<View> | null, // capture view ref is the props value of the ref attached to the view element CanvasContainer
+}
+
+const SaveWorkButton: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
+
   const [saveMenuVisible, setSaveMenuVisible] = useState(false);
   const animationValue = useRef(new Animated.Value(0)).current; // ??
 
@@ -15,8 +21,17 @@ const SaveWorkButton = () => {
     }).start();
   };
 
-  const saveStandard = () => {
-    
+  // captures view element (user's work within canvas) as image
+  const saveStandard = async () => {    
+    try {
+      // sending in the viewRef (captured view element by useRef sent from elemental editor of the canvas) sending to a comp that uses it to capture, and save it
+      if (viewRef != undefined && viewRef && viewRef != null) {
+        console.log("viewRef RIGHT before I add it into Capture and save: ", viewRef)
+        await CaptureAndSave(viewRef);
+      }
+    } catch (error) {
+      console.log("Error within trying to activate CaptureAndSave in saveWorkButton.tsx: ", error);
+    }
   }
 
   const menuHeight = animationValue.interpolate({
