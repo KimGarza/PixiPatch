@@ -1,72 +1,105 @@
-import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity, LayoutChangeEvent, ActivityIndicator  } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Dimensions } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useFonts } from 'expo-font';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-// PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
-  // obtaining screen width and height dimensions dynamically using a specified aspect ratio to contrain canvas size.
-  const screenWidth = Dimensions.get('screen').width; // or 'window'
-  const screenHeight = Dimensions.get('screen').height; // or 'window' // for some reason this is 22 larger with get window and 50 too large with screen! And using useDimensions from react same result. Using 100% in styling as opposed to this works not sure why
-  const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-  const canvasHeight = screenWidth / aspectRatio;
-  var headerImageHeight = 0;
-  var toolbarHeight = 0;
-  if (headerImageHeight) { toolbarHeight = screenHeight - canvasHeight - headerImageHeight;}
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+const aspectRatio = 9/12;
+const canvasHeight = width / aspectRatio;
+var headerHeight = 0;
+const cinnamon = '#581800';
 
 export default function HomeScreen() {
 
   const router = useRouter();
 
+  const [fontsLoaded] = useFonts({
+    'ToThePoint': require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  // gets height of the entire header
+  const handleLayout = (event: LayoutChangeEvent) => {
+    headerHeight = event.nativeEvent.layout.height;
+    console.log("header image height: ", headerHeight)
+    console.log("header height: ", headerHeight)
+  }
+
   return (
     <View style={styles.screenContainer}>
-      
-
-      <Image style={styles.headerImg}
-        source={require('../../assets/images/ElementalEditorBanner.png')}
-      />
+        
+      <View style={styles.headerNav} onLayout={handleLayout}>
+        <Image
+          style={styles.headerImg}
+          source={require('../../assets/images/ElementalEditorBanner.png')}
+        />
+      </View>
 
       <View style={styles.pageContent}>
 
-        {/* Start creating! */}
-        <View style={styles.startBlock}>
-          <Text>Edit, collage, do it all!</Text>
+        <View style={styles.appContent}>
 
-          <TouchableOpacity onPress={() => router.push('/editor')}>
-            <Fontisto name='photograph' size={150}/>
+          {/* Start creating! */}
+          <View style={styles.startBlock}>
+            <Text>Edit, collage, do it all!</Text>
+
+            <TouchableOpacity onPress={() => router.push('/editor')}>
+              <Fontisto name='photograph' size={150}/>
+            </TouchableOpacity>
+            
+            <Text>Start Creating! *arrow to icon* </Text>
+
+          </View>
+          {/* ------------- */}
+          <TouchableOpacity onPress={() => router.push('/editor')} style={styles.drafts}>
+            <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
+            <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
           </TouchableOpacity>
-          
-          <Text>Start Creating! *arrow to icon* </Text>
+          {/* ------------- */}
 
+          <View style={styles.links}>
+            <Text style={styles.link}>Suport Me XOXO</Text>
+            {/* <MaterialCommunityIcons size={20}/> */}
+            <Text style={styles.link}>Subsribe for more features!</Text>
+            <Text style={styles.link}>About</Text>
+            {/* <Text style={styles.links}>Girls in software development!</Text> */}
+          </View>
         </View>
-        {/* ------------- */}
-        <View style={styles.drafts}>
-          <TouchableOpacity onPress={() => router.push('/editor')}>
-            <Text>Drafts</Text>
-            <FontAwesome5 name={'drafting-compass'}/>
-          </TouchableOpacity>
-        </View>
-        {/* ------------- */}
+      </View>
 
-        <View style={styles.links}>
-          <Text style={styles.link}>Suport Me XOXO</Text>
-          <Text style={styles.link}>Subsribe for more features!</Text>
-          <Text style={styles.link}>About</Text>
-          {/* <Text style={styles.links}>Girls in software development!</Text> */}
-        </View>
-
+      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+        <Text style={{ fontFamily: 'ToThePoint', fontSize: 32, color: cinnamon }}>Ads from my supporters!</Text>
+        <FontAwesome6 name={'hand-holding-heart'} size={20} color={cinnamon}/>
+      </View> 
+      <View style={styles.ads}>
       </View>
 
     </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
   screenContainer: {
     display: 'flex',
     alignItems: 'center',
-    width: screenWidth,
+    width: width,
     height: '100%',
+    backgroundColor: '#dfded8',
+    overflow: 'hidden'
+  },
+  headerNav: {
+    width: width,
+    zIndex: 9999,
+    position: 'relative',
+    height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
   },
   headerImg: {
     display: 'flex',
@@ -78,34 +111,67 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    gap: 10,
+    height: canvasHeight,
+    width: width,
+    position: 'relative',
+    zIndex: 1
+  },
+  appContent: {
     top: '5%',
-    gap: 70,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 15,
+    height: canvasHeight,
+    width: width,
+    position: 'relative',
+    zIndex: 1
   },
   startBlock: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 25,
+    gap: 20,
+    borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
+    padding: 10, paddingRight: 40, paddingLeft: 40
   },
   drafts: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    fontSize: 16,
-    gap: 10
+    fontSize: 32,
+    fontFamily: 'ToThePoint',
+    borderWidth: .8, borderColor: cinnamon, backgroundColor: '#ffece3', borderRadius: 8,
+    padding: 5,
+    gap: 8
   },
   links: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 25,
+    gap: 15,
   },
   link: {
-    borderWidth: 1,
-    borderColor: '#311b03',
-    backgroundColor: '#d3cfcb',
+    borderWidth: .8,
+    borderColor: cinnamon,
+    backgroundColor: '#e3dfda',
     borderRadius: 8,
-    padding: 10,
-    fontSize: 18,
+    padding: 5,
+    fontSize: 32,
+    color: cinnamon,
+    fontFamily: 'ToThePoint',
+  },
+  ads: { // MAY HAVE TO CONDITIONALLY RENDER SO PAID VERSION DOESN'T HAVE AD PART
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    width: width,
+    height: height - canvasHeight - headerHeight - 100, // WHY THE 100
+    gap: 30,
+    zIndex: 99999,
+    padding: 15,
+    borderTopWidth: .5, borderColor: '#581800',
   }
 });

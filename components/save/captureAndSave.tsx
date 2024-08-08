@@ -5,10 +5,11 @@ import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 
 // captures view element (user's work within canvas) as image
-const CaptureAndSave = async (viewRef: RefObject<View>, height: number, width: number, draft: boolean): Promise<void> => { // view is at current
+const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: number, draft: boolean): Promise<void> => { // view is at current
 
   try {
 
+    console.log(height, " width: ", width)
     if (viewRef != null) {
       // capture the view
       const uri = await captureRef(viewRef, {
