@@ -30,6 +30,7 @@ const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
 
       // sending in the viewRef (captured view element by useRef sent from elemental editor of the canvas) sending to a comp that uses it to capture, and save it
       if (viewRef != undefined && viewRef && viewRef != null) {
+        console.log("viewRef ", viewRef)
         await CaptureAndSave(viewRef, width, height, false);
       }
     } catch (error) {

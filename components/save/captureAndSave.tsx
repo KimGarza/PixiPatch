@@ -2,14 +2,12 @@ import { View, Alert } from "react-native";
 import { RefObject } from "react";
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
+// import * as FileSystem from 'expo-file-system';
 
 // captures view element (user's work within canvas) as image
 const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: number, draft: boolean): Promise<void> => { // view is at current
 
   try {
-
-    console.log(height, " width: ", width)
     if (viewRef != null) {
       // capture the view
       const uri = await captureRef(viewRef, {
@@ -20,18 +18,17 @@ const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: n
         height: height
       });
 
-
-      if (draft) { // if saving as draft
-        const fileName = `draft_${Date.now()}.png`;
-        const localUri = `${FileSystem.documentDirectory}${fileName}`;
+      // if (draft) { // if saving as draft
+      //   const fileName = `draft_${Date.now()}.png`;
+      //   const localUri = `${FileSystem.documentDirectory}${fileName}`;
   
-        await FileSystem.moveAsync({
-          from: uri,
-          to: localUri,
-        });
+      //   await FileSystem.moveAsync({
+      //     from: uri,
+      //     to: localUri,
+      //   });
   
-        console.log('Image saved to drafts!');
-      } else {
+      //   console.log('Image saved to drafts!');
+      // } else {
         // request media library permissions
         const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== 'granted') {
@@ -52,7 +49,7 @@ const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: n
         }
 
         console.log('Image saved to photo library!');
-      }
+      // }
 
     } else {
       Alert.alert("Error within captureAndSave.tsx: ", "View ref is not set or the view is not mounted.");
