@@ -41,7 +41,7 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
   }
 
     return (
-      <View style={styles.backgroundTools}>
+      <View style={styles.backgroundTool}>
         <View style={styles.menuLayout}>
 
           <View style={styles.close}>
@@ -65,7 +65,7 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 export default BackgroundMenu;
 
 const styles = StyleSheet.create({
-  backgroundTools: {
+  backgroundTool: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',

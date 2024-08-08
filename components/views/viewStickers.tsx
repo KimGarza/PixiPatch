@@ -14,20 +14,22 @@ const ViewStickers: React.FC<ViewStickersProps> = ({stickers}) => {
     console.log("stickers view");
 
     return (
-        <View style={styles.stickers}>
+        <View>
         {stickers.map((stickerCtx, index) => (
-            <Image
-            key={ index }
-            source={ stickerCtx.sticker }
-            style={{
-                width: 50, height: 50, 
-                zIndex: 9999, 
-                flexDirection: 'column',
-                position: 'absolute',
-                top: stickerCtx.top, 
-                left: stickerCtx.left,
-            }} 
-            />
+            <View 
+            style={styles.stickers}
+            key={ index }>
+                <Image
+                source={ stickerCtx.sticker }
+                style={{
+                    width: 50, height: 50, 
+                    flexDirection: 'column',
+                    position: 'absolute',
+                    top: stickerCtx.top, 
+                    left: stickerCtx.left,
+                }} 
+                />
+            </View>
         ))}
         </View>
     );
@@ -38,10 +40,6 @@ export default ViewStickers;
 
 const styles = StyleSheet.create({
     stickers: {
-        zIndex: 1,
-        width: '100%',
-        height: '100%',
-        top: 1,
-        position: 'relative'
+        zIndex: 999999, // too high and can no longer select images
       },
 })

@@ -58,6 +58,5 @@ const styles = StyleSheet.create({
         height: '100%',
         borderWidth: 1,
         borderColor: 'blue',
-        zIndex: 999
     }
 })

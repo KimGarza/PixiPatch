@@ -19,7 +19,6 @@ import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
 import { Dimensions } from 'react-native';
 
-
 // PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
   },
   headerNav: {
     width: width,
-    zIndex: 9999,
+    zIndex: 999999,
     position: 'relative',
     height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
   },
@@ -170,7 +169,6 @@ const styles = StyleSheet.create({
     height: canvasHeight,
     width: width,
     position: 'relative',
-    zIndex: 1
   },
   canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
     display: 'flex',
@@ -178,17 +176,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderTopWidth: 3, borderColor: 'green',
     gap: 10,
+    // overflow: 'hidden', // good to test against but activate later
     position: 'absolute',
-    overflow: 'hidden',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container
-    zIndex: 1
   },
   imageBackground: {
     width: '100%', height: '100%',
     flexDirection: 'column',
     position: 'relative',
-    zIndex: -1
+    zIndex: 1
   },
   primaryTools: {
     display: 'flex',
@@ -198,7 +195,7 @@ const styles = StyleSheet.create({
     width: width,
     height: height - canvasHeight - headerHeight - 100, // WHY THE 100
     gap: 30,
-    zIndex: 99999,
+    zIndex: 999,
     padding: 15,
     borderTopWidth: .5, borderColor: 'black',
   },

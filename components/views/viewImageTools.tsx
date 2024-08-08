@@ -9,13 +9,12 @@ import { useState } from 'react';
 import FilterTool from '../Filters/FilterTool';
 import { Dimensions } from 'react-native';
 
-const screenWidth = Dimensions.get('screen').width; // or 'window'
-const screenHeight = Dimensions.get('screen').height; // or 'window' // for some reason this is 22 larger with get window and 50 too large with screen! And using useDimensions from react same result. Using 100% in styling as opposed to this works not sure why
-const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-const canvasHeight = screenWidth / aspectRatio;
-var headerImageHeight = 0;
-var toolbarHeight = 0;
-if (headerImageHeight) { toolbarHeight = screenHeight - canvasHeight - headerImageHeight;}
+// PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+const aspectRatio = 9/14.5; // 9:16 is typical
+const canvasHeight = width / aspectRatio;
+var headerHeight = 0;
 
 interface viewImageToolsProps {
     filterMenuToggle: () => void, // passes back to editor content the name of the image setting in order to effect how somethings are displayed
@@ -58,12 +57,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        width: screenWidth,
-        height: screenHeight - canvasHeight - headerImageHeight - 100, // WHY THE 100 OMG
+        width: width,
+        height: height - canvasHeight - headerHeight - 100, // WHY THE 100 OMG
         gap: 30,
-        zIndex: 99999,
+        zIndex: 999,
         padding: 15,
-        borderBottomWidth: 5,
-        borderColor: 'blue'
+        borderTopWidth: .5, borderColor: 'black'
       },
 });
