@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     gap: 10,
-    // overflow: 'hidden', // good to test against but activate later
+    overflow: 'hidden', // good to test against but activate later
     position: 'absolute',
     height: '100%', // 100% of parent which is canvas container
     width: '100%', // 100% of parent which is canvas container

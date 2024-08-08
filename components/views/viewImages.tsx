@@ -26,7 +26,8 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
     const [activeImageToEdit, setActiveImageToEdit] = useState<ImageData |  null>();
 
     const handleImageTapToEdit = (image: ImageData) => {
-        console.log("we trying anything here")
+        console.log("image wxh: ", image.width, "x", image.height)
+        console.log("image res wxh: ", image.imageInfo.width, "x", image.imageInfo.height)
         if (image.imageInfo.uri == activeImageToEdit?.imageInfo.uri) { // if the image clicked is the same image that is already the active image, the user intends to deactivate it
             activeImage(null);
             setActiveImageToEdit(null);
