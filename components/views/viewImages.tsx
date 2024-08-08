@@ -48,11 +48,8 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
                 style={[{ 
                     width: imageCtx.width,
                     height: imageCtx.height,
-                    position: 'absolute',
-                    flexDirection: 'column', // idk why but this helps with the scattering
                     top: imageCtx.top,
                     left: imageCtx.left,
-                    zIndex: 2 
                 }, activeImageToEdit != null && activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
                 />  
             </TouchableOpacity>
@@ -64,9 +61,14 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
 export default ViewImages;
 
 const styles = StyleSheet.create({
+    image: {
+        position: 'absolute',
+        flexDirection: 'column', // idk why but this helps with the scattering
+        zIndex: 2 
+    },
     imageSelected: {
         borderWidth: 2,
-        borderColor: 'red',
+        borderColor: '#fc0026',
         zIndex: 4
       },
     selectableImage: {
