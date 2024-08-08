@@ -97,7 +97,7 @@ return (
     </View>
 
     {/* main canvas */}
-    <View style={styles.canvasContainer} ref={viewRef}>
+    <View style={styles.canvasContainer} ref={viewRef} collapsable={false} >
 
       <ImageBackground source={background} style={styles.imageBackground}>
 
@@ -174,7 +174,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    borderTopWidth: 3, borderColor: 'green',
     gap: 10,
     // overflow: 'hidden', // good to test against but activate later
     position: 'absolute',
