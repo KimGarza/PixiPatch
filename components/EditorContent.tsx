@@ -41,16 +41,18 @@ const EditorContent = () => {
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
-  interface ImageData {
-    imageInfo: ImageInfo;
-    top: number;
-    left: number;
-  }
   interface ImageInfo {
     uri: string;
     width: number;
     height: number;
     type: string | undefined;
+  }
+  interface ImageData {
+    imageInfo: ImageInfo;
+    top: number;
+    left: number;
+    width: number;
+    height: number;
   }
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed

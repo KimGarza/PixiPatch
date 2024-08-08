@@ -14,6 +14,8 @@ interface ImageData {
   // String for %age of each for positioning
   top: number;
   left: number;
+  width: number;
+  height: number;
 }
 
 // when using image context this is what options are available to access

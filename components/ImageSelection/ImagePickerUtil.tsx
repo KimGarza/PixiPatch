@@ -4,7 +4,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { useContext } from 'react';
 import { ImageCtx } from './ImageCtx';
 
-
 interface ImageInfo {
   uri: string;
   width: number;
@@ -15,6 +14,8 @@ interface ImageData {
   imageInfo: ImageInfo;
   top: number;
   left: number;
+  width: number;
+  height: number;
 }
 
 interface ImagePickerUtilProps {
@@ -24,12 +25,26 @@ interface ImagePickerUtilProps {
 const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   const { imagesData, setImagesData } = useContext(ImageCtx); // importing ability to set imageData array in context
 
+  const adjustImageSize = (width: number, height: number) => {
+    const maxWidth = 200;
+    console.log("current res WxH: ", width, "x", height)
+    const aspectRatio = width / height;
+    console.log("updated WxH: ", maxWidth, "x", maxWidth / aspectRatio)
+    return {
+      width: maxWidth,
+      height: maxWidth / aspectRatio,
+    };
+  };
+
   // converts arg of imageInfo (basic img from photo lib) and converts it to ImageData which just adds top/left values
   const convertToImageData = (image: ImageInfo) => {
+    const { width, height } = adjustImageSize(image.width, image.height)
     const imageData: ImageData = {
       imageInfo: image,
       top: Math.floor(Math.random() * (100 - 30)) + 30,
-      left: Math.floor(Math.random() * (200 - 30)) + 30
+      left: Math.floor(Math.random() * (200 - 30)) + 30,
+      width: width,
+      height: height
     }
     return imageData;
   }
@@ -39,7 +54,6 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   }, [toggle]) // this is only working bc toggle updates but after we use this func it should not need this 
   
   const handlePickImage = async () => {
-    console.log("photo handle Pick Image"); 
 
     // ask for permission to access the library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();

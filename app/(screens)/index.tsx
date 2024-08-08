@@ -48,14 +48,17 @@ export default function HomeScreen() {
         <View style={styles.appContent}>
 
           {/* Start creating! */}
-          <View style={styles.startBlock}>
-            <Text>Edit, collage, do it all!</Text>
+          <View style={styles.startBlock} >
+            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>EDIT, COLLAGE... DO IT ALL!</Text>
 
             <TouchableOpacity onPress={() => router.push('/editor')}>
               <Fontisto name='photograph' size={150}/>
+              {/* <Image
+              source={require('../../assets/images/arrow.png')}
+              /> */}
             </TouchableOpacity>
             
-            <Text>Start Creating! *arrow to icon* </Text>
+            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>START CREATING!</Text>
 
           </View>
           {/* ------------- */}

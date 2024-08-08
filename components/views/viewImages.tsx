@@ -12,6 +12,8 @@ interface ImageInfo {
     imageInfo: ImageInfo;
     top: number;
     left: number;
+    width: number;
+    height: number;
   }
   
   interface ViewImagesProps {
@@ -44,7 +46,8 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
                 <Image 
                 source={{ uri: imageCtx.imageInfo.uri }}
                 style={[{ 
-                    width: 200, height: 200,
+                    width: imageCtx.width,
+                    height: imageCtx.height,
                     position: 'absolute',
                     flexDirection: 'column', // idk why but this helps with the scattering
                     top: imageCtx.top,

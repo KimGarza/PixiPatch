@@ -11,8 +11,6 @@ interface ViewStickersProps {
 
 const ViewStickers: React.FC<ViewStickersProps> = ({stickers}) => {
 
-    console.log("stickers view");
-
     return (
         <View>
         {stickers.map((stickerCtx, index) => (
