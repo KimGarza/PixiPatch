@@ -80,8 +80,6 @@ const EditorContent = () => {
   // gets height of the entire header
   const handleLayout = (event: LayoutChangeEvent) => {
     headerHeight = event.nativeEvent.layout.height;
-    console.log("header image height: ", headerHeight)
-    console.log("header height: ", headerHeight)
   }
 
 return (

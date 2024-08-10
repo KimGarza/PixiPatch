@@ -59,7 +59,6 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   const handleStickerSelect = (sticker: ImageSourcePropType) => {
     
     const stickerData = convertToStickerData(sticker);
-    console.log("stickerData", stickerData);
 
     setStickers(prevStickers => [...prevStickers, stickerData]);
   }

@@ -27,9 +27,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
   const adjustImageSize = (width: number, height: number) => {
     const maxWidth = 200;
-    console.log("current res WxH: ", width, "x", height)
     const aspectRatio = width / height;
-    console.log("updated WxH: ", maxWidth, "x", maxWidth / aspectRatio)
     return {
       width: maxWidth,
       height: maxWidth / aspectRatio,

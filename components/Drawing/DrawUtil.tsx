@@ -19,7 +19,6 @@ const DrawUtil: React.FC<DrawUtilProps> = ({ isDrawing }) => {
     const [activePath, setActivePath] = useState<PathData>([]); // this is the LIVE stroke/gesture, the current path being drawn
 
     const handlePathUpdate = (newActivePath: PathData) => {
-        console.log("newActivePath", newActivePath);
         setActivePath(newActivePath);
     }
 

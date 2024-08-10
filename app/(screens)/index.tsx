@@ -29,8 +29,6 @@ export default function HomeScreen() {
   // gets height of the entire header
   const handleLayout = (event: LayoutChangeEvent) => {
     headerHeight = event.nativeEvent.layout.height;
-    console.log("header image height: ", headerHeight)
-    console.log("header height: ", headerHeight)
   }
 
   return (
@@ -52,7 +50,7 @@ export default function HomeScreen() {
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>EDIT, COLLAGE... DO IT ALL!</Text>
 
             <TouchableOpacity onPress={() => router.push('/editor')}>
-              <Fontisto name='photograph' size={150}/>
+              <Fontisto name='photograph' size={150} style={styles.photographIcon}/>
               {/* <Image
               source={require('../../assets/images/arrow.png')}
               /> */}
@@ -136,8 +134,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 20,
-    borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
-    padding: 10, paddingRight: 40, paddingLeft: 40
+    borderRadius: 300,
+    // borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
+    padding: 10, paddingRight: 20, paddingLeft: 20
   },
   drafts: {
     display: 'flex',
@@ -176,5 +175,10 @@ const styles = StyleSheet.create({
     zIndex: 99999,
     padding: 15,
     borderTopWidth: .5, borderColor: '#581800',
+  },
+  photographIcon: {
+    color: '#280b00',
+    backgroundColor: '#ffceb7',
+    borderRadius: 100,
   }
 });
