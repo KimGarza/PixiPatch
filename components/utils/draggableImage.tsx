@@ -21,17 +21,21 @@ interface ImageData {
 interface DraggableImageProps {
     image: ImageData;
     activateImage: (image: ImageData | null) => void;
+    isAnotherImageActive: boolean;
     deleteImage: (image: ImageData) => void;
   }
 
-const DraggableImage = ({ image, activateImage, deleteImage }: DraggableImageProps) => { // may need to take another type of thing in for iamgeoinfo
+const DraggableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => { // may need to take another type of thing in for iamgeoinfo
 
     const [position, setPosition] = useState({ x: 0, y: 0 }); // Minimal State Updates: The use of useState for position ensures that only the necessary part of the component re-renders. Since position is a lightweight object (just two numbers), updating it is very fast and doesn't involve expensive operations.
     const lastPosition = useRef({ x: 0, y: 0 }); // coordinates where the image was positioned after the last drag operation (not live)
     const [activeImage, setActiveImage] = useState<ImageData |  null>(null);
 
-    var top = image.top;
-    var left = image.left;
+    useEffect(() => {
+        if (isAnotherImageActive) {
+            setActiveImage(null);
+        }
+    }, [isAnotherImageActive])
 
     const handleTap = () => {
         
@@ -78,17 +82,17 @@ const DraggableImage = ({ image, activateImage, deleteImage }: DraggableImagePro
             style={[ styles.imageContainer, { transform: [{ translateX: position.x }, { translateY: position.y }] },]}
             {...panResponder.panHandlers} 
         >
-            {activeImage && <View style={{
-                            position: 'absolute',
-                            top: image.top - 10,
-                            left: '112%', // HOW TO BE CONSISTENT WITH THIS
-                            zIndex: 99999999,
-                            }}>
-                            <TouchableOpacity onPress={handleRemoveImage}> 
-                                <Fontisto name={'close'} size={25} color={'#fc0026'} 
-                                    style={{backgroundColor: 'white',
-                                    borderRadius: 100}}/>
-                            </TouchableOpacity>
+            {activeImage && !isAnotherImageActive && <View style={{
+                                position: 'absolute',
+                                top: image.top - 10,
+                                left: image.left - 10 + image.width,
+                                zIndex: 99999999,
+                                }}>
+                    <TouchableOpacity onPress={handleRemoveImage}> 
+                        <Fontisto name={'close'} size={20} color={'#fc0026'} 
+                            style={{backgroundColor: 'white',
+                            borderRadius: 100}}/>
+                    </TouchableOpacity>
                 </View>}
                 <TouchableOpacity onPress={handleTap} activeOpacity={.9}>
                     <Image

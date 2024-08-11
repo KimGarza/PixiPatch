@@ -25,14 +25,13 @@ interface ImageInfo {
 
 const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
 
+    const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);
     const { deleteImage } = useContext(ImageCtx);
 
-    const hanldeTapped = (image: ImageData | null) =>  {
-        if (image) {
-            activatedImage(image);
-        } else {
-            activatedImage(null);
-        }
+    const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
+        activatedImage(image);
+        setNewActiveImage(image);
+        console.log("image ", image);
     }
     
     const handleDeleteImage = (imageToDelete: ImageData) => {
@@ -47,6 +46,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
                     key={index}
                     image={imageCtx}
                     activateImage={hanldeTapped}
+                    isAnotherImageActive={newActiveImage?.imageInfo.uri != imageCtx.imageInfo.uri || newActiveImage == null} // if the current image is not the currently active image
                     deleteImage={handleDeleteImage}
                 />
             ))}
