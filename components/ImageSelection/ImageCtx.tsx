@@ -24,6 +24,7 @@ interface ImageCtxType {
   setImagesData: Dispatch<SetStateAction<ImageData[]>>;
   // void  here makes it clear that the function is intended to perform an action but not produce a result.
   updateImagePosition: (index: number, newTop: number, newLeft: number) => void; 
+  deleteImage: (uri: string) => void;
 }
 
 // default value is necessary
@@ -31,6 +32,7 @@ const defaultValue: ImageCtxType = {
   imagesData: [],
   setImagesData: () => [],
   updateImagePosition: () => {},
+  deleteImage: () => {},
 };
 
 // creating the context
@@ -52,6 +54,12 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
     });
   };
 
+  const deleteImage = (uri: string): void => {
+    setImagesData((prevImagesData) =>
+      prevImagesData.filter((imageData) => imageData.imageInfo.uri !== uri)
+    );
+  };
+
   return (
     // The ImageCtx.Provider is a context provider component created using the ImageCtx context. It allows any child component wrapped within it to access the context values it provides.
     <ImageCtx.Provider
@@ -59,6 +67,7 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
         imagesData,
         setImagesData,
         updateImagePosition,
+        deleteImage
       }}
     >
       {children}

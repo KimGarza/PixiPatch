@@ -1,6 +1,7 @@
 import { TouchableOpacity, View, Image, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DraggableImage from "../utils/draggableImage";
+import { ImageCtx } from "../ImageSelection/ImageCtx";
 
 interface ImageInfo {
     uri: string;
@@ -24,12 +25,19 @@ interface ImageInfo {
 
 const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
 
+    const { deleteImage } = useContext(ImageCtx);
+
     const hanldeTapped = (image: ImageData | null) =>  {
         if (image) {
             activatedImage(image);
         } else {
             activatedImage(null);
         }
+    }
+    
+    const handleDeleteImage = (imageToDelete: ImageData) => {
+        console.log("delete this image ")
+        deleteImage(imageToDelete.imageInfo.uri);
     }
 
     return (
@@ -39,6 +47,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
                     key={index}
                     image={imageCtx}
                     activateImage={hanldeTapped}
+                    deleteImage={handleDeleteImage}
                 />
             ))}
         </View>

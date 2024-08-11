@@ -2,13 +2,13 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Fontisto } from '@expo/vector-icons';
 
 interface CloseButtonProps {
-    menuToggle: () => void;
+    menuToggle?: () => void;
 }
 
 const CloseButton: React.FC<CloseButtonProps> = ({ menuToggle }) => {
     
     const handleCloseMenu = () => {
-        menuToggle();
+        if (menuToggle) {menuToggle();}
     }
 
   return(
