@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, Image, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useContext, useState } from "react";
 import DraggableImage from "../utils/draggableImage";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
@@ -55,11 +55,3 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
 }
 
 export default ViewImages;
-
-const styles = StyleSheet.create({
-    imageSelected: {
-        borderWidth: 2,
-        borderColor: '#fc0026',
-        zIndex: 4
-      },
-  });
