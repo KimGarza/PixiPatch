@@ -19,49 +19,27 @@ interface ImageInfo {
 
   interface ViewImagesProps {
     images: ImageData[],
-    activeImage: (image: ImageData | null) => void
+    activatedImage: (image: ImageData | null) => void
 }
 
-const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
+const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
 
-    const [activeImageToEdit, setActiveImageToEdit] = useState<ImageData |  null>();
-
-    // const hanldeImageTap = (image: ImageData) => {
-    //     if (image.imageInfo.uri == activeImageToEdit?.imageInfo.uri) { // if the image clicked is the same image that is already the active image, the user intends to deactivate it
-    //         activeImage(null);
-    //         setActiveImageToEdit(null);
-    //     } else {
-    //         activeImage(image);
-    //         setActiveImageToEdit(image);
-    //     }
-    // }
-
-    const handleTap = () => {
-        console.log('Image tapped');
-    };
+    const hanldeTapped = (image: ImageData | null) =>  {
+        if (image) {
+            activatedImage(image);
+        } else {
+            activatedImage(null);
+        }
+    }
 
     return (
         <View>
             {images.map((imageCtx, index) => (
                 <DraggableImage
-                key={index}// not taking in height and width yet top and left
-                imageInfo={imageCtx.imageInfo} // wahy here we have to use uri: sometimes require and sometimes just the uri
-                // activeImageToEdit != null && activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]
-            />
-            // <TouchableOpacity
-            //     onPress={() => handleImageTap(imageCtx)}
-            //     key={index}
-            //     style={styles.selectableImage}>
-            //     <Image
-            //     source={{ uri: imageCtx.imageInfo.uri }}
-            //     style={[{
-            //         width: imageCtx.width,
-            //         height: imageCtx.height,
-            //         top: imageCtx.top,
-            //         left: imageCtx.left,
-            //     }, activeImageToEdit != null && activeImageToEdit?.imageInfo.uri == imageCtx.imageInfo.uri && styles.imageSelected,]}
-            //     />
-            // </TouchableOpacity>
+                    key={index}
+                    image={imageCtx}
+                    activateImage={hanldeTapped}
+                />
             ))}
         </View>
     );
@@ -70,17 +48,9 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activeImage}) => {
 export default ViewImages;
 
 const styles = StyleSheet.create({
-    image: {
-        position: 'absolute',
-        flexDirection: 'column', // idk why but this helps with the scattering
-        zIndex: 2
-    },
     imageSelected: {
         borderWidth: 2,
         borderColor: '#fc0026',
         zIndex: 4
       },
-    selectableImage: {
-        zIndex: 3
-    }
-})
+  });

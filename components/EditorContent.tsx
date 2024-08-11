@@ -9,7 +9,7 @@ import StickerMenu from './Stickers/StickerMenu';
 import BackgroundMenu from './background/BackgroundMenu';
 import DrawUtil from './Drawing/DrawUtil';
 import ViewImageTools from './views/viewImageTools';
-import FilterMenu from './Filters/FilterMenu';
+// import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from './save/saveButtonAndMenu';
 import HomeButton from './utils/homeButton';
 // misc
@@ -74,6 +74,7 @@ const EditorContent = () => {
 
   // user selected image
   const handleImageTapToEdit = (image: ImageData | null) => {
+    console.log("handle tap to edit from editor content: ", image);
     setActiveImageToEdit(image);
   }
 
@@ -110,7 +111,7 @@ return (
             {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
             {/* Pictures */}
-            <ViewImages images={imagesData} activeImage={handleImageTapToEdit}/>
+            <ViewImages images={imagesData} activatedImage={handleImageTapToEdit}/> 
 
         </View>
       </ImageBackground>
@@ -133,9 +134,11 @@ return (
         />
       </View>
     )
-  ) : filterMenuToggle ? (
-    <FilterMenu menuToggle={handleToggleFilterMenuCallback} activeImage={activeImageToEdit}/>
-  ) : (
+  )
+  //  : filterMenuToggle ? (
+    // <FilterMenu menuToggle={handleToggleFilterMenuCallback} activeImage={activeImageToEdit}/>
+  // )
+   : (
     <ViewImageTools filterMenuToggle={handleToggleFilterMenuCallback} />
   )
 )}
