@@ -113,11 +113,10 @@ const DraggableImage = ({ image, activateImage, isAnotherImageActive, deleteImag
     return (
         <View
             // GPU Acceleration: The transform property is often GPU-accelerated in mobile environments. This means that the translation happens directly on the GPU, which can handle these kinds of operations very efficiently, resulting in smooth animations and transformations.
-            style={[ styles.imageContainer, { transform: [{ translateX: position.x }, { translateY: position.y }, { translateX: position.x },
-                { translateY: position.y },
-                { rotate: `${rotation}deg` },] },]}
+            style={[ styles.imageContainer, { transform: [{ translateX: position.x }, { translateY: position.y } ]},]}
             {...panResponder.panHandlers}
         >
+       
             {activeImage && !isAnotherImageActive &&
             <View style={{zIndex: 99999999}}>
                 <View style={{
