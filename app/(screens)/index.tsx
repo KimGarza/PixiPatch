@@ -6,6 +6,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useFonts } from 'expo-font';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -41,6 +42,10 @@ export default function HomeScreen() {
         />
       </View>
 
+      <View style={styles.login}>
+        <LoginSignUpButton/>
+      </View>
+
       <View style={styles.pageContent}>
 
         <View style={styles.appContent}>
@@ -58,14 +63,17 @@ export default function HomeScreen() {
             
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>START CREATING!</Text>
 
-          </View>
-          {/* ------------- */}
-          <TouchableOpacity onPress={() => router.push('/editor')} style={styles.drafts}>
-            <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
-            <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
-          </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => router.push('/editor')} style={styles.drafts}>
+              <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
+              <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
+            </TouchableOpacity>
           {/* ------------- */}
 
+
+          </View>
+          {/* ------------- */}
+          
           <View style={styles.links}>
             <Text style={styles.link}>Suport Me XOXO</Text>
             {/* <MaterialCommunityIcons size={20}/> */}
@@ -91,6 +99,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     display: 'flex',
     alignItems: 'center',
+    position: 'relative',
     width: width,
     height: '100%',
     backgroundColor: '#dfded8',
@@ -144,7 +153,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 32,
     fontFamily: 'ToThePoint',
-    borderWidth: .8, borderColor: cinnamon, backgroundColor: '#ffece3', borderRadius: 8,
     padding: 5,
     gap: 8
   },
@@ -180,5 +188,14 @@ const styles = StyleSheet.create({
     color: '#280b00',
     backgroundColor: '#ffceb7',
     borderRadius: 100,
+  },
+  login: {
+    position: 'absolute',
+    left: 20, top: '25%',
+    transform: [{ rotate: '90deg' }],
+    transformOrigin: 'left center',
+    zIndex: 9999999
+    // borderWidth: .8, borderColor: cinnamon, backgroundColor: '#ffece3', borderRadius: 8,
+    // padding: 5
   }
 });
