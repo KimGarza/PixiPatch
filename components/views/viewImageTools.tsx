@@ -7,15 +7,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useState } from 'react';
 
 import FilterTool from '../Filters/FilterTool';
-import { Dimensions } from 'react-native';
+import GlobalDimensions from '../Dimensions/globalDimensions';
 
-// PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
-const aspectRatio = 9/14.5; // 9:16 is typical
-const canvasHeight = width / aspectRatio;
-var headerHeight = 0;
-
+const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 interface viewImageToolsProps {
     filterMenuToggle: () => void, // passes back to editor content the name of the image setting in order to effect how somethings are displayed
 }
@@ -58,7 +52,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexWrap: 'wrap',
         width: width,
-        height: height - canvasHeight - headerHeight - 100, // WHY THE 100 OMG
+        // height: height - canvasHeight - headerHeight - 100, // WHY THE 100 OMG
         gap: 30,
         zIndex: 999,
         padding: 15,

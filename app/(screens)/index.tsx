@@ -1,18 +1,18 @@
-import { Text, StyleSheet, View, Image, TouchableOpacity, LayoutChangeEvent, ActivityIndicator  } from 'react-native';
-import { Fontisto } from '@expo/vector-icons';
+import { Text, StyleSheet, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Dimensions } from 'react-native';
+import { useFonts } from 'expo-font';
+
+import { Fontisto } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { useFonts } from 'expo-font';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
-const aspectRatio = 9/12;
+import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
+import GlobalDimensions from '../../components/Dimensions/globalDimensions';
+
+const { width } = GlobalDimensions();
+const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
 const canvasHeight = width / aspectRatio;
-var headerHeight = 0;
+
 const cinnamon = '#581800';
 
 export default function HomeScreen() {
@@ -27,15 +27,10 @@ export default function HomeScreen() {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  // gets height of the entire header
-  const handleLayout = (event: LayoutChangeEvent) => {
-    headerHeight = event.nativeEvent.layout.height;
-  }
-
   return (
     <View style={styles.screenContainer}>
         
-      <View style={styles.headerNav} onLayout={handleLayout}>
+      <View style={styles.headerNav}>
         <Image
           style={styles.headerImg}
           source={require('../../assets/images/ElementalEditorBanner.png')}
@@ -76,10 +71,8 @@ export default function HomeScreen() {
           
           <View style={styles.links}>
             <Text style={styles.link}>Suport Me XOXO</Text>
-            {/* <MaterialCommunityIcons size={20}/> */}
             <Text style={styles.link}>Subsribe for more features!</Text>
             <Text style={styles.link}>About</Text>
-            {/* <Text style={styles.links}>Girls in software development!</Text> */}
           </View>
         </View>
       </View>
@@ -172,13 +165,12 @@ const styles = StyleSheet.create({
     color: cinnamon,
     fontFamily: 'ToThePoint',
   },
-  ads: { // MAY HAVE TO CONDITIONALLY RENDER SO PAID VERSION DOESN'T HAVE AD PART
+  ads: { // NEED TO CONDITIONALLY RENDER
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
     width: width,
-    height: height - canvasHeight - headerHeight - 100, // WHY THE 100
     gap: 30,
     zIndex: 99999,
     padding: 15,

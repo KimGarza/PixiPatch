@@ -10,11 +10,11 @@ export default function EditorScreen() {
     // wrapping context providers around editor bc wrapping context providers around comps within EditorContent does not work
     <BackgroundProvider>
       <ImageProvider>
-        <StickerProvider>
-          <DrawProvider>
-            <EditorContent/> 
-          </DrawProvider>
-        </StickerProvider>
+      <StickerProvider>
+      <DrawProvider>
+        <EditorContent/>
+      </DrawProvider>
+      </StickerProvider>
       </ImageProvider>
     </BackgroundProvider>
   );

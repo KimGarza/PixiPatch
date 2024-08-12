@@ -1,6 +1,6 @@
 // react & expo
-import { useContext, useState, useRef } from 'react';
-import { StyleSheet, View, ImageBackground, Image, LayoutChangeEvent } from 'react-native';
+import { useContext, useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
 import { ImageCtx } from './ImageSelection/ImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
@@ -17,17 +17,11 @@ import ViewEditorTools from './views/viewEditorTools';
 import ViewStickers from './views/viewStickers';
 import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
-import { Dimensions } from 'react-native';
+import GlobalDimensions from './Dimensions/globalDimensions';
 
-// PUT ALL THIS IN A CONTEXT PROVIDER FOR EDITOR CONTENT
-  const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
-  const aspectRatio = 9/14.5; // 9:16 is typical
-  const canvasHeight = width / aspectRatio;
-  var headerHeight = 0;
+const { width, height, canvasHeight } = GlobalDimensions();
 
-const EditorContent = () => {
-
+const EditorContent = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
   const { imagesData } = useContext(ImageCtx);
@@ -78,16 +72,11 @@ const EditorContent = () => {
     setActiveImageToEdit(image);
   }
 
-  // gets height of the entire header
-  const handleLayout = (event: LayoutChangeEvent) => {
-    headerHeight = event.nativeEvent.layout.height;
-  }
-
 return (
   <View style={styles.screenContainer}>
 
     {/* header */}
-    <View style={styles.headerNav} onLayout={handleLayout}>
+    <View style={styles.headerNav}>
       <Image
         style={styles.headerImg}
         source={require('../assets/images/ElementalEditorBanner.png')}
@@ -150,55 +139,49 @@ export default EditorContent;
 
 const styles = StyleSheet.create({
   screenContainer: {
-    display: 'flex',
-    alignItems: 'center',
     width: width,
-    height: '100%', // this is the only way to actually get 100% accuracy so far
-    // height: screenHeight - 50, // see top where screenHeight is created for more details
+    // display: 'flex',
+    // alignItems: 'center',
+    // height: height,
   },
   headerNav: {
-    width: width,
-    zIndex: 999999,
-    position: 'relative',
-    height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
+    zIndex: 9999999,
+    // width: width,
+    // position: 'relative',
   },
   headerImg: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
     width: '100%',
-  },
+  },  
   canvasContainer: {
     height: canvasHeight,
     width: width,
-    position: 'relative',
+    // position: 'relative',
   },
-  canvas: { // we must consider canvas container has  weird position so top height and width of each photo in canvas will be randomized to try and keep random but sort of central
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    gap: 10,
-    overflow: 'hidden', // good to test against but activate later
-    position: 'absolute',
-    height: '100%', // 100% of parent which is canvas container
-    width: '100%', // 100% of parent which is canvas container
+  canvas: {
+    overflow: 'hidden',
+    height: '100%', width: '100%',
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // flexDirection: 'row',
+    // gap: 10,
+    // position: 'absolute',
   },
   imageBackground: {
     width: '100%', height: '100%',
-    flexDirection: 'column',
-    position: 'relative',
-    zIndex: 1
+    zIndex: 1,
+    // flexDirection: 'column',
+    // position: 'relative',
   },
   primaryTools: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
-    width: width,
-    height: height - canvasHeight - headerHeight - 100, // WHY THE 100
+    width: '100%',
     gap: 30,
-    zIndex: 999,
+    zIndex: 9999999,
     padding: 15,
-    borderTopWidth: .5, borderColor: 'black',
+    borderTopWidth: .6, color: 'black',
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // height: height - canvasHeight - headerHeight - 20, // no idea where 20 comes from, screen - window = 24 when not included, height is correct
   },
 });
