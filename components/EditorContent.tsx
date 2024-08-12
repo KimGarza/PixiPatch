@@ -7,7 +7,7 @@ import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
 import StickerMenu from './Stickers/StickerMenu';
 import BackgroundMenu from './background/BackgroundMenu';
-import DrawUtil from './Drawing/DrawUtil';
+import DrawUtil from './drawing/DrawUtil';
 import ViewImageTools from './views/viewImageTools';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from './save/saveButtonAndMenu';
@@ -17,14 +17,14 @@ import ViewEditorTools from './views/viewEditorTools';
 import ViewStickers from './views/viewStickers';
 import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
-import GlobalDimensions from './Dimensions/globalDimensions';
+import GlobalDimensions from './dimensions/globalDimensions';
 
 const { width, height, canvasHeight } = GlobalDimensions();
 
 const EditorContent = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
-  const { imagesData } = useContext(ImageCtx);
+  const { images } = useContext(ImageCtx);
   const { background } = useContext(BackgroundCtx);
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
@@ -68,7 +68,6 @@ const EditorContent = () => {
 
   // user selected image
   const handleImageTapToEdit = (image: ImageData | null) => {
-    console.log("handle tap to edit from editor content: ", image);
     setActiveImageToEdit(image);
   }
 
@@ -100,7 +99,7 @@ return (
             {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
             {/* Pictures */}
-            <ViewImages images={imagesData} activatedImage={handleImageTapToEdit}/> 
+            <ViewImages images={images} activatedImage={handleImageTapToEdit}/> 
 
         </View>
       </ImageBackground>

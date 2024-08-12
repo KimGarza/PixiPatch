@@ -3,7 +3,6 @@ import { TouchableOpacity, Text } from "react-native";
 const LoginButton = () => {
 
     const handleLogin = () => {
-        console.log("handle login")
     }
 
     return (

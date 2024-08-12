@@ -7,7 +7,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useState } from 'react';
 
 import FilterTool from '../Filters/FilterTool';
-import GlobalDimensions from '../Dimensions/globalDimensions';
+import GlobalDimensions from '../dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 interface viewImageToolsProps {

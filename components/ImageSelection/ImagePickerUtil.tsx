@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Image, Alert } from 'react-native';
+import React, { useEffect, useContext } from 'react';
+import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useContext } from 'react';
 import { ImageCtx } from './ImageCtx';
 
 interface ImageInfo {
@@ -22,8 +21,9 @@ interface ImagePickerUtilProps {
   toggle: boolean;
 }
 
+// Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
 const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
-  const { imagesData, setImagesData } = useContext(ImageCtx); // importing ability to set imageData array in context
+  const { setImages } = useContext(ImageCtx);
 
   const adjustImageSize = (width: number, height: number) => {
     const maxWidth = 200;
@@ -34,7 +34,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     };
   };
 
-  // converts arg of imageInfo (basic img from photo lib) and converts it to ImageData which just adds top/left values
+  // converts basic photo and converts it to ImageData Type which just adds additional data for app
   const convertToImageData = (image: ImageInfo) => {
     const { width, height } = adjustImageSize(image.width, image.height)
     const imageData: ImageData = {
@@ -57,7 +57,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert('Sorry, we need photo permissions to amake this work!');
+      Alert.alert('Sorry, Elemental Editor need permission to access your photos!');
       return;
     }
 
@@ -69,7 +69,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     });
 
     if (!pickerResult.canceled) {
-      // creates array of images (type ImageInfo) by mapping the pickerResult (user selected photos) and setting the ImageInfo values
+      // creates array of images (type ImageInfo) by mapping the pickerResult and setting values to ImageInfo Type for each 
       const selectedImages = pickerResult.assets.map(asset => ({
         uri: asset.uri,
         width: asset.width,
@@ -77,11 +77,11 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
         type: asset.type,
       }));
 
-      // creates a new array which stores the selected images (image info) but converts them into imageData for location purposes
+      // converts the images into imageData for extra data
       const imageDataArr = selectedImages.map(convertToImageData);
 
-      // uses the imported context class to set the images to the context class
-      setImagesData(prevImagesData => [...prevImagesData, ...imageDataArr]);
+      // uses the ImageCtx to update useState of the images
+      setImages(prevImagesData => [...prevImagesData, ...imageDataArr]);
     }
   };
 

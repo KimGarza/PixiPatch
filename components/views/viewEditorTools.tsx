@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
-import DrawTool from '../Drawing/DrawTool';
+import DrawTool from '../drawing/DrawTool';
 import StickerTool from '../Stickers/StickerTool';
 import BackgroundTool from '../background/BackgroundTool';
 
@@ -30,6 +30,7 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
     return (
     <StyledIconContainer dimensions={40}> 
 
+        {/* button to select photos from library */}
         <PhotoSelectTool>
             <Fontisto name='photograph' size={30}/> 
         </PhotoSelectTool>

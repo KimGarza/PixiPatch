@@ -11,7 +11,6 @@ interface ImageInfo {
 // datatype customized with imageinfo + positioning data
 interface ImageData {
   imageInfo: ImageInfo;
-  // String for %age of each for positioning
   top: number;
   left: number;
   width: number;
@@ -20,8 +19,8 @@ interface ImageData {
 
 // when using image context this is what options are available to access
 interface ImageCtxType {
-  imagesData: ImageData[];
-  setImagesData: Dispatch<SetStateAction<ImageData[]>>;
+  images: ImageData[];
+  setImages: Dispatch<SetStateAction<ImageData[]>>;
   // void  here makes it clear that the function is intended to perform an action but not produce a result.
   updateImagePosition: (index: number, newTop: number, newLeft: number) => void; 
   deleteImage: (uri: string) => void;
@@ -29,8 +28,8 @@ interface ImageCtxType {
 
 // default value is necessary
 const defaultValue: ImageCtxType = {
-  imagesData: [],
-  setImagesData: () => [],
+  images: [],
+  setImages: () => [],
   updateImagePosition: () => {},
   deleteImage: () => {},
 };
@@ -43,20 +42,20 @@ interface ImageProviderProps {
 }
 
 export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
-  const [imagesData, setImagesData] = useState<ImageData[]>([]);
+  const [images, setImages] = useState<ImageData[]>([]);
 
   const updateImagePosition = (index: number, newTop: number, newLeft: number): void => { // void is return type
-    setImagesData((prevImagesData) => {
-      const updatedImagesData = [...prevImagesData];
-      updatedImagesData[index].top = newTop;
-      updatedImagesData[index].left = newLeft;
-      return updatedImagesData;
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages[index].top = newTop;
+      updatedImages[index].left = newLeft;
+      return updatedImages;
     });
   };
 
   const deleteImage = (uri: string): void => {
-    setImagesData((prevImagesData) =>
-      prevImagesData.filter((imageData) => imageData.imageInfo.uri !== uri)
+    setImages((prevImages) =>
+      prevImages.filter((image) => image.imageInfo.uri !== uri)
     );
   };
 
@@ -64,8 +63,8 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
     // The ImageCtx.Provider is a context provider component created using the ImageCtx context. It allows any child component wrapped within it to access the context values it provides.
     <ImageCtx.Provider
       value={{ // value is a prop
-        imagesData,
-        setImagesData,
+        images,
+        setImages,
         updateImagePosition,
         deleteImage
       }}

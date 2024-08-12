@@ -37,17 +37,17 @@ const StyledIconContainer: React.FC<StyledIconContainerProps> = ({ children, dim
 export default StyledIconContainer;
 
 const styles = StyleSheet.create({
-iconContainer: {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderWidth: .5,
-  borderColor: '#000',
-  padding: 2,  
-  borderRadius: 5, 
-  backgroundColor: '#f9f3e5',
-},
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: .5,
+    borderColor: '#000',
+    padding: 2,  
+    borderRadius: 5, 
+    backgroundColor: '#f9f3e5',
+    // display: 'flex',
+    // flexDirection: 'column',
+  },
 });
 
 const errorStyles = StyleSheet.create({

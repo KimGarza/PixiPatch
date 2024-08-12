@@ -7,7 +7,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
-import GlobalDimensions from '../../components/Dimensions/globalDimensions';
+import GlobalDimensions from '../../components/dimensions/globalDimensions';
 
 const { width } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
@@ -90,64 +90,57 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
     width: width,
-    height: '100%',
     backgroundColor: '#dfded8',
-    overflow: 'hidden'
+    height: '100%',
+    alignItems: 'center',
+    // display: 'flex',
+    // alignItems: 'center',
+    // position: 'relative',
   },
   headerNav: {
     width: width,
-    zIndex: 9999,
-    position: 'relative',
-    height: 50 // so headerImageHeight is logging as 100 but when using that for here it makes everthing go way up
+    zIndex: 9999999,
+    // width: width,
+    // position: 'relative',
   },
   headerImg: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
     width: '100%',
   },
   pageContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 10,
     height: canvasHeight,
     width: width,
-    position: 'relative',
-    zIndex: 1
+    // position: 'relative',
+    // display: 'flex',
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    // gap: 10,
+    // zIndex: 1
   },
   appContent: {
     top: '5%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
     gap: 15,
-    height: canvasHeight,
-    width: width,
-    position: 'relative',
-    zIndex: 1
+    // alignItems: 'center',
+    // height: canvasHeight,
+    // width: width,
+    // position: 'relative',
+    // zIndex: 1
   },
   startBlock: {
-    display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
-    gap: 20,
-    borderRadius: 300,
-    // borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
+    gap: 10,
     padding: 10, paddingRight: 20, paddingLeft: 20
+    // display: 'flex',
+    // flexDirection: 'column',
+    // borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
   },
   drafts: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    fontSize: 32,
-    fontFamily: 'ToThePoint',
+    fontFamily: 'ToThePoint', fontSize: 32,
     padding: 5,
-    gap: 8
+    gap: 8,
+    // display: 'flex',
   },
   links: {
     display: 'flex',
@@ -156,30 +149,24 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   link: {
-    borderWidth: .8,
-    borderColor: cinnamon,
+    borderWidth: .8, borderColor: cinnamon, borderRadius: 8,
     backgroundColor: '#e3dfda',
-    borderRadius: 8,
+    fontFamily: 'ToThePoint', fontSize: 32, color: cinnamon,
     padding: 5,
-    fontSize: 32,
-    color: cinnamon,
-    fontFamily: 'ToThePoint',
   },
   ads: { // NEED TO CONDITIONALLY RENDER
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    width: width,
-    gap: 30,
-    zIndex: 99999,
-    padding: 15,
     borderTopWidth: .5, borderColor: '#581800',
+    width: '100%',
+    zIndex: 9999999,
+    padding: 10,
+    // display: 'flex',
+    // flexDirection: 'row',
+    // justifyContent: 'center',
+    // flexWrap: 'wrap',
   },
   photographIcon: {
     color: '#280b00',
-    backgroundColor: '#ffceb7',
-    borderRadius: 100,
+    backgroundColor: '#ffceb7', borderRadius: 100,
   },
   login: {
     position: 'absolute',
@@ -187,7 +174,5 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '90deg' }],
     transformOrigin: 'left center',
     zIndex: 9999999
-    // borderWidth: .8, borderColor: cinnamon, backgroundColor: '#ffece3', borderRadius: 8,
-    // padding: 5
   }
 });
