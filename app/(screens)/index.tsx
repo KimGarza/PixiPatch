@@ -7,7 +7,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
-import GlobalDimensions from '../../components/dimensions/globalDimensions';
+import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
 const { width } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
@@ -94,15 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#dfded8',
     height: '100%',
     alignItems: 'center',
-    // display: 'flex',
-    // alignItems: 'center',
-    // position: 'relative',
   },
   headerNav: {
     width: width,
     zIndex: 9999999,
-    // width: width,
-    // position: 'relative',
   },
   headerImg: {
     width: '100%',
@@ -110,29 +105,15 @@ const styles = StyleSheet.create({
   pageContent: {
     height: canvasHeight,
     width: width,
-    // position: 'relative',
-    // display: 'flex',
-    // flexDirection: 'column',
-    // alignItems: 'center',
-    // gap: 10,
-    // zIndex: 1
   },
   appContent: {
     top: '5%',
     gap: 15,
-    // alignItems: 'center',
-    // height: canvasHeight,
-    // width: width,
-    // position: 'relative',
-    // zIndex: 1
   },
   startBlock: {
     alignItems: 'center',
     gap: 10,
     padding: 10, paddingRight: 20, paddingLeft: 20
-    // display: 'flex',
-    // flexDirection: 'column',
-    // borderWidth: 1, borderColor: cinnamon, backgroundColor: '#ffceb7', borderRadius: 30,
   },
   drafts: {
     flexDirection: 'row',
@@ -140,7 +121,6 @@ const styles = StyleSheet.create({
     fontFamily: 'ToThePoint', fontSize: 32,
     padding: 5,
     gap: 8,
-    // display: 'flex',
   },
   links: {
     display: 'flex',
@@ -159,10 +139,6 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 9999999,
     padding: 10,
-    // display: 'flex',
-    // flexDirection: 'row',
-    // justifyContent: 'center',
-    // flexWrap: 'wrap',
   },
   photographIcon: {
     color: '#280b00',

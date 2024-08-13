@@ -3,6 +3,7 @@ import EditorContent from '@/components/EditorContent';
 import { DrawProvider } from '@/components/drawing/DrawCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';
 import { BackgroundProvider } from '@/components/background/BackgroundCtx';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function EditorScreen() {
 
@@ -12,7 +13,9 @@ export default function EditorScreen() {
       <ImageProvider>
       <StickerProvider>
       <DrawProvider>
+      <GestureHandlerRootView>
         <EditorContent/>
+      </GestureHandlerRootView>
       </DrawProvider>
       </StickerProvider>
       </ImageProvider>

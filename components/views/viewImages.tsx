@@ -1,7 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { useContext, useState } from "react";
-import DraggableImage from "../utils/draggableImage";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
+import MutableImage from "../objects/MutableImage";
 
 interface ImageInfo {
     uri: string;
@@ -31,16 +31,17 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
     const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
         activatedImage(image);
         setNewActiveImage(image);
+        console.log("testing")
     }
     
-    const handleDeleteImage = (imageToDelete: ImageData) => {
-        deleteImage(imageToDelete.imageInfo.uri);
+    const handleDeleteImage = (imageToDelete: ImageData | null) => {
+        if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
     }
 
     return (
         <View>
             {images.map((imageCtx, index) => (
-                <DraggableImage
+                <MutableImage
                     key={index}
                     image={imageCtx}
                     activateImage={hanldeTapped}
