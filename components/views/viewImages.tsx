@@ -31,7 +31,6 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
     const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
         activatedImage(image);
         setNewActiveImage(image);
-        console.log("testing")
     }
     
     const handleDeleteImage = (imageToDelete: ImageData | null) => {

@@ -3,6 +3,9 @@ import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import useDragPanResponder from './useDragPanResponder';
+import { RotationGestureHandler, GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+
 
 interface ImageInfo {
     uri: string;
@@ -33,6 +36,31 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
 
+
+    const rotation = useSharedValue(0);
+    const savedRotation = useSharedValue(0);
+
+
+    const rotationGesture = Gesture.Rotation()
+        .onUpdate((event) => {
+            if (activedImage?.imageInfo.uri === image.imageInfo.uri) {
+                rotation.value = savedRotation.value + event.rotation;
+            }
+        })
+        .onEnd(() => {
+            if (activedImage?.imageInfo.uri === image.imageInfo.uri) {
+                savedRotation.value = rotation.value;
+            }
+        });
+
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ rotateZ: `${rotation.value}rad` }],
+        };
+    });
+
+
     useEffect(() => {
         if (isAnotherImageActive) {
             setActivedImage(null);
@@ -57,36 +85,40 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
 
     return (
-        <View
-            style={[ styles.imageContainer, { width: image.width, height: image.height, top: image.top,
-                left: image.left, transform: [{ translateX: position.x }, { translateY: position.y } ]},]}
-            {...panHandlers}
-        >
-            {activedImage && !isAnotherImageActive &&
-            <View style={styles.container}>
+            <View
+                style={[ styles.imageContainer, { width: image.width, height: image.height, top: image.top,
+                    left: image.left, transform: [{ translateX: position.x }, { translateY: position.y } ]},]}
+                {...panHandlers}
+            >
+                <GestureDetector gesture={rotationGesture}>
+                    <Animated.View style={[styles.imageContainer, animatedStyle]}>
+                        {activedImage && !isAnotherImageActive &&
+                        <View style={styles.container}>
 
-                <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
-                    <TouchableOpacity onPress={handleRemoveImage}> 
-                        <Fontisto name={'close'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
-                    </TouchableOpacity>
-                </View>
-                
-                <View style={{ position: 'absolute', top: - 10, left: - 10 }}>
-                    <FontAwesome6 name={'rotate-left'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
-                </View>
+                            <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
+                                <TouchableOpacity onPress={handleRemoveImage}> 
+                                    <Fontisto name={'close'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
+                                </TouchableOpacity>
+                            </View>
+                            
+                            <View style={{ position: 'absolute', top: - 10, left: - 10 }}>
+                                <FontAwesome6 name={'rotate-left'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
+                            </View>
 
+                        </View>
+                        }
+                        <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+                            <Image
+                                source={{ uri: image.imageInfo.uri }}
+                                style={[{
+                                    width: image.width,
+                                    height: image.height,
+                                }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
+                            />
+                        </TouchableOpacity>
+                    </Animated.View>
+                </GestureDetector>
             </View>
-            }
-            <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-                <Image
-                    source={{ uri: image.imageInfo.uri }}
-                    style={[{
-                        width: image.width,
-                        height: image.height,
-                    }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
-                />
-            </TouchableOpacity>
-        </View>
     );
 };
 
