@@ -39,14 +39,11 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         }
     }, [isAnotherImageActive])
 
-
     const handleTap = () => {
         if (image.imageInfo.uri == activedImage?.imageInfo.uri) {
-            console.log("UNTAPPED");
             setActivedImage(null);
             activateImage(null);
         } else {
-            console.log("TAPPED");
             setActivedImage(image);
             activateImage(image);
         }
@@ -75,7 +72,6 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                 </View>
                 
                 <View style={{ position: 'absolute', top: - 10, left: - 10 }}>
-                {/* // {...rotatePanResponder.panHandlers} */}
                     <FontAwesome6 name={'rotate-left'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
                 </View>
 
