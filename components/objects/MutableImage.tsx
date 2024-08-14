@@ -1,11 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import useDragPanResponder from './useDragPanResponder';
-import { RotationGestureHandler, GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-
 
 interface ImageInfo {
     uri: string;
@@ -32,34 +30,43 @@ interface DraggableImageProps {
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const { panHandlers, position } = useDragPanResponder();
-
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
 
+    const { panHandlers, positionX, positionY  } = useDragPanResponder();
 
     const rotation = useSharedValue(0);
     const savedRotation = useSharedValue(0);
 
+    const scale = useSharedValue(1);
+    const savedScale = useSharedValue(1);
 
     const rotationGesture = Gesture.Rotation()
         .onUpdate((event) => {
-            if (activedImage?.imageInfo.uri === image.imageInfo.uri) {
-                rotation.value = savedRotation.value + event.rotation;
-            }
+            rotation.value = savedRotation.value + event.rotation;
         })
         .onEnd(() => {
-            if (activedImage?.imageInfo.uri === image.imageInfo.uri) {
-                savedRotation.value = rotation.value;
-            }
+            savedRotation.value = rotation.value;
+        });
+
+        const pinchGesture = Gesture.Pinch()
+        .onUpdate((event) => {
+            scale.value = savedScale.value * event.scale;
+        })
+        .onEnd(() => {
+            savedScale.value = scale.value;
         });
 
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ rotateZ: `${rotation.value}rad` }],
-        };
-    });
-
+        const animatedStyle = useAnimatedStyle(() => {
+            return {
+                transform: [
+                    { translateX: positionX.value },
+                    { translateY: positionY.value },
+                    { rotateZ: `${rotation.value}rad` },
+                    { scale: scale.value }
+                ],
+            };
+        });
 
     useEffect(() => {
         if (isAnotherImageActive) {
@@ -85,40 +92,33 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
 
     return (
-            <View
-                style={[ styles.imageContainer, { width: image.width, height: image.height, top: image.top,
-                    left: image.left, transform: [{ translateX: position.x }, { translateY: position.y } ]},]}
-                {...panHandlers}
+        <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
+            <Animated.View 
+                style={[styles.imageContainer, { width: image.width, height: image.height, top: image.top, left: image.left }, animatedStyle]}
+                {...panHandlers} // Apply PanResponder only when the image is not active
             >
-                <GestureDetector gesture={rotationGesture}>
-                    <Animated.View style={[styles.imageContainer, animatedStyle]}>
-                        {activedImage && !isAnotherImageActive &&
-                        <View style={styles.container}>
+                {activedImage && !isAnotherImageActive &&
+                <View style={styles.container}>
 
-                            <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
-                                <TouchableOpacity onPress={handleRemoveImage}> 
-                                    <Fontisto name={'close'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
-                                </TouchableOpacity>
-                            </View>
-                            
-                            <View style={{ position: 'absolute', top: - 10, left: - 10 }}>
-                                <FontAwesome6 name={'rotate-left'} size={20} color={'#fc0026'} style={styles.editingIcon}/>
-                            </View>
-
-                        </View>
-                        }
-                        <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-                            <Image
-                                source={{ uri: image.imageInfo.uri }}
-                                style={[{
-                                    width: image.width,
-                                    height: image.height,
-                                }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
-                            />
+                    <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
+                        <TouchableOpacity onPress={handleRemoveImage}> 
+                            <Fontisto name={'close'} size={20} color={'#c0b9ac'} style={styles.editingIcon}/>
                         </TouchableOpacity>
-                    </Animated.View>
-                </GestureDetector>
-            </View>
+                    </View>
+                    
+                </View>
+                }
+                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 50, bottom: 50, left: 50, right: 50}}>
+                    <Image
+                        source={{ uri: image.imageInfo.uri }}
+                        style={[{
+                            width: image.width,
+                            height: image.height,
+                        }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
+                    />
+                </TouchableOpacity>
+            </Animated.View>
+        </GestureDetector>
     );
 };
 
@@ -130,12 +130,10 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
       zIndex: 9999999,
-      borderWidth: 3, borderColor: 'purple',
       position: 'relative', // Ensure container is absolutely positioned
     },
     closeContainer: {
         position: 'absolute',
-        borderWidth: 3, borderColor: 'pink',
     },
     editingIcon: {
         backgroundColor: 'white',
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
     imageSelected: {
-        borderWidth: 2, borderColor: '#fc0026',
+        borderWidth: 2, borderColor: '#c0b9ac',
         zIndex: 4
     },
   });
