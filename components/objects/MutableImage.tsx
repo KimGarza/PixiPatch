@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import ImageEditingTools from '../ImageSelection/ImageEditingTools';
 
 interface ImageInfo {
     uri: string;
@@ -31,6 +32,7 @@ interface DraggableImageProps {
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
+    const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
     const { panHandlers, positionX, positionY  } = useDragPanResponder();
 
@@ -74,14 +76,21 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         }
     }, [isAnotherImageActive])
 
-    const handleTap = () => {
+    const handleTap = (event: GestureResponderEvent) => {
+
+        const { locationX, locationY } = event.nativeEvent;
+        setTapCoordinates({x: locationX, y: locationY});
+
         if (image.imageInfo.uri == activedImage?.imageInfo.uri) {
             setActivedImage(null);
             activateImage(null);
+            setTapCoordinates({x: 0, y: 0});
+
         } else {
             setActivedImage(image);
             activateImage(image);
         }
+
     }
 
     const handleRemoveImage = () => {
@@ -98,7 +107,7 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                 {...panHandlers} // Apply PanResponder only when the image is not active
             >
                 {activedImage && !isAnotherImageActive &&
-                <View style={styles.container}>
+                <View >
 
                     <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
                         <TouchableOpacity onPress={handleRemoveImage}> 
@@ -108,7 +117,7 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                     
                 </View>
                 }
-                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 50, bottom: 50, left: 50, right: 50}}>
+                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
                     <Image
                         source={{ uri: image.imageInfo.uri }}
                         style={[{
@@ -117,6 +126,8 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                         }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
                     />
                 </TouchableOpacity>
+
+                {tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ImageEditingTools/>}
             </Animated.View>
         </GestureDetector>
     );
@@ -125,15 +136,18 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 export default MutableImage;
 
 const styles = StyleSheet.create({
-    container: {
-      zIndex: 9999999,
-    },
+    // container: {
+    //   zIndex: 9999999,
+    //   borderWidth: 1, borderColor: 'green'
+    // },
     imageContainer: {
-      zIndex: 9999999,
+      zIndex: 4,
       position: 'relative', // Ensure container is absolutely positioned
+      borderWidth: 1, borderColor: 'green'
     },
     closeContainer: {
         position: 'absolute',
+        zIndex: 5,
     },
     editingIcon: {
         backgroundColor: 'white',
@@ -146,6 +160,6 @@ const styles = StyleSheet.create({
     },
     imageSelected: {
         borderWidth: 2, borderColor: '#c0b9ac',
-        zIndex: 4
+        zIndex: 4,
     },
   });

@@ -45,8 +45,6 @@ const styles = StyleSheet.create({
     padding: 2,  
     borderRadius: 5, 
     backgroundColor: '#f9f3e5',
-    // display: 'flex',
-    // flexDirection: 'column',
   },
 });
 

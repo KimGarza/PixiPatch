@@ -8,7 +8,6 @@ import { BackgroundCtx } from './background/BackgroundCtx';
 import StickerMenu from './Stickers/StickerMenu';
 import BackgroundMenu from './background/BackgroundMenu';
 import DrawUtil from './drawing/DrawUtil';
-import ViewImageTools from './views/viewImageTools';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from './save/saveButtonAndMenu';
 import HomeButton from './utils/homeButton';
@@ -107,7 +106,6 @@ return (
 
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
     { 1 + 1 == 2 && (
-      activeImageToEdit == null ? (
         stickerMenuToggle ? (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
@@ -121,15 +119,7 @@ return (
           stickerMenuToggle={handleToggleStickerMenuCallback}
         />
       </View>
-    )
-  )
-  //  : filterMenuToggle ? (
-    // <FilterMenu menuToggle={handleToggleFilterMenuCallback} activeImage={activeImageToEdit}/>
-  // )
-   : (
-    <ViewImageTools filterMenuToggle={handleToggleFilterMenuCallback} />
-  )
-)}
+  ))}
     </View>
   );
 }
@@ -139,14 +129,9 @@ export default EditorContent;
 const styles = StyleSheet.create({
   screenContainer: {
     width: width,
-    // display: 'flex',
-    // alignItems: 'center',
-    // height: height,
   },
   headerNav: {
     zIndex: 9999999,
-    // width: width,
-    // position: 'relative',
   },
   headerImg: {
     width: '100%',
@@ -154,22 +139,14 @@ const styles = StyleSheet.create({
   canvasContainer: {
     height: canvasHeight,
     width: width,
-    // position: 'relative',
   },
   canvas: {
     overflow: 'hidden',
     height: '100%', width: '100%',
-    // display: 'flex',
-    // flexWrap: 'wrap',
-    // flexDirection: 'row',
-    // gap: 10,
-    // position: 'absolute',
   },
   imageBackground: {
     width: '100%', height: '100%',
     zIndex: 1,
-    // flexDirection: 'column',
-    // position: 'relative',
   },
   primaryTools: {
     flexDirection: 'row',
@@ -179,8 +156,5 @@ const styles = StyleSheet.create({
     zIndex: 9999999,
     padding: 15,
     borderTopWidth: .6, color: 'black',
-    // display: 'flex',
-    // flexWrap: 'wrap',
-    // height: height - canvasHeight - headerHeight - 20, // no idea where 20 comes from, screen - window = 24 when not included, height is correct
   },
 });
