@@ -3,16 +3,44 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useRouter } from "expo-router";
+import CropTool from "../modifyImage/crop/cropTool";
 
-const ImageEditingTools = () => {
+interface ImageInfo {
+    uri: string;
+    width: number;
+    height: number;
+    type: string | undefined;
+  }
+  interface ImageData {
+    imageInfo: ImageInfo;
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  }
 
+  interface Props {
+    image: ImageData
+}
+
+// Little popup toolbox for editing options on a specific image
+const viewModifyImageToolbox = ({image}: Props) => {
+
+    const router = useRouter();
+
+    console.log("imae here ", JSON.stringify(image))
+
+    
     return (
         <View style={styles.editingTools}>
+            
+            {/* each tool is essentially a button which routes to the modifyImage screen and passes through props a specific name such as 'crop' */}
             <StyledIconContainer dimensions={35}> 
 
-                <TouchableOpacity>
+                <CropTool image={image}>
                     <Feather name='crop' size={30}/>
-                </TouchableOpacity>
+                </CropTool>
         
                 <TouchableOpacity>
                     <MaterialCommunityIcons name='tune-variant' size={30}/>
@@ -39,7 +67,7 @@ const ImageEditingTools = () => {
 );
 }
 
-export default ImageEditingTools;
+export default viewModifyImageToolbox;
 
 const styles = StyleSheet.create({
     editingTools: {
