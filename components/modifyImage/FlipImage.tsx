@@ -14,11 +14,9 @@ interface ImageInfo {
     width: number;
     height: number;
   }
-interface Props {
-    imageData: ImageData;
-}
 
-const FlipImage = ({imageData}: Props) => {
+
+const FlipImage = (imageData: ImageData) => {
 
     const [updatedUri, setUpdatedUri] = useState<string>('');
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useRouter } from "expo-router";
 
 interface ImageInfo {
     uri: string;
@@ -19,22 +20,14 @@ interface ImageInfo {
     height: number;
   }
 
-  interface Props {
-    image: ImageData
-}
-
 // Little popup toolbox for editing options on a specific image
-const viewModifyImageToolbox = ({image}: Props) => {
+// some props drilling here, passing up tool name to activate elsewhere since it doesnt make good sense to activate viewModifyImage here
+const viewModifyImageToolbox = () => {
 
-    const [activeTool, setActiveTool] = useState<string>();
+    const router = useRouter();
 
-    const handlePress = (toolName: string) => {
-        toolName == 'crop' ? setActiveTool('crop') :
-        toolName == 'filter' ? setActiveTool('filter') :
-        toolName == 'mirror' ? setActiveTool('mirror') :
-        toolName == 'duplicate' ? setActiveTool('duplicate') :
-        toolName == 'backgroundErase' ? setActiveTool('backgroundErase') :
-        toolName == 'eraser' ? setActiveTool('eraser') : (null);
+    const handlePress = (toolType: string) => {
+        router.push('/(screens)modifyImage')
     }
 
     return (

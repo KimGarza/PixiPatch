@@ -4,7 +4,6 @@ import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useEffect, useState } from 'react';
 import CropSettings from '@/components/modifyImage/cropSettings';
-import FlipImage from '@/components/modifyImage/FlipImage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
@@ -24,39 +23,48 @@ interface ImageData {
   height: number;
 }
 
-export default function ModifyImageScreen() {
+interface Props {
+    image: ImageData;
+    activatedTool: string;
+}
 
-    const { image, type } = useLocalSearchParams(); // Retrieve the image param
-    const [imageData, setImageData] = useState<ImageData>();
-    const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
-    const [activeEditTool, setActiveEditTool] = useState<string | string[]>('');
+export default function ModifyImageScreen({image, activatedTool}: Props) {
+
+    // const { image, type } = useLocalSearchParams(); // Retrieve the image param
+    // const [imageData, setImageData] = useState<ImageData>();
+    // const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
+    // const [activeEditTool, setActiveEditTool] = useState<string | string[]>('');
     const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
 
     const router = useRouter();
 
+    // need to reinstate this is screen can be used instead
     useEffect(() => {
 
-        if (image) {
-            try {
+        const { imgWidth, imgHeight } = adjustImageSize(image.width, image.height);
+        setImageDimensions({imgWidth, imgHeight});
 
-              // this is the ONLY way I can read the image, cannot use ImageInfo, ImageSourcePropType w/out encoded URI or just uri in the uri: attribute
-              const parsedImg: ImageData = JSON.parse(image as string);
-              setImageData(parsedImg);
-              const encodedUri = encodeURI(parsedImg.imageInfo.uri);
-              setEncodedUri({ uri: encodedUri });
+    //     if (image) {
+    //         try {
 
-              setActiveEditTool(type);
-              console.log("type", type);
+    //           // this is the ONLY way I can read the image, cannot use ImageInfo, ImageSourcePropType w/out encoded URI or just uri in the uri: attribute
+    //           const parsedImg: ImageData = JSON.parse(image as string);
+    //           setImageData(parsedImg);
+    //           const encodedUri = encodeURI(parsedImg.imageInfo.uri);
+    //           setEncodedUri({ uri: encodedUri });
 
-              const { imgWidth, imgHeight } = adjustImageSize(parsedImg.width, parsedImg.height);
-              setImageDimensions({imgWidth, imgHeight});
+    //           setActiveEditTool(type);
+    //           console.log("type", type);
 
-            } catch (error) {
-                console.error("Error parsing JSON:", error);
-            }
-        } else {
-            console.error("No image parameter found");
-        }
+    //           const { imgWidth, imgHeight } = adjustImageSize(parsedImg.width, parsedImg.height);
+    //           setImageDimensions({imgWidth, imgHeight});
+
+    //         } catch (error) {
+    //             console.error("Error parsing JSON:", error);
+    //         }
+    //     } else {
+    //         console.error("No image parameter found");
+    //     }
 
     }, [])
 
@@ -82,10 +90,6 @@ export default function ModifyImageScreen() {
       return { imgWidth, imgHeight };
   }
 
-  const flipImage = () => {
-    const updatedUri = FlipImage();
-  }
-
 return (
    <View style={styles.screenContainer}>
 
@@ -105,23 +109,24 @@ return (
       <View style={styles.canvas} >
         <View style={styles.imageContainer} >
 
-        {encodedUri && 
+        {/* {encodedUri &&  */}
         <View>
-          <Image style={[styles.image, {height: imageDimension?.imgHeight, width: imageDimension?.imgWidth}]} source={encodedUri}
+          <Image style={[styles.image, {height: imageDimension?.imgHeight, width: imageDimension?.imgWidth}]} source={image.imageInfo}
+        //   source={encodedUri}
           /> 
         </View>
-        }
+        {/* } */}
 
         </View>
       </View>
     </View>
 
     <View style={styles.editSettings}>
-    {activeEditTool == 'crop' ? (
+    {activatedTool == 'crop' ? (
         <View>
           <CropSettings/>
         </View>
-      ) : activeEditTool == 'mirror' ? (
+      ) : activatedTool == 'mirror' ? (
         <View>
         </View>
       ) : (<></>)}

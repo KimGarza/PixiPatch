@@ -5,6 +5,8 @@ import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import ViewModifyImage from '../../app/(screens)/modifyImage';
+import FlipImage from '../modifyImage/FlipImage';
 
 interface ImageInfo {
     uri: string;
@@ -31,7 +33,7 @@ interface DraggableImageProps {
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const [thisImage, setThisImage] = useState<ImageData>(image);
+    const [modifyImage, setModifyImage] = useState<string>('');
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
@@ -100,6 +102,13 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         activateImage(null);
     }
 
+    const handleModifyImage = (toolName: string) => {
+        if (toolName == 'flip') {
+            FlipImage(image);
+        } else {
+            setModifyImage(toolName);
+        }
+    }
 
     return (
         <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
@@ -129,7 +138,7 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                 </TouchableOpacity>
 
                 {/* little popup toolbox for editing options on a specific image */}
-                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox image={image}/>}
+                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>}
             </Animated.View>
         </GestureDetector>
     );
