@@ -4,7 +4,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from "expo-router";
-import CropTool from "../modifyImage/crop/cropTool";
+import Tool from "../modifyImage/tool";
 
 interface ImageInfo {
     uri: string;
@@ -38,16 +38,20 @@ const viewModifyImageToolbox = ({image}: Props) => {
             {/* each tool is essentially a button which routes to the modifyImage screen and passes through props a specific name such as 'crop' */}
             <StyledIconContainer dimensions={35}> 
 
-                <CropTool image={image}>
+                <Tool image={image} editToolName="crop">
                     <Feather name='crop' size={30}/>
-                </CropTool>
-        
-                <TouchableOpacity>
-                    <MaterialCommunityIcons name='tune-variant' size={30}/>
-                </TouchableOpacity>
+                </Tool>
+
+                <Tool image={image} editToolName="mirror">
+                    <MaterialCommunityIcons name='mirror' size={30}/>
+                </Tool>
+
+                <Tool image={image} editToolName="filter">
+                    <Feather name='filter' size={30}/>
+                </Tool>
 
                 <TouchableOpacity>
-                    <Feather name='filter' size={30}/>
+                    <MaterialCommunityIcons name='tune-variant' size={30}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity> 
@@ -56,10 +60,6 @@ const viewModifyImageToolbox = ({image}: Props) => {
 
                 <TouchableOpacity>
                     <FontAwesome5 name='eraser' size={30}/>
-                </TouchableOpacity>
-
-                <TouchableOpacity> 
-                    <MaterialCommunityIcons name='mirror' size={30}/>
                 </TouchableOpacity>
 
             </StyledIconContainer>

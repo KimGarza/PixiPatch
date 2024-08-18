@@ -23,6 +23,7 @@ interface ImageInfo {
     activatedImage: (image: ImageData | null) => void
 }
 
+// images are selected by user, stored in context which provider is wrapped around editorContent. Props value of those images sent to viewImages.
 const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
 
     const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);

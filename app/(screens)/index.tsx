@@ -9,7 +9,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
-const { width } = GlobalDimensions();
+const { width, headerHeight } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
 const canvasHeight = width / aspectRatio;
 
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   headerNav: {
     width: width,
     zIndex: 9999999,
+    height: headerHeight
   },
   headerImg: {
     width: '100%',

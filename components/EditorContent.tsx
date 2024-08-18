@@ -18,7 +18,7 @@ import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
 import GlobalDimensions from './dimensions/globalDimensions';
 
-const { width, height, canvasHeight } = GlobalDimensions();
+const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const EditorContent = () => { 
   // contexts
@@ -47,6 +47,8 @@ const EditorContent = () => {
     width: number;
     height: number;
   }
+
+  console.log("remaining space ", height, canvasHeight, headerHeight, height - canvasHeight - headerHeight)
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
@@ -132,6 +134,7 @@ const styles = StyleSheet.create({
   },
   headerNav: {
     zIndex: 9999999,
+    height: headerHeight
   },
   headerImg: {
     width: '100%',
@@ -151,10 +154,11 @@ const styles = StyleSheet.create({
   primaryTools: {
     flexDirection: 'row',
     justifyContent: 'center',
-    width: '100%',
+    alignContent: 'center',
+    height: height - canvasHeight - headerHeight,
     gap: 30,
     zIndex: 9999999,
     padding: 15,
-    borderTopWidth: .6, color: 'black',
+    borderTopWidth: .6, borderColor: 'black',
   },
 });

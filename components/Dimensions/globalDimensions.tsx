@@ -1,4 +1,6 @@
 import { Dimensions, Image } from "react-native";
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Platform, PixelRatio } from 'react-native';
 
 // Static values based on the device's screen dimensions
 const width = Dimensions.get('window').width;
