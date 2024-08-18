@@ -1,10 +1,12 @@
 
-import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native';
+import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useEffect, useState } from 'react';
 import CropSettings from '@/components/modifyImage/cropSettings';
-import MirrorSettings from '@/components/modifyImage/mirrorSettings';
+import FlipImage from '@/components/modifyImage/FlipImage';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -29,6 +31,8 @@ export default function ModifyImageScreen() {
     const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
     const [activeEditTool, setActiveEditTool] = useState<string | string[]>('');
     const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
+
+    const router = useRouter();
 
     useEffect(() => {
 
@@ -56,6 +60,7 @@ export default function ModifyImageScreen() {
 
     }, [])
 
+
     // evaluates current image aspect ratio, compares agaisnt the screen's and 
     const adjustImageSize = (currWidth: number, currHeight: number) => {
 
@@ -77,6 +82,10 @@ export default function ModifyImageScreen() {
       return { imgWidth, imgHeight };
   }
 
+  const flipImage = () => {
+    const updatedUri = FlipImage();
+  }
+
 return (
    <View style={styles.screenContainer}>
 
@@ -86,6 +95,9 @@ return (
             style={styles.headerImg}
             source={require('../../assets/images/ElementalEditorBanner.png')}
         />
+      <TouchableOpacity onPress={() => router.push('/(screens)/editor')} style={styles.back}>
+        <Ionicons name={'arrow-back'} size={35}/>
+      </TouchableOpacity>
         
     </View>
 
@@ -111,7 +123,6 @@ return (
         </View>
       ) : activeEditTool == 'mirror' ? (
         <View>
-          <MirrorSettings/>
         </View>
       ) : (<></>)}
     </View>
@@ -132,11 +143,19 @@ const styles = StyleSheet.create({
     },
     headerNav: {
       zIndex: 9999999,
-      height: headerHeight
+      height: headerHeight,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     headerImg: {
       width: '100%',
     },  
+    back: {
+      position: 'absolute',
+      zIndex: 999999999999999,
+      marginLeft: 10
+    },
     canvasContainer: {
       height: canvasHeight * .85,
       width: width,

@@ -1,10 +1,9 @@
 import StyledIconContainer from "../utils/styledIconContainer";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRouter } from "expo-router";
-import Tool from "../modifyImage/tool";
 
 interface ImageInfo {
     uri: string;
@@ -27,38 +26,44 @@ interface ImageInfo {
 // Little popup toolbox for editing options on a specific image
 const viewModifyImageToolbox = ({image}: Props) => {
 
-    const router = useRouter();
+    const [activeTool, setActiveTool] = useState<string>();
 
-    console.log("imae here ", JSON.stringify(image))
+    const handlePress = (toolName: string) => {
+        toolName == 'crop' ? setActiveTool('crop') :
+        toolName == 'filter' ? setActiveTool('filter') :
+        toolName == 'mirror' ? setActiveTool('mirror') :
+        toolName == 'duplicate' ? setActiveTool('duplicate') :
+        toolName == 'backgroundErase' ? setActiveTool('backgroundErase') :
+        toolName == 'eraser' ? setActiveTool('eraser') : (null);
+    }
 
-    
     return (
         <View style={styles.editingTools}>
             
             {/* each tool is essentially a button which routes to the modifyImage screen and passes through props a specific name such as 'crop' */}
             <StyledIconContainer dimensions={35}> 
 
-                <Tool image={image} editToolName="crop">
+                <TouchableOpacity onPress={() => handlePress('crop')}>
                     <Feather name='crop' size={30}/>
-                </Tool>
-
-                <Tool image={image} editToolName="mirror">
-                    <MaterialCommunityIcons name='mirror' size={30}/>
-                </Tool>
-
-                <Tool image={image} editToolName="filter">
-                    <Feather name='filter' size={30}/>
-                </Tool>
-
-                <TouchableOpacity>
-                    <MaterialCommunityIcons name='tune-variant' size={30}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity> 
+                <TouchableOpacity onPress={() => handlePress('filter')}>
+                    <Feather name='filter' size={30}/>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handlePress('mirror')}>
+                    <MaterialCommunityIcons name='mirror' size={30}/>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handlePress('duplicate')}>
+                    <Feather name='filter' size={30}/>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handlePress('backgroundErase')}>
                     <MaterialCommunityIcons name='checkerboard-remove' size={30}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => handlePress('eraser')}>
                     <FontAwesome5 name='eraser' size={30}/>
                 </TouchableOpacity>
 
