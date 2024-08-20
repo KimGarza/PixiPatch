@@ -1,6 +1,5 @@
-import { View, StyleSheet, Text, ImageSourcePropType } from 'react-native';
-import { useEffect, useState } from 'react';
-import PhotoManipulator, { FlipMode } from 'react-native-photo-manipulator';import { FlipInEasyX } from 'react-native-reanimated';
+import * as ImageManipulator from 'expo-image-manipulator';
+
 interface ImageInfo {
     uri: string;
     width: number;
@@ -15,37 +14,25 @@ interface ImageInfo {
     height: number;
   }
 
+const FlipImage = async (imageData: ImageData, updateImageUri: (uri: string, newUri: string) => void) => {
+    let resultUri = '';
+    try {
+        const result = await ImageManipulator.manipulateAsync(
+            imageData.imageInfo.uri,
+            [{ flip: ImageManipulator.FlipType.Horizontal }],
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        )
 
-const FlipImage = (imageData: ImageData) => {
+        updateImageUri(imageData.imageInfo.uri, result.uri); // replace the current image with the manipulated one, retaining all ImageData info
+        console.log(imageData.imageInfo.uri == result.uri);
+        resultUri = result.uri;
 
-    const [updatedUri, setUpdatedUri] = useState<string>('');
-
-    const cropRegion = { x: 5, y: 30, size: 400, width: 250, height: 10 };
-    const targetSize = { size: 200, width: 150, height: 10 };
+      console.log("result ", result)
+    } catch (error) {
+        console.error('Error flipping the image:', error);
+    }
     
-    PhotoManipulator.crop(imageData.imageInfo.uri, cropRegion, targetSize).then(path => {
-        console.log(`Result image path: ${path}`);
-    });
-
-    useEffect(() => {
-        flipImage();
-    }, [])
-
-    const flipImage = async () => {
-        try {
-          const resultUri = await PhotoManipulator.flipImage(imageData.imageInfo.uri, FlipMode.Horizontal);
-          setUpdatedUri(resultUri);
-        } catch (error) {
-          console.error('Error flipping the image:', error);
-        }
-      };
-    
-    return { updatedUri }
+    return resultUri;
 }
 
 export default FlipImage;
-
-const styles = StyleSheet.create({
-    container: {
-    }
-})

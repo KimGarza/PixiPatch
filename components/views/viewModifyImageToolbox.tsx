@@ -1,23 +1,17 @@
 import StyledIconContainer from "../utils/styledIconContainer";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useState } from "react";
+import { StyleSheet, TouchableOpacity, View, } from "react-native";
+import { useContext } from "react";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
+import { ImageCtx } from "../ImageSelection/ImageCtx";
 
 interface ImageInfo {
     uri: string;
     width: number;
     height: number;
     type: string | undefined;
-  }
-  interface ImageData {
-    imageInfo: ImageInfo;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
   }
 
 // Little popup toolbox for editing options on a specific image
@@ -26,8 +20,13 @@ const viewModifyImageToolbox = () => {
 
     const router = useRouter();
 
+    const { activeImageCtx } = useContext(ImageCtx);
+
     const handlePress = (toolType: string) => {
-        router.push('/(screens)modifyImage')
+        router.push({
+            pathname: '/(screens)/modifyImage',
+            params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
+        });
     }
 
     return (
@@ -40,12 +39,12 @@ const viewModifyImageToolbox = () => {
                     <Feather name='crop' size={30}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => handlePress('filter')}>
-                    <Feather name='filter' size={30}/>
+                <TouchableOpacity onPress={() => handlePress('flip')}>
+                    <MaterialCommunityIcons name='mirror' size={30}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => handlePress('mirror')}>
-                    <MaterialCommunityIcons name='mirror' size={30}/>
+                <TouchableOpacity onPress={() => handlePress('filter')}>
+                    <Feather name='filter' size={30}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => handlePress('duplicate')}>

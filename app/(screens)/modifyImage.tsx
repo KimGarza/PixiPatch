@@ -2,10 +2,11 @@
 import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import CropSettings from '@/components/modifyImage/cropSettings';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { ImageCtx } from '@/components/ImageSelection/ImageCtx';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -34,6 +35,7 @@ export default function ModifyImageScreen({image, activatedTool}: Props) {
     // const [imageData, setImageData] = useState<ImageData>();
     // const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
     // const [activeEditTool, setActiveEditTool] = useState<string | string[]>('');
+
     const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
 
     const router = useRouter();

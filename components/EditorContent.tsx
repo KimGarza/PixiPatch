@@ -34,6 +34,11 @@ const EditorContent = () => {
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
+  // had to do this for retriving any updates to images such as flipp
+  useEffect(() => {
+    console.log("rerendering editor content? ", images)
+  }, [images])
+
   interface ImageInfo {
     uri: string;
     width: number;
@@ -47,8 +52,6 @@ const EditorContent = () => {
     width: number;
     height: number;
   }
-
-  console.log("remaining space ", height, canvasHeight, headerHeight, height - canvasHeight - headerHeight)
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {

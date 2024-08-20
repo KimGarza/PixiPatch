@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
@@ -6,7 +6,9 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import ViewModifyImage from '../../app/(screens)/modifyImage';
-import FlipImage from '../modifyImage/FlipImage';
+import FlipImage from '../modifyImage/flipImage';
+import { ImageCtx } from '../ImageSelection/ImageCtx';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface ImageInfo {
     uri: string;
@@ -32,6 +34,8 @@ interface DraggableImageProps {
 
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
+
+    const { setActiveImageCtx, updateImageUri } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
 
     const [modifyImage, setModifyImage] = useState<string>('');
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
@@ -61,7 +65,6 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
             savedScale.value = scale.value;
         });
 
-
         const animatedStyle = useAnimatedStyle(() => {
             return {
                 transform: [
@@ -79,6 +82,8 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         }
     }, [isAnotherImageActive])
 
+    // when user taps image, it gets coordniates for location to display image modification toolbox.
+    // checks if the image tapped was already active, if so, deactivates it, otherwise activates it including setting it as the new "activeImage" in ctx
     const handleTap = (event: GestureResponderEvent) => {
 
         const { locationX, locationY } = event.nativeEvent;
@@ -88,12 +93,12 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
             setActivedImage(null);
             activateImage(null);
             setTapCoordinates({x: 0, y: 0});
-
+            setActiveImageCtx(undefined); // ctx
         } else {
             setActivedImage(image);
             activateImage(image);
+            setActiveImageCtx(image); // ctx
         }
-
     }
 
     const handleRemoveImage = () => {
@@ -102,10 +107,18 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         activateImage(null);
     }
 
-    const handleModifyImage = (toolName: string) => {
+    const handleModifyImage = async (toolName: string) => {
         if (toolName == 'flip') {
-            FlipImage(image);
-        } else {
+            try {
+                // would rather updateImageUri thorugh ctx within the flip funciton but this causes breaking hook ruls
+                const oldUri = image.imageInfo.uri;
+                const resultUri = await FlipImage(image, updateImageUri); // Await the async function here
+                console.log("resultUri ", resultUri)
+                console.log("old uri ", oldUri)
+                console.log("are they matching? ", resultUri == image.imageInfo.uri)
+            } catch (error) {
+                console.error("Error in handleModifyImage while flipping image:", error);
+            }} else {
             setModifyImage(toolName);
         }
     }
@@ -139,6 +152,9 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
                 {/* little popup toolbox for editing options on a specific image */}
                 {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>}
+                <TouchableOpacity onPress={() => handleModifyImage('flip')}>
+                    <MaterialCommunityIcons name='mirror' size={30}/>
+                </TouchableOpacity>
             </Animated.View>
         </GestureDetector>
     );

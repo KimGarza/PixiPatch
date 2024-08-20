@@ -1,4 +1,4 @@
-import React, { createContext, useState, Dispatch, SetStateAction } from "react";
+import React, { createContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 
 // actual photo from lib
 interface ImageInfo {
@@ -21,8 +21,11 @@ interface ImageData {
 interface ImageCtxType {
   images: ImageData[];
   setImages: Dispatch<SetStateAction<ImageData[]>>;
+  activeImageCtx: ImageData | undefined;
+  setActiveImageCtx: Dispatch<SetStateAction<ImageData | undefined>>;
   // void  here makes it clear that the function is intended to perform an action but not produce a result.
-  updateImagePosition: (index: number, newTop: number, newLeft: number) => void; 
+  updateImagePosition: (uri: string, newTop: number, newLeft: number) => void; 
+  updateImageUri: (uri: string, newUri: string) => void; 
   deleteImage: (uri: string) => void;
 }
 
@@ -30,7 +33,10 @@ interface ImageCtxType {
 const defaultValue: ImageCtxType = {
   images: [],
   setImages: () => [],
+  activeImageCtx: undefined,  
+  setActiveImageCtx: () => {},
   updateImagePosition: () => {},
+  updateImageUri: () => {},
   deleteImage: () => {},
 };
 
@@ -43,15 +49,32 @@ interface ImageProviderProps {
 
 export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
   const [images, setImages] = useState<ImageData[]>([]);
+  const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
-  const updateImagePosition = (index: number, newTop: number, newLeft: number): void => { // void is return type
-    setImages((prevImages) => {
-      const updatedImages = [...prevImages];
-      updatedImages[index].top = newTop;
-      updatedImages[index].left = newLeft;
-      return updatedImages;
-    });
+  useEffect(() => {
+    console.log(images)
+}, [images]);
+
+  const updateImagePosition = (uri: string, newTop: number, newLeft: number): void => { // void is return type
+
+    const foundImage = images.find(img => img.imageInfo.uri == uri);
+    if (foundImage) {
+      foundImage.left = newLeft;
+      foundImage.top = newTop;
+    }
+   };
+
+  const updateImageUri = (uri: string, newUri: string): void => {
+
+    setImages((prevImages) => 
+      prevImages.map(img => 
+          img.imageInfo.uri == uri 
+          ? { ...img, imageInfo: { ...img.imageInfo, uri: newUri } } 
+          : img
+        )
+    );
   };
+
 
   const deleteImage = (uri: string): void => {
     setImages((prevImages) =>
@@ -59,13 +82,17 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
     );
   };
 
+
   return (
     // The ImageCtx.Provider is a context provider component created using the ImageCtx context. It allows any child component wrapped within it to access the context values it provides.
     <ImageCtx.Provider
       value={{ // value is a prop
         images,
         setImages,
+        activeImageCtx,
+        setActiveImageCtx,
         updateImagePosition,
+        updateImageUri,
         deleteImage
       }}
     >
