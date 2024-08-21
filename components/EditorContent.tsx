@@ -36,14 +36,12 @@ const EditorContent = () => {
 
   // had to do this for retriving any updates to images such as flipp
   useEffect(() => {
-    console.log("rerendering editor content? ", images)
   }, [images])
 
   interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
   interface ImageData {
     imageInfo: ImageInfo;

@@ -1,13 +1,13 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageCtx } from './ImageCtx';
+import * as FileSystem from 'expo-file-system';
 
 interface ImageInfo {
   uri: string;
   width: number;
   height: number;
-  type: string | undefined;
 }
 interface ImageData {
   imageInfo: ImageInfo;
@@ -23,6 +23,7 @@ interface ImagePickerUtilProps {
 
 // Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
 const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
+
   const { setImages } = useContext(ImageCtx);
 
   const adjustImageSize = (width: number, height: number) => {
@@ -77,11 +78,39 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
         type: asset.type,
       }));
 
+      await saveImagesLocally(selectedImages);
+
+      console.log("printing selected images to view new uri ", selectedImages);
+
       // converts the images into imageData for extra data
       const imageDataArr = selectedImages.map(convertToImageData);
 
       // uses the ImageCtx to update useState of the images
       setImages(prevImagesData => [...prevImagesData, ...imageDataArr]);
+    }
+  };
+
+  // takes all selected images, saves each locally
+  const saveImagesLocally  = async ( images: ImageInfo[] ) => {
+    try {
+
+      for ( const image of images ) {
+        console.log("printing image.uri ", image.uri);
+        const fileName = image.uri.split('/').pop(); //??
+        const localUri = `${FileSystem.documentDirectory}${fileName}`; // pointing to a place where documents for this app will be stored
+
+        await FileSystem.copyAsync({
+          from: image.uri,
+          to: localUri,
+        });
+
+        image.uri = localUri; // repalce the image uri with the local one
+        console.log("printing local uri ", localUri);
+
+      }
+
+    } catch ( error ) {
+      console.error('Error saving image locally:', error);
     }
   };
 

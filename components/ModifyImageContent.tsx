@@ -3,7 +3,6 @@ import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from '
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useEffect, useState } from 'react';
-import CropSettings from '@/components/modifyImage/cropSettings';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
@@ -13,7 +12,6 @@ interface ImageInfo {
   uri: string;
   width: number;
   height: number;
-  type: string | undefined;
 }
 interface ImageData {
   imageInfo: ImageInfo;
@@ -112,14 +110,6 @@ return (
     </View>
 
     <View style={styles.editSettings}>
-    {type == 'crop' ? (
-        <View>
-          <CropSettings/>
-        </View>
-      ) : type == 'mirror' ? (
-        <View>
-        </View>
-      ) : (<></>)}
     </View>
 
     <View style={styles.primaryTools}>

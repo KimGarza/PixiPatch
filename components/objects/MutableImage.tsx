@@ -14,7 +14,6 @@ interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
 }
 
 interface ImageData {
@@ -108,19 +107,7 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
     }
 
     const handleModifyImage = async (toolName: string) => {
-        if (toolName == 'flip') {
-            try {
-                // would rather updateImageUri thorugh ctx within the flip funciton but this causes breaking hook ruls
-                const oldUri = image.imageInfo.uri;
-                const resultUri = await FlipImage(image, updateImageUri); // Await the async function here
-                console.log("resultUri ", resultUri)
-                console.log("old uri ", oldUri)
-                console.log("are they matching? ", resultUri == image.imageInfo.uri)
-            } catch (error) {
-                console.error("Error in handleModifyImage while flipping image:", error);
-            }} else {
-            setModifyImage(toolName);
-        }
+        setModifyImage(toolName);
     }
 
     return (
@@ -152,9 +139,6 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
                 {/* little popup toolbox for editing options on a specific image */}
                 {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>}
-                <TouchableOpacity onPress={() => handleModifyImage('flip')}>
-                    <MaterialCommunityIcons name='mirror' size={30}/>
-                </TouchableOpacity>
             </Animated.View>
         </GestureDetector>
     );

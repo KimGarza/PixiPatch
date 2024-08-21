@@ -6,12 +6,12 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { usePathname, useRouter } from "expo-router";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
+import FlipImage from "../modifyImage/flipImage";
 
 interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
 
 // Little popup toolbox for editing options on a specific image
@@ -20,13 +20,20 @@ const viewModifyImageToolbox = () => {
 
     const router = useRouter();
 
-    const { activeImageCtx } = useContext(ImageCtx);
+    const { activeImageCtx, updateImageUri } = useContext(ImageCtx);
 
-    const handlePress = (toolType: string) => {
-        router.push({
-            pathname: '/(screens)/modifyImage',
-            params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
-        });
+    const handlePress = async (toolType: string) => {
+        if (toolType == 'flip' && activeImageCtx) {
+            try {
+                await FlipImage(activeImageCtx, updateImageUri); // Await the async function here
+            } catch (error) {
+                console.error("Error in handleModifyImage while flipping image:", error);
+            }} else {
+            router.push({
+                pathname: '/(screens)/modifyImage',
+                params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
+            });
+        }
     }
 
     return (
@@ -39,7 +46,8 @@ const viewModifyImageToolbox = () => {
                     <Feather name='crop' size={30}/>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => handlePress('flip')}>
+                {/* !!! ONLY WORKS ONCE  */}
+                <TouchableOpacity onPress={() => handlePress('flip')}> 
                     <MaterialCommunityIcons name='mirror' size={30}/>
                 </TouchableOpacity>
 

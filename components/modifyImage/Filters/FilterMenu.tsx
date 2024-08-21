@@ -9,7 +9,6 @@
 //   uri: string;
 //   width: number;
 //   height: number;
-//   type: string | undefined;
 // }
 // interface ImageData {
 //   imageInfo: ImageInfo;

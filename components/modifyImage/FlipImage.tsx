@@ -1,10 +1,9 @@
-import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImageManipulator from 'expo-image-manipulator'; // part of expo sdk
 
 interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
   interface ImageData {
     imageInfo: ImageInfo;
@@ -14,7 +13,8 @@ interface ImageInfo {
     height: number;
   }
 
-const FlipImage = async (imageData: ImageData, updateImageUri: (uri: string, newUri: string) => void) => {
+  // flip done at pixel level, reverses pixels. Rearranges the pixels to create a mirrored version of image.
+const FlipImage = async (imageData: ImageData, updateImageUri: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
     let resultUri = '';
     try {
         const result = await ImageManipulator.manipulateAsync(
@@ -23,11 +23,9 @@ const FlipImage = async (imageData: ImageData, updateImageUri: (uri: string, new
             { compress: 1, format: ImageManipulator.SaveFormat.PNG }
         )
 
-        updateImageUri(imageData.imageInfo.uri, result.uri); // replace the current image with the manipulated one, retaining all ImageData info
-        console.log(imageData.imageInfo.uri == result.uri);
+        updateImageUri(imageData.imageInfo, result); // replace the current image with the manipulated one, retaining all ImageData info
         resultUri = result.uri;
 
-      console.log("result ", result)
     } catch (error) {
         console.error('Error flipping the image:', error);
     }

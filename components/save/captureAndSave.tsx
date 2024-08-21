@@ -48,7 +48,6 @@ const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: n
           await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
         }
 
-        console.log('Image saved to photo library!');
       // }
 
     } else {

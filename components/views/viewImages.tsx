@@ -7,7 +7,6 @@ interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
 
   interface ImageData {
@@ -38,7 +37,6 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
     const handleDeleteImage = (imageToDelete: ImageData | null) => {
         if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
     }
-
 
     return (
         <View>
