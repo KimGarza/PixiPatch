@@ -14,7 +14,7 @@ interface ImageInfo {
   }
 
   // flip done at pixel level, reverses pixels. Rearranges the pixels to create a mirrored version of image.
-const FlipImage = async (imageData: ImageData, updateImageUri: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
+const FlipImage = async (imageData: ImageData, updateImageUri: (originalImage: ImageInfo, updatedImage: ImageInfo) => void) => {
     let resultUri = '';
     try {
         const result = await ImageManipulator.manipulateAsync(

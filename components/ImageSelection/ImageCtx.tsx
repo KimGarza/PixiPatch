@@ -66,29 +66,17 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
    };
 
   // const updateImageUri = async (orignalUri: string, cachedUri: string) => {
-    const updateImageInfo = async (originalImage: ImageInfo, cachedImage: ImageInfo) => {
+    const updateImageInfo = (originalImage: ImageInfo, updatedImage: ImageInfo) => {
       console.log("hello?")
       setTest(true);
 
-    // store the cached new uri to local storage
-    const fileName = cachedImage.uri.split('/').pop(); // cropped / flipped
-    const newLocalUri = `${FileSystem.documentDirectory}${fileName}`;
-
-    console.log("cached size ", cachedImage.width, cachedImage.height)
-
-
-    await FileSystem.copyAsync({
-      from: cachedImage.uri,
-      to: newLocalUri,
-    });
-
-    // update the original image with the new lcoal uri
-    setImages((prevImages) => 
-      prevImages.map(img => 
-          img.imageInfo.uri == originalImage.uri 
-          ? { ...img, imageInfo: { ...img.imageInfo, uri: newLocalUri, height: cachedImage.height, width: cachedImage.width } } 
-          : img
-        )
+      // update the original image with the new lcoal uri
+      setImages((prevImages) => 
+        prevImages.map(img => 
+            img.imageInfo.uri == originalImage.uri 
+            ? { ...img, imageInfo: { ...img.imageInfo, uri: updatedImage.uri, height: updatedImage.height, width: updatedImage.width } } // change img.imageInfo?
+            : img
+          )
     );
   };
 
