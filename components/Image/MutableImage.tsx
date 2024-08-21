@@ -34,7 +34,7 @@ interface DraggableImageProps {
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const { setActiveImageCtx, updateImageUri } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
+    const { setActiveImageCtx, updateImageInfo } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
 
     const [modifyImage, setModifyImage] = useState<string>('');
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);

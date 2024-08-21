@@ -20,12 +20,12 @@ const viewModifyImageToolbox = () => {
 
     const router = useRouter();
 
-    const { activeImageCtx, updateImageUri } = useContext(ImageCtx);
+    const { activeImageCtx, updateImageInfo } = useContext(ImageCtx);
 
     const handlePress = async (toolType: string) => {
         if (toolType == 'flip' && activeImageCtx) {
             try {
-                await FlipImage(activeImageCtx, updateImageUri); // Await the async function here
+                await FlipImage(activeImageCtx, updateImageInfo); // Await the async function here
             } catch (error) {
                 console.error("Error in handleModifyImage while flipping image:", error);
             }} else {

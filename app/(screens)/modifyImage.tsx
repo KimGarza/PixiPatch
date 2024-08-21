@@ -42,7 +42,6 @@ export default function ModifyImageScreen() {
 
       if (image) {
         try {
-
           // this is the ONLY way I can read the image, cannot use ImageInfo, ImageSourcePropType w/out encoded URI or just uri in the uri: attribute
           const parsedImg: ImageData = JSON.parse(image as string); // deserialized into ImageData
           setImageData(parsedImg);
@@ -63,20 +62,11 @@ export default function ModifyImageScreen() {
       }
     }, [])
 
-    // useEffect(() => {
-
-    //   if (imageData) { // if parsed image from local search params has populated the useState
-    //     activatedTool == 'crop' ? CropImage(imageData, updateImageUri) : null // pass the image and the ctx function (can't do it within or breaks hook rules)
-
-    //   }
-    // }, [ currentTool, imageData, activeImageCtx ])
-
     useEffect(() => {
       if (imageData) {
         console.log("updated image size ", imageData?.imageInfo.width, imageData?.imageInfo.height);
       }
     }, [ images, imageData, imageData?.imageInfo, imageData?.imageInfo.width ])
-
 
     // evaluates current image aspect ratio, compares agaisnt the screen's and scales to largest size with no cutting off.
     const adjustImageSize = (currWidth: number, currHeight: number) => {

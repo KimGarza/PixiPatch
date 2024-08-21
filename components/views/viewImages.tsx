@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { useContext, useState } from "react";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
-import MutableImage from "../objects/MutableImage";
+import MutableImage from "../Image/MutableImage";
 
 interface ImageInfo {
     uri: string;
