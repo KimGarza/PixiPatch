@@ -18,12 +18,12 @@ import { StickerCtx } from './Stickers/StickersCtx';
 import ViewImages from './views/viewImages';
 import GlobalDimensions from './dimensions/globalDimensions';
 
-const { width, height, canvasHeight } = GlobalDimensions();
+const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const EditorContent = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
-  const { images } = useContext(ImageCtx);
+  const { images, activeImageCtx } = useContext(ImageCtx);
   const { background } = useContext(BackgroundCtx);
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
@@ -34,11 +34,14 @@ const EditorContent = () => {
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
+  // had to do this for retriving any updates to images such as flipp
+  useEffect(() => {
+  }, [ images, activeImageCtx ])
+
   interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
   interface ImageData {
     imageInfo: ImageInfo;
@@ -98,15 +101,14 @@ return (
             {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
 
             {/* Pictures */}
-            <ViewImages images={images} activatedImage={handleImageTapToEdit}/> 
+            <ViewImages images={images}/> 
 
         </View>
       </ImageBackground>
     </View>
 
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-    { 1 + 1 == 2 && (
-        stickerMenuToggle ? (
+        { stickerMenuToggle ? (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
           <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
@@ -119,7 +121,7 @@ return (
           stickerMenuToggle={handleToggleStickerMenuCallback}
         />
       </View>
-  ))}
+  )}
     </View>
   );
 }
@@ -132,6 +134,7 @@ const styles = StyleSheet.create({
   },
   headerNav: {
     zIndex: 9999999,
+    height: headerHeight
   },
   headerImg: {
     width: '100%',
@@ -151,10 +154,11 @@ const styles = StyleSheet.create({
   primaryTools: {
     flexDirection: 'row',
     justifyContent: 'center',
-    width: '100%',
+    alignContent: 'center',
+    height: height - canvasHeight - headerHeight,
     gap: 30,
     zIndex: 9999999,
     padding: 15,
-    borderTopWidth: .6, color: 'black',
+    borderTopWidth: .6, borderColor: 'black',
   },
 });

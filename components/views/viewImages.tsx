@@ -1,13 +1,12 @@
 import { View } from "react-native";
 import { useContext, useState } from "react";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
-import MutableImage from "../objects/MutableImage";
+import MutableImage from "../image/MutableImage";
 
 interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
   }
 
   interface ImageData {
@@ -20,16 +19,16 @@ interface ImageInfo {
 
   interface ViewImagesProps {
     images: ImageData[],
-    activatedImage: (image: ImageData | null) => void
 }
 
-const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
+// images are selected by user, stored in context which provider is wrapped around editorContent. Props value of those images sent to viewImages.
+const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
 
     const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);
     const { deleteImage } = useContext(ImageCtx);
 
+    
     const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
-        activatedImage(image);
         setNewActiveImage(image);
     }
     
@@ -43,7 +42,6 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, activatedImage}) => {
                 <MutableImage
                     key={index}
                     image={imageCtx}
-                    activateImage={hanldeTapped}
                     isAnotherImageActive={newActiveImage?.imageInfo.uri != imageCtx.imageInfo.uri || newActiveImage == null} // if the current image is not the currently active image
                     deleteImage={handleDeleteImage}
                 />

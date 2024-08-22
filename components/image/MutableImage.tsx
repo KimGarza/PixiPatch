@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import ViewModifyImage from '../../app/(screens)/modifyImage';
+// import FlipImage from '../modifyImage/flipImage';
+import { ImageCtx } from '../ImageSelection/ImageCtx';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface ImageInfo {
     uri: string;
     width: number;
     height: number;
-    type: string | undefined;
 }
 
 interface ImageData {
@@ -23,15 +26,16 @@ interface ImageData {
 
 interface DraggableImageProps {
     image: ImageData; // image to act as draggableImage
-    activateImage: (image: ImageData | null) => void; // activates this image, sends to parent which is ViewImages and then is sent to parent which is EditorContent so that image editing menu can be toggled.
     isAnotherImageActive: boolean; // is there a different image already active, if so, deactivate this image.
     deleteImage: (image: ImageData) => void; // delete function callback passes to parent since parent has access to ImageCtx (delete funciton in context)
 }
 
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
-const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
+const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const [thisImage, setThisImage] = useState<ImageData>(image);
+    const { setActiveImageCtx } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
+
+    const [modifyImage, setModifyImage] = useState<string>('');
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
@@ -59,7 +63,6 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
             savedScale.value = scale.value;
         });
 
-
         const animatedStyle = useAnimatedStyle(() => {
             return {
                 transform: [
@@ -77,6 +80,8 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
         }
     }, [isAnotherImageActive])
 
+    // when user taps image, it gets coordniates for location to display image modification toolbox.
+    // checks if the image tapped was already active, if so, deactivates it, otherwise activates it including setting it as the new "activeImage" in ctx
     const handleTap = (event: GestureResponderEvent) => {
 
         const { locationX, locationY } = event.nativeEvent;
@@ -84,22 +89,22 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 
         if (image.imageInfo.uri == activedImage?.imageInfo.uri) {
             setActivedImage(null);
-            activateImage(null);
             setTapCoordinates({x: 0, y: 0});
-
+            setActiveImageCtx(undefined); // ctx
         } else {
             setActivedImage(image);
-            activateImage(image);
+            setActiveImageCtx(image); // ctx
         }
-
     }
 
     const handleRemoveImage = () => {
         deleteImage(image);
         setActivedImage(null);
-        activateImage(null);
     }
 
+    const handleModifyImage = async (toolName: string) => {
+        setModifyImage(toolName);
+    }
 
     return (
         <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
@@ -129,7 +134,7 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                 </TouchableOpacity>
 
                 {/* little popup toolbox for editing options on a specific image */}
-                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox image={image}/>}
+                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>}
             </Animated.View>
         </GestureDetector>
     );

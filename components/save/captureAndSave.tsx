@@ -18,18 +18,6 @@ const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: n
         height: height
       });
 
-      // if (draft) { // if saving as draft
-      //   const fileName = `draft_${Date.now()}.png`;
-      //   const localUri = `${FileSystem.documentDirectory}${fileName}`;
-  
-      //   await FileSystem.moveAsync({
-      //     from: uri,
-      //     to: localUri,
-      //   });
-  
-      //   console.log('Image saved to drafts!');
-      // } else {
-        // request media library permissions
         const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== 'granted') {
           Alert.alert('Permission Denied', 'Media library access is required to save images.');
@@ -47,9 +35,6 @@ const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: n
           // if the album exists, add the asset to it
           await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
         }
-
-        console.log('Image saved to photo library!');
-      // }
 
     } else {
       Alert.alert("Error within captureAndSave.tsx: ", "View ref is not set or the view is not mounted.");
