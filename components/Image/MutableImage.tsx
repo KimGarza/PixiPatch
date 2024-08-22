@@ -6,7 +6,7 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import ViewModifyImage from '../../app/(screens)/modifyImage';
-import FlipImage from '../modifyImage/flipImage';
+import FlipImage from '../modifyImage/F';
 import { ImageCtx } from '../ImageSelection/ImageCtx';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 

@@ -6,7 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { usePathname, useRouter } from "expo-router";
 import { ImageCtx } from "../ImageSelection/ImageCtx";
-import FlipImage from "../modifyImage/flipImage";
+// import FlipImage from "../modifyImage/FlipImage";
 
 interface ImageInfo {
     uri: string;
@@ -23,17 +23,17 @@ const viewModifyImageToolbox = () => {
     const { activeImageCtx, updateImageInfo } = useContext(ImageCtx);
 
     const handlePress = async (toolType: string) => {
-        if (toolType == 'flip' && activeImageCtx) {
-            try {
-                await FlipImage(activeImageCtx, updateImageInfo); // Await the async function here
-            } catch (error) {
-                console.error("Error in handleModifyImage while flipping image:", error);
-            }} else {
+        // if (toolType == 'flip' && activeImageCtx) {
+            // try {
+            //     await FlipImage(activeImageCtx, updateImageInfo); // Await the async function here
+            // } catch (error) {
+            //     console.error("Error in handleModifyImage while flipping image:", error);
+            // }} else {
             router.push({
                 pathname: '/(screens)/modifyImage',
                 params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
             });
-        }
+        // }
     }
 
     return (
