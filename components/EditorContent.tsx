@@ -7,7 +7,7 @@ import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
 import StickerMenu from './Stickers/StickerMenu';
 import BackgroundMenu from './background/BackgroundMenu';
-import DrawUtil from './drawing/DrawUtil';
+import DrawUtil from './modification/drawing/DrawUtil';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from './save/saveButtonAndMenu';
 import HomeButton from './utils/homeButton';

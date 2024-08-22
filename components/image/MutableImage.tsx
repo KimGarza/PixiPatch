@@ -4,7 +4,7 @@ import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import ImageEditingTools from '../ImageSelection/ImageEditingTools';
+import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 
 interface ImageInfo {
     uri: string;
@@ -31,6 +31,7 @@ interface DraggableImageProps {
 // Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
+    const [thisImage, setThisImage] = useState<ImageData>(image);
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
@@ -127,7 +128,8 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
                     />
                 </TouchableOpacity>
 
-                {tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ImageEditingTools/>}
+                {/* little popup toolbox for editing options on a specific image */}
+                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox image={image}/>}
             </Animated.View>
         </GestureDetector>
     );
@@ -136,10 +138,6 @@ const MutableImage = ({ image, activateImage, isAnotherImageActive, deleteImage 
 export default MutableImage;
 
 const styles = StyleSheet.create({
-    // container: {
-    //   zIndex: 9999999,
-    //   borderWidth: 1, borderColor: 'green'
-    // },
     imageContainer: {
       zIndex: 4,
       position: 'relative', // Ensure container is absolutely positioned

@@ -1,6 +1,6 @@
 import { ImageProvider } from '@/components/ImageSelection/ImageCtx';
 import EditorContent from '@/components/EditorContent';
-import { DrawProvider } from '@/components/drawing/DrawCtx';
+import { DrawProvider } from '@/components/modification/drawing/DrawCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';
 import { BackgroundProvider } from '@/components/background/BackgroundCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

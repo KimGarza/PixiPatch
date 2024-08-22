@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
-import DrawTool from '../drawing/DrawTool';
+import DrawTool from '../modification/drawing/DrawTool';
 import StickerTool from '../Stickers/StickerTool';
 import BackgroundTool from '../background/BackgroundTool';
 
