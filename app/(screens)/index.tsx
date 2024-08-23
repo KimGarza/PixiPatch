@@ -49,7 +49,7 @@ export default function HomeScreen() {
           <View style={styles.startBlock} >
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>EDIT, COLLAGE... DO IT ALL!</Text>
 
-            <TouchableOpacity onPress={() => router.push('/(screens)Editor')}>
+            <TouchableOpacity onPress={() => router.push('/(screens)/editor')}>
               <Fontisto name='photograph' size={150} style={styles.photographIcon}/>
               {/* <Image
               source={require('../../assets/images/arrow.png')}
@@ -59,7 +59,7 @@ export default function HomeScreen() {
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>START CREATING!</Text>
 
 
-            <TouchableOpacity onPress={() => router.push('/(screens)Editor')} style={styles.drafts}>
+            <TouchableOpacity onPress={() => router.push('/(screens)/editor')} style={styles.drafts}>
               <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
               <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
             </TouchableOpacity>

@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "elemental_editor_2",
-    "slug": "elemental_editor_2",
+    "name": "elemental_editor",
+    "entryPoint": "app.tsx",
+    "slug": "elemental_editor",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
