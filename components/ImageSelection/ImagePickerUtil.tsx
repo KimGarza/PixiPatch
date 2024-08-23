@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ImageCtx } from './ImageCtx';
+import { ImageCtx } from '../image/ImageCtx';
 import * as FileSystem from 'expo-file-system';
 
 interface ImageInfo {
@@ -11,6 +11,7 @@ interface ImageInfo {
 }
 interface ImageData {
   imageInfo: ImageInfo;
+  ogImageInfo: ImageInfo;
   top: number;
   left: number;
   width: number;
@@ -40,6 +41,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     const { width, height } = adjustImageSize(image.width, image.height)
     const imageData: ImageData = {
       imageInfo: image,
+      ogImageInfo: { ...image },
       top: Math.floor(Math.random() * (100 - 30)) + 30,
       left: Math.floor(Math.random() * (200 - 30)) + 30,
       width: width,
@@ -79,8 +81,6 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
       }));
 
       await saveImagesLocally(selectedImages);
-
-      console.log("printing selected images to view new uri ", selectedImages);
 
       // converts the images into imageData for extra data
       const imageDataArr = selectedImages.map(convertToImageData);

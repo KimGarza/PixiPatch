@@ -1,6 +1,6 @@
 import { View } from "react-native";
-import { useContext, useState } from "react";
-import { ImageCtx } from "../ImageSelection/ImageCtx";
+import { useContext, useState, useEffect } from "react";
+import { ImageCtx } from "../image/ImageCtx";
 import MutableImage from "../image/MutableImage";
 
 interface ImageInfo {
@@ -11,6 +11,7 @@ interface ImageInfo {
 
   interface ImageData {
     imageInfo: ImageInfo;
+    ogImageInfo: ImageInfo;
     top: number;
     left: number;
     width: number;
@@ -25,7 +26,7 @@ interface ImageInfo {
 const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
 
     const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);
-    const { deleteImage } = useContext(ImageCtx);
+    const { deleteImage, activeImageCtx } = useContext(ImageCtx);
 
     
     const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
@@ -35,6 +36,14 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
     const handleDeleteImage = (imageToDelete: ImageData | null) => {
         if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
     }
+
+    
+  // detects changes to images within ctx so that if crop or flipping has been done... it can update the component to reflect those changes
+  useEffect(() => {
+    console.log("CHANGE DETECTED TO IMAGES, OR ACTIVEIMAGECTX IN EDITOR CONTENT ", images);
+    // console.log("activeImageCtx ogImageInfo ", activeImageCtx?.ogImageInfo, " and current ", activeImageCtx?.imageInfo)
+
+  }, [ images, activeImageCtx, activeImageCtx?.imageInfo.height ])
 
     return (
         <View>

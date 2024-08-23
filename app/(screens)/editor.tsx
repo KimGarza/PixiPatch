@@ -1,4 +1,4 @@
-import { ImageProvider } from '@/components/ImageSelection/ImageCtx';
+import { ImageProvider } from '@/components/image/ImageCtx';
 import EditorContent from '@/components/EditorContent';
 import { DrawProvider } from '@/components/modification/drawing/DrawCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';

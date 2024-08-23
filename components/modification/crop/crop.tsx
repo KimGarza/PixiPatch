@@ -1,4 +1,5 @@
 import * as ImageManipulator from 'expo-image-manipulator';
+
 interface ImageInfo {
     uri: string;
     width: number;
@@ -7,20 +8,20 @@ interface ImageInfo {
 
 interface ImageData {
     imageInfo: ImageInfo;
+    ogImageInfo: ImageInfo;
     top: number;
     left: number;
     width: number;
     height: number;
 }
 
-const Crop = async (imageData: ImageData) => {
+const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
 
     const defaultValue: ImageInfo = {
         uri: '',
         width: 0,
         height: 0,
       };
-
 
     try {
         console.log("crop try")
@@ -37,7 +38,7 @@ const Crop = async (imageData: ImageData) => {
             { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
         );
 
-        return cachedImage;
+        updateImageInfo(imageData.imageInfo, cachedImage);
 
     } catch ( error ) {
         console.error('Error flipping the image:', error);

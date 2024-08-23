@@ -5,9 +5,8 @@ import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
-import ViewModifyImage from '../../app/(screens)/modifyImage';
-// import FlipImage from '../modifyImage/flipImage';
-import { ImageCtx } from '../ImageSelection/ImageCtx';
+import { ImageCtx } from './ImageCtx';
+import { Feather } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface ImageInfo {
@@ -18,6 +17,7 @@ interface ImageInfo {
 
 interface ImageData {
     imageInfo: ImageInfo;
+    ogImageInfo: ImageInfo;
     top: number;
     left: number;
     width: number;
@@ -25,20 +25,19 @@ interface ImageData {
 }
 
 interface DraggableImageProps {
-    image: ImageData; // image to act as draggableImage
+    image: ImageData;
     isAnotherImageActive: boolean; // is there a different image already active, if so, deactivate this image.
-    deleteImage: (image: ImageData) => void; // delete function callback passes to parent since parent has access to ImageCtx (delete funciton in context)
+    deleteImage: (image: ImageData) => void;
 }
 
-// Represents an image with complex capabilities to be dragged around. (Holds image within). Uses panResponder to evaluate x and y movement coordinates.
+// Represents an image with complex capabilities such as draggable, rotatable, etc... (actual ImageData is an attribute).
+// Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const { setActiveImageCtx } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
+    const { setActiveImageCtx, updateImageDataDimensions } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
 
-    const [modifyImage, setModifyImage] = useState<string>('');
     const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
-
     const { panHandlers, positionX, positionY  } = useDragPanResponder();
 
     const rotation = useSharedValue(0);
@@ -102,9 +101,14 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
         setActivedImage(null);
     }
 
-    const handleModifyImage = async (toolName: string) => {
-        setModifyImage(toolName);
-    }
+    // const handleTest = () => {
+    //     image.imageInfo.width = 167;
+    //     image.imageInfo.height = 453;
+
+    //     setActiveImageCtx(image);
+
+    //     updateImageDataDimensions(image);
+    // }
 
     return (
         <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
@@ -145,7 +149,7 @@ export default MutableImage;
 const styles = StyleSheet.create({
     imageContainer: {
       zIndex: 4,
-      position: 'relative', // Ensure container is absolutely positioned
+      position: 'relative',
       borderWidth: 1, borderColor: 'green'
     },
     closeContainer: {

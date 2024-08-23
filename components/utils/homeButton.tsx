@@ -8,7 +8,7 @@ const HomeButton = () => {
 
   return(
     <TouchableOpacity 
-        onPress={() => router.push('/(screens)')}
+        onPress={() => router.push('/(screens)HomeScreen')}
         style={styles.homeIcon} >
         <AntDesign name={'home'} size={30}/>
     </TouchableOpacity>

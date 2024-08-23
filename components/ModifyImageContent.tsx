@@ -3,12 +3,10 @@ import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from '
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import Crop from '@/components/modification/crop';
+import Crop from '@/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import Feather from '@expo/vector-icons/Feather';
-import { ImageCtx } from '@/components/ImageSelection/ImageCtx';
-import * as ImageManipulator from 'expo-image-manipulator';
+import { ImageCtx } from '@/components/image/ImageCtx';
 
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -20,93 +18,81 @@ interface ImageInfo {
 }
 interface ImageData {
   imageInfo: ImageInfo;
+  ogImageInfo: ImageInfo;
   top: number;
   left: number;
   width: number;
   height: number;
 }
 
+// Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
 export default function ModifyImageContent() {
 
-    const { image, activatedTool } = useLocalSearchParams(); // Retrieve the image params
+  const { image, activatedTool } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
 
-    const router = useRouter();
-    const { updateImageInfo, testFunc, images } = useContext(ImageCtx);
+  const router = useRouter();
+  const { updateImageInfo } = useContext(ImageCtx);
 
-    const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
-    const [imageData, setImageData] = useState<ImageData>();
-    const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
+  const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
+  const [imageData, setImageData] = useState<ImageData>();
+  const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
 
-    useEffect(() => {
-      testFunc();
-      if (image) {
-        try {
-          // this is the ONLY way I can read the image, cannot use ImageInfo, ImageSourcePropType w/out encoded URI or just uri in the uri: attribute
-          const parsedImg: ImageData = JSON.parse(image as string); // deserialized into ImageData
-          setImageData(parsedImg);
-          // When to Use encodeURI:
-          // Before Making HTTP Requests: If you're passing the URI as part of an HTTP request (like an image fetch), encoding ensures that the request is correctly formed.
-          // In Image Sources: If you're setting an image source in a component, encoding the URI can prevent issues if the URI contains spaces or other special characters.
-          // Generating URLs: If you're dynamically generating URLs or URIs that include user input or filenames, encoding helps avoid errors.
-          setEncodedUri({ uri: encodeURI(parsedImg.imageInfo.uri) });
+// Since some manipulations affect imageInfo in image coming through as the param.... it won't reflect on view bc not pulling image from context here
+  useEffect(() => {
+    if (image) {
+      try {
+        const parsedImg: ImageData = JSON.parse(image as string); // deserialized the local param into ImageData
+        setImageData(parsedImg);
+        
+        setEncodedUri({ uri: encodeURI(parsedImg.imageInfo.uri) }); // this is the only way to have a valid source for the image in the view!
 
-          const { imgWidth, imgHeight } = adjustImageSize(parsedImg.imageInfo.width, parsedImg.imageInfo.height);
-          setImageDimensions({imgWidth, imgHeight});
+        const { imgWidth, imgHeight } = adjustImageSize(parsedImg.imageInfo.width, parsedImg.imageInfo.height); // adjust image to fully fit the space
+        setImageDimensions({imgWidth, imgHeight});
 
-        } catch (error) {
-            console.error("Error parsing JSON:", error);
-        }
-      } else {
-          console.error("No image parameter found");
+      } catch (error) {
+          console.error("Error parsing JSON:", error);
       }
-    }, [])
+    } else {
+        console.error("No image parameter found");
+    }
+  }, [])
 
-    useEffect(() => {
+  // activates whichever tool is the one which was selected or changed to
+  useEffect(() => {
+    if (activatedTool == 'crop' && imageData) {
+      handleCrop();
+    }
+  }, [ activatedTool, imageData ])
 
-      if (activatedTool == 'crop' && imageData) {
-        console.log("useEffect")
-        handleCrop();
+  // Activate crop
+  const handleCrop = async () => {
+    if (imageData) { 
+      try {
+        const croppedImage = await Crop(imageData, updateImageInfo);
+
+      } catch (error) {
+        console.error("Error in handleModifyImage while flipping image:", error);
       }
-
-    }, [ activatedTool, imageData ])
-
-
-    // evaluates current image aspect ratio, compares agaisnt the screen's and scales to largest size with no cutting off.
-    const adjustImageSize = (currWidth: number, currHeight: number) => {
-
-      const canvasAspectRatio = width / canvasHeight; // Example aspect ratio
-      const imageAspectRatio = currWidth / currHeight;
-
-      let imgWidth, imgHeight;
-
-      if (imageAspectRatio > canvasAspectRatio ) {
-          // Image is wider than the container
-          imgWidth = width;
-          imgHeight = width / imageAspectRatio;
-      } else {
-          // Image is taller than or equal in aspect ratio to the container
-          imgHeight = height;
-          imgWidth = height * imageAspectRatio;
-      }
-
-      return { imgWidth, imgHeight };
+    }
   }
 
-  const handleCrop = async () => {
-    try {
+    // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
+  // Reason for using ImageInfo here when canvas uses ImageData is bc some image manipulations affect image at the pixel level.
+  const adjustImageSize = (currWidth: number, currHeight: number) => {
 
-      if (imageData) { 
-        const croppedImage = await Crop(imageData);
-        console.log("croppedImage ", croppedImage);
-        try{
-          updateImageInfo(imageData.imageInfo, croppedImage);
-        } catch (error) {
-          console.log("OMG WHAT IS THE ERROR ", error)
-        }
-      }
-    } catch (error) {
-      console.error("Error in handleModifyImage while flipping image:", error);
+    const canvasAspectRatio = width / canvasHeight;
+    const imageAspectRatio = currWidth / currHeight;
+
+    let imgWidth, imgHeight;
+
+    if (imageAspectRatio > canvasAspectRatio ) { // if imageInfo is wider than the container
+        imgWidth = width;
+        imgHeight = width / imageAspectRatio;
+    } else { // imageInfo is taller than or equal in aspect ratio to the container
+        imgHeight = height;
+        imgWidth = height * imageAspectRatio;
     }
+    return { imgWidth, imgHeight };
   }
 
 return (
@@ -118,7 +104,7 @@ return (
           style={styles.headerImg}
           source={require('../assets/images/ElementalEditorBanner.png')}
       />
-      <TouchableOpacity onPress={() => router.push('/(screens)/editor')} style={styles.back}>
+      <TouchableOpacity onPress={() => router.push('/(screens)/Editor')} style={styles.back}>
         <Ionicons name={'arrow-back'} size={35}/>
       </TouchableOpacity>
         

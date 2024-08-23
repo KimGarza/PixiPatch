@@ -13,6 +13,7 @@
 // }
 // interface ImageData {
 //   imageInfo: ImageInfo;
+// ogImageInfo: ImageInfo;
 //   // String for %age of each for positioning
 //   top: number;
 //   left: number;

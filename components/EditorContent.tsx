@@ -2,7 +2,7 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
-import { ImageCtx } from './ImageSelection/ImageCtx';
+import { ImageCtx } from './image/ImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
 import StickerMenu from './Stickers/StickerMenu';
@@ -20,6 +20,11 @@ import GlobalDimensions from './dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
+interface dimens {
+  width: Number,
+  height: Number
+}
+
 const EditorContent = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
@@ -32,13 +37,16 @@ const EditorContent = () => {
   const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
   // misc
   const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
+
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
-  // had to do this for retriving any updates to images such as flipp
+  // detects changes to images within ctx so that if crop or flipping has been done... it can update the component to reflect those changes
   useEffect(() => {
-    console.log("images in editor content ", images);
+    // console.log("CHANGE DETECTED TO IMAGES, OR ACTIVEIMAGECTX IN EDITOR CONTENT");
+    // console.log("activeImageCtx ogImageInfo ", activeImageCtx?.ogImageInfo.height, activeImageCtx?.ogImageInfo.width, " and current ", activeImageCtx?.imageInfo.height, activeImageCtx?.imageInfo.width)
+    // console.log("activeImageCtx imagedata ", activeImageCtx?.height, activeImageCtx?.width)
 
-  }, [ images, activeImageCtx ])
+  }, [ images, activeImageCtx, activeImageCtx?.imageInfo.height ])
 
   interface ImageInfo {
     uri: string;
@@ -47,6 +55,7 @@ const EditorContent = () => {
   }
   interface ImageData {
     imageInfo: ImageInfo;
+    ogImageInfo: ImageInfo;
     top: number;
     left: number;
     width: number;

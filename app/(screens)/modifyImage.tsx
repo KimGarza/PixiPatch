@@ -1,4 +1,4 @@
-import { ImageProvider } from '@/components/ImageSelection/ImageCtx';
+import { ImageProvider } from '@/components/image/ImageCtx';
 import ModifyImageContent from '@/components/ModifyImageContent';
 
 export default function ModifyImageScreen() {
