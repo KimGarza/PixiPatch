@@ -95,7 +95,6 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     try {
 
       for ( const image of images ) {
-        console.log("printing initial image.uri ", image.uri);
         const fileName = image.uri.split('/').pop(); //??
         const localUri = `${FileSystem.documentDirectory}${fileName}`; // pointing to a place where documents for this app will be stored
 
@@ -105,8 +104,6 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
         });
 
         image.uri = localUri; // repalce the image uri with the local one
-        console.log("printing new local uri ", localUri);
-
       }
 
     } catch ( error ) {

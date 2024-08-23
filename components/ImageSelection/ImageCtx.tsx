@@ -1,5 +1,6 @@
 import React, { createContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 import * as FileSystem from 'expo-file-system';
+import { SaveLocally } from "../save/saveLocally";
 
 // actual photo from lib
 interface ImageInfo {
@@ -27,6 +28,7 @@ interface ImageCtxType {
   updateImagePosition: (uri: string, newTop: number, newLeft: number) => void; 
   updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void; 
   deleteImage: (uri: string) => void;
+  testFunc: () => void;
 }
 
 // default value is necessary
@@ -38,6 +40,7 @@ const defaultValue: ImageCtxType = {
   updateImagePosition: () => {},
   updateImageInfo: () => {},
   deleteImage: () => {},
+  testFunc: () => {}
 };
 
 // creating the context
@@ -52,10 +55,6 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
   const [test, setTest] = useState<boolean>(false);
   const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
-  useEffect(() => {
-    console.log("HELLOOO");
-  }, [test])
-
   const updateImagePosition = (uri: string, newTop: number, newLeft: number): void => { // void is return type
 
     const foundImage = images.find(img => img.imageInfo.uri == uri);
@@ -65,32 +64,23 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
     }
    };
 
-  // const updateImageUri = async (orignalUri: string, cachedUri: string) => {
-    const updateImageInfo = async (originalImage: ImageInfo, cachedImage: ImageInfo) => {
-      console.log("hello?")
-      setTest(true);
-
-    // store the cached new uri to local storage
-    const fileName = cachedImage.uri.split('/').pop(); // cropped / flipped
-    const newLocalUri = `${FileSystem.documentDirectory}${fileName}`;
-
-    console.log("cached size ", cachedImage.width, cachedImage.height)
-
-
-    await FileSystem.copyAsync({
-      from: cachedImage.uri,
-      to: newLocalUri,
-    });
-
-    // update the original image with the new lcoal uri
+  const updateImageInfo = (originalImage: ImageInfo, cachedImage: ImageInfo) => {
+    console.log("omg helloooo");
+    // save cached image locally
+    // const newLocalUri = await SaveLocally(cachedImage)
+    // delete original image
     setImages((prevImages) => 
-      prevImages.map(img => 
-          img.imageInfo.uri == originalImage.uri 
-          ? { ...img, imageInfo: { ...img.imageInfo, uri: newLocalUri, height: cachedImage.height, width: cachedImage.width } } 
-          : img
-        )
+    prevImages.map(img => 
+        img.imageInfo.uri == originalImage.uri 
+        ? { ...img, imageInfo: { ...img.imageInfo, uri: cachedImage.uri, height: cachedImage.height, width: cachedImage.width } } 
+        : img
+      )
     );
   };
+
+  const testFunc = () => {
+    console.log("TEST FUNC")
+  }
 
 
   const deleteImage = (uri: string): void => {
@@ -110,7 +100,8 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
         setActiveImageCtx,
         updateImagePosition,
         updateImageInfo,
-        deleteImage
+        deleteImage,
+        testFunc
       }}
     >
       {children}

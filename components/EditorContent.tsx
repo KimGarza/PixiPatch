@@ -36,6 +36,8 @@ const EditorContent = () => {
 
   // had to do this for retriving any updates to images such as flipp
   useEffect(() => {
+    console.log("images in editor content ", images);
+
   }, [ images, activeImageCtx ])
 
   interface ImageInfo {
