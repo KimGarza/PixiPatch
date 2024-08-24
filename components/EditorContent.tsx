@@ -2,7 +2,7 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
-import { ImageCtx } from './image/ImageCtx';
+import { ImageCtx } from '../hooks/contexts/useImageCtx';
 import { BackgroundCtx } from './background/BackgroundCtx';
 // editing tools and menus
 import StickerMenu from './Stickers/StickerMenu';

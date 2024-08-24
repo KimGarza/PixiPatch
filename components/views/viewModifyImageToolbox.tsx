@@ -5,7 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { usePathname, useRouter } from "expo-router";
-import { ImageCtx } from "../image/ImageCtx";
+import { ImageCtx } from "../../hooks/contexts/useImageCtx";
 import Flip from "../modification/flip";
 import { useEffect } from "react";
 import Crop from "../modification/crop/crop";

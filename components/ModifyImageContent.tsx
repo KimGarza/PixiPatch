@@ -43,7 +43,6 @@ export default function ModifyImageContent() {
       try {
         const parsedImg: ImageData = JSON.parse(image as string); // deserialized the local param into ImageData
         setImageData(parsedImg);
-        console.log("parsed data ", parsedImg)
         setEncodedUri({ uri: encodeURI(parsedImg.imageInfo.uri) }); // this is the only way to have a valid source for the image in the view!
 
         const { imgWidth, imgHeight } = adjustImageSize(parsedImg.imageInfo.width, parsedImg.imageInfo.height); // adjust image to fully fit the space
@@ -59,7 +58,6 @@ export default function ModifyImageContent() {
 
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
-    console.log("ModifyImageContent ", imageData)
 
     if (activatedTool == 'crop' && imageData) {
       handleCrop();
@@ -71,7 +69,6 @@ export default function ModifyImageContent() {
     if (imageData) { 
       try {
         await Crop(imageData, updateImageInfo);
-        console.log("imageData now ", imageData)
         const { imgWidth, imgHeight } = adjustImageSize(imageData.imageInfo.width, imageData.imageInfo.height); // adjust image to fully fit the space
 
       } catch (error) {
@@ -82,7 +79,6 @@ export default function ModifyImageContent() {
 
   const handlePress = async () => {
     if (activeImageCtx) {
-      console.log("images ,", images)
       try {
         await Crop(activeImageCtx, updateImageInfo);
       } catch (error) {

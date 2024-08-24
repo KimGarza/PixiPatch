@@ -1,6 +1,6 @@
 import React, { createContext, useState, Dispatch, SetStateAction } from "react";
 import { useContext } from "react";
-import { SaveLocally } from "../save/saveLocally";
+import { SaveLocally } from "../../components/save/saveLocally";
 
 interface ImageInfo { // native image object
   uri: string;

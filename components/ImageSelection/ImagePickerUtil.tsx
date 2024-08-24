@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ImageCtx } from '../image/ImageCtx';
+import { ImageCtx } from '../../hooks/contexts/useImageCtx';
 import * as FileSystem from 'expo-file-system';
 
 interface ImageInfo {

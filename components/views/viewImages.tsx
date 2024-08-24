@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useContext, useState, useEffect } from "react";
-import { ImageCtx } from "../image/ImageCtx";
+import { ImageCtx } from "../../hooks/contexts/useImageCtx";
 import MutableImage from "../image/MutableImage";
 
 interface ImageInfo {

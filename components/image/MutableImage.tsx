@@ -5,7 +5,7 @@ import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
-import { ImageCtx } from './ImageCtx';
+import { ImageCtx } from '../../hooks/contexts/useImageCtx';
 import { Feather } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
