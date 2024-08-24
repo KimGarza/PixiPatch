@@ -24,7 +24,6 @@ const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: Image
       };
 
     try {
-        console.log("crop try")
         const cropRegion = {
             originX: 10, // Starting X position of the crop region
             originY: 10, // Starting Y position of the crop region

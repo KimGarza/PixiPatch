@@ -27,24 +27,10 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
 
     const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);
     const { deleteImage, activeImageCtx } = useContext(ImageCtx);
-
-    
-    const hanldeTapped = (image: ImageData | null) =>  { // only get activated if tapped?
-        setNewActiveImage(image);
-    }
-    
     const handleDeleteImage = (imageToDelete: ImageData | null) => {
         if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
     }
-
     
-  // detects changes to images within ctx so that if crop or flipping has been done... it can update the component to reflect those changes
-  useEffect(() => {
-    console.log("CHANGE DETECTED TO IMAGES, OR ACTIVEIMAGECTX IN EDITOR CONTENT ", images);
-    // console.log("activeImageCtx ogImageInfo ", activeImageCtx?.ogImageInfo, " and current ", activeImageCtx?.imageInfo)
-
-  }, [ images, activeImageCtx, activeImageCtx?.imageInfo.height ])
-
     return (
         <View>
             {images.map((imageCtx, index) => (

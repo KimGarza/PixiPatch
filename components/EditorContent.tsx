@@ -40,14 +40,10 @@ const EditorContent = () => {
 
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
-  // detects changes to images within ctx so that if crop or flipping has been done... it can update the component to reflect those changes
   useEffect(() => {
-    // console.log("CHANGE DETECTED TO IMAGES, OR ACTIVEIMAGECTX IN EDITOR CONTENT");
-    // console.log("activeImageCtx ogImageInfo ", activeImageCtx?.ogImageInfo.height, activeImageCtx?.ogImageInfo.width, " and current ", activeImageCtx?.imageInfo.height, activeImageCtx?.imageInfo.width)
-    // console.log("activeImageCtx imagedata ", activeImageCtx?.height, activeImageCtx?.width)
-
-  }, [ images, activeImageCtx, activeImageCtx?.imageInfo.height ])
-
+    console.log("checking for change in uri ", activeImageCtx?.imageInfo.uri)
+  }, [images, activeImageCtx?.imageInfo.uri])
+  
   interface ImageInfo {
     uri: string;
     width: number;

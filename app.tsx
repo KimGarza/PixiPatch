@@ -10,7 +10,6 @@ const  
  Stack = createNativeStackNavigator();
 
 const App = () => {
-    console.log("not working here")
   return (
     <NavigationContainer>
       <Stack.Navigator>

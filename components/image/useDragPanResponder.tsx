@@ -17,14 +17,12 @@ const useDragPanResponder = (initialX = 0, initialY = 0) => {
             },
             onPanResponderGrant: () => {},
             onPanResponderMove: (evt, gestureState) => {
-                console.log("pan responder move");
 
                 // Update the shared values directly
                 positionX.value = lastPosition.current.x + gestureState.dx;
                 positionY.value = lastPosition.current.y + gestureState.dy;
             },
             onPanResponderRelease: (evt, gestureState) => {
-                console.log("pan responder release");
 
                 lastPosition.current = {
                     x: lastPosition.current.x + gestureState.dx,
