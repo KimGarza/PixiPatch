@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "expo-router";
 import { ImageCtx } from "../image/ImageCtx";
 import Flip from "../modification/flip";
 import { useEffect } from "react";
+import Crop from "../modification/crop/crop";
 
 interface ImageInfo {
     uri: string;
@@ -23,21 +24,28 @@ const viewModifyImageToolbox = () => {
 
     const { activeImageCtx, updateImageInfo, images } = useContext(ImageCtx);
 
-    useEffect(() => {
-        console.log("checking for change in uri ", activeImageCtx?.imageInfo.uri)
-    }, [images, activeImageCtx?.imageInfo.uri])
-
     const handlePress = async (toolType: string) => {
         if (toolType == 'flip' && activeImageCtx) {
             try {
                 await Flip(activeImageCtx, updateImageInfo);
             } catch (error) {
                 console.error("Error in handleModifyImage while flipping image:", error);
-            }} else {
-            router.push({
-                pathname: '/(screens)/modifyImage',
-                params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
-            });
+            }
+        } 
+        // else if (toolType == 'crop' && activeImageCtx) {
+        //     try {
+        //         await Crop(activeImageCtx, updateImageInfo);
+        //     } catch (error) {
+        //         console.error("Error in handleModifyImage while flipping image:", error);
+        //     }
+        // } 
+        else {
+            if (activeImageCtx) {
+                router.push({
+                    pathname: '/(screens)/modifyImage',
+                    params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
+                });
+            }
         }
     }
 

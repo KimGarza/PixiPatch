@@ -20,11 +20,6 @@ import GlobalDimensions from './dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
-interface dimens {
-  width: Number,
-  height: Number
-}
-
 const EditorContent = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
@@ -36,13 +31,12 @@ const EditorContent = () => {
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
   const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
   // misc
-  const [ activeImageToEdit, setActiveImageToEdit ] = useState<ImageData | null>(null);
-
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    console.log("checking for change in uri ", activeImageCtx?.imageInfo.uri)
-  }, [images, activeImageCtx?.imageInfo.uri])
+    console.log("images from editor ", images);
+
+  }, [images, activeImageCtx])
   
   interface ImageInfo {
     uri: string;
@@ -73,11 +67,6 @@ const EditorContent = () => {
 
   const handleToggleFilterMenuCallback = () => {
     setFilterMenuToggle(!filterMenuToggle);
-  }
-
-  // user selected image
-  const handleImageTapToEdit = (image: ImageData | null) => {
-    setActiveImageToEdit(image);
   }
 
 return (

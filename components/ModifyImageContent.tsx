@@ -7,7 +7,7 @@ import Crop from '@/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { ImageCtx } from '@/components/image/ImageCtx';
-
+import { Feather } from '@expo/vector-icons';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -31,7 +31,7 @@ export default function ModifyImageContent() {
   const { image, activatedTool } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
 
   const router = useRouter();
-  const { updateImageInfo } = useContext(ImageCtx);
+  const { updateImageInfo, activeImageCtx, images } = useContext(ImageCtx);
 
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
   const [imageData, setImageData] = useState<ImageData>();
@@ -43,7 +43,7 @@ export default function ModifyImageContent() {
       try {
         const parsedImg: ImageData = JSON.parse(image as string); // deserialized the local param into ImageData
         setImageData(parsedImg);
-        
+        console.log("parsed data ", parsedImg)
         setEncodedUri({ uri: encodeURI(parsedImg.imageInfo.uri) }); // this is the only way to have a valid source for the image in the view!
 
         const { imgWidth, imgHeight } = adjustImageSize(parsedImg.imageInfo.width, parsedImg.imageInfo.height); // adjust image to fully fit the space
@@ -59,6 +59,8 @@ export default function ModifyImageContent() {
 
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
+    console.log("ModifyImageContent ", imageData)
+
     if (activatedTool == 'crop' && imageData) {
       handleCrop();
     }
@@ -68,13 +70,27 @@ export default function ModifyImageContent() {
   const handleCrop = async () => {
     if (imageData) { 
       try {
-        const croppedImage = await Crop(imageData, updateImageInfo);
+        await Crop(imageData, updateImageInfo);
+        console.log("imageData now ", imageData)
+        const { imgWidth, imgHeight } = adjustImageSize(imageData.imageInfo.width, imageData.imageInfo.height); // adjust image to fully fit the space
 
       } catch (error) {
         console.error("Error in handleModifyImage while flipping image:", error);
       }
     }
   }
+
+  const handlePress = async () => {
+    if (activeImageCtx) {
+      console.log("images ,", images)
+      try {
+        await Crop(activeImageCtx, updateImageInfo);
+      } catch (error) {
+          console.error("Error in handleModifyImage while flipping image:", error);
+      }
+    }
+  } 
+
 
     // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
   // Reason for using ImageInfo here when canvas uses ImageData is bc some image manipulations affect image at the pixel level.
@@ -104,7 +120,7 @@ return (
           style={styles.headerImg}
           source={require('../assets/images/ElementalEditorBanner.png')}
       />
-      <TouchableOpacity onPress={() => router.push('/(screens)/Editor')} style={styles.back}>
+      <TouchableOpacity onPress={() => router.push('/(screens)')} style={styles.back}>
         <Ionicons name={'arrow-back'} size={35}/>
       </TouchableOpacity>
         
@@ -121,12 +137,18 @@ return (
         </View>
         }
 
+        
+
+
         </View>
       </View>
     </View>
 
     {/* placement of settings for active tool, (active tool would be displayed where bottom toolbar is) */}
     <View style={styles.editSettings}>
+    <TouchableOpacity onPress={() => handlePress()}>
+            <Feather name='crop' size={30}/>
+        </TouchableOpacity>
     </View>
 
     {/* bottom toolbar */}

@@ -1,4 +1,5 @@
 import React, { createContext, useState, Dispatch, SetStateAction } from "react";
+import { useContext } from "react";
 import { SaveLocally } from "../save/saveLocally";
 
 interface ImageInfo { // native image object
@@ -41,12 +42,22 @@ const defaultValue: ImageCtxType = {
 
 export const ImageCtx = createContext<ImageCtxType>(defaultValue);
 
-interface ImageProviderProps {
-  children?: React.ReactNode;
-}
 
-export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
+
+  // Custom hook to use the Image context
+export const useImageCxt = () => {
+    const context = useContext(ImageCtx);
+    if (context === undefined) {
+      throw new Error("useImageContext must be used within an ImageProvider");
+    }
+    return context;
+  };
   
+  interface ImageProviderProps {
+    children?: React.ReactNode;
+  }
+  
+  export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [images, setImages] = useState<ImageData[]>([]);
   const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
@@ -62,14 +73,13 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
    // Takes in the image info of the og and the cached in order to create a new local uri (vs the cache uri of the cached image).
    // Replaces the image in images array with the new cached size and local uri from the cached image. (This is for expo-image-manipulation purposes).
   const updateImageInfo = async (originalImage: ImageInfo, cachedImage: ImageInfo) => {
-
     // save cached image locally
     const newLocalUri = await SaveLocally(cachedImage);
-    console.log("newLocalUri ", newLocalUri);
 
-    const index = images.findIndex(img => img.imageInfo.uri === originalImage.uri);
+    const index = images.findIndex(img => img.imageInfo.uri == originalImage.uri);
 
     if (index !== -1) {
+      console.log("made it to the index")
       // Create a new array with the updated item
       const newImages = [...images]; // Shallow copy of the array
       const updatedImageInfo = { ...images[index].imageInfo, uri: newLocalUri, width: cachedImage.width, height: cachedImage.height };
@@ -77,7 +87,7 @@ export const ImageProvider: React.FC<ImageProviderProps> = ({ children }) => {
       setImages(newImages); // Set the new images array to state
 
      // Update active image context if necessary
-     if (activeImageCtx?.imageInfo.uri === originalImage.uri) {
+     if (activeImageCtx?.imageInfo.uri == originalImage.uri) {
       setActiveImageCtx({ ...activeImageCtx, imageInfo: updatedImageInfo });
     }
   } else {

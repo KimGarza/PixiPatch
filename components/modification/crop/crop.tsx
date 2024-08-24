@@ -17,12 +17,6 @@ interface ImageData {
 
 const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
 
-    const defaultValue: ImageInfo = {
-        uri: '',
-        width: 0,
-        height: 0,
-      };
-
     try {
         const cropRegion = {
             originX: 10, // Starting X position of the crop region
@@ -31,21 +25,19 @@ const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: Image
             height: 300   // Height of the crop region
         };
 
-        const cachedImage  = await ImageManipulator.manipulateAsync(
+        const result  = await ImageManipulator.manipulateAsync(
             imageData.imageInfo.uri,
             [{ crop: cropRegion }],
-            { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
         );
 
-        updateImageInfo(imageData.imageInfo, cachedImage);
+        console.log("test")
+
+        updateImageInfo(imageData.imageInfo, result);
 
     } catch ( error ) {
         console.error('Error flipping the image:', error);
     }
-
-    return defaultValue;
 }
-
-
 
 export default Crop;
