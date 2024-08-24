@@ -1,12 +1,11 @@
 import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Crop from '@/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useImageCxt } from '@/hooks/contexts/useImageCtx';
-import { Feather } from '@expo/vector-icons';
 import CroppableImage from '@/components/modification/crop/croppableImage';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -64,24 +63,9 @@ export default function ModifyImageScreen() {
   useEffect(() => {
 
     // if (activatedTool == 'crop' && imageData) {
-    //   handleCrop();
+    //  setIsCropping(true);
     // }
   }, [ activatedTool, imageData ])
-
-  // Activate crop
-  const handleCrop = async () => {
-    if (imageData) { 
-      try {
-        setIsCropping(true);
-        await Crop(imageData, updateImageInfo).then(() => {
-          // setIsCropping(false);
-        })
-        // const { imgWidth, imgHeight } = adjustImageSize(imageData.imageInfo.width, imageData.imageInfo.height); // adjust image to fully fit the space
-      } catch (error) {
-        console.error("Error in handleModifyImage while flipping image:", error);
-      }
-    }
-  }
 
   // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
   // Reason for using ImageInfo here when canvas uses ImageData is bc some image manipulations affect image at the pixel level.
