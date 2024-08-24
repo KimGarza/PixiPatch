@@ -42,22 +42,17 @@ const defaultValue: ImageCtxType = {
 
 export const ImageCtx = createContext<ImageCtxType>(defaultValue);
 
-
-
-  // Custom hook to use the Image context
+// custom hook to use the Image context - best to use so error handling here rather than having to handle it everytime useContext is used.
 export const useImageCxt = () => {
-    const context = useContext(ImageCtx);
-    if (context === undefined) {
-      throw new Error("useImageContext must be used within an ImageProvider");
-    }
-    return context;
-  };
-  
-  interface ImageProviderProps {
-    children?: React.ReactNode;
+  const context = useContext(ImageCtx);
+
+  if (context === undefined) {
+    throw new Error("useImageContext must be used within an ImageProvider");
   }
+  return context;
+};
   
-  export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
+export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [images, setImages] = useState<ImageData[]>([]);
   const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
@@ -79,7 +74,6 @@ export const useImageCxt = () => {
     const index = images.findIndex(img => img.imageInfo.uri == originalImage.uri);
 
     if (index !== -1) {
-      console.log("made it to the index")
       // Create a new array with the updated item
       const newImages = [...images]; // Shallow copy of the array
       const updatedImageInfo = { ...images[index].imageInfo, uri: newLocalUri, width: cachedImage.width, height: cachedImage.height };

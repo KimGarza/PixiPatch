@@ -4,21 +4,13 @@ import { useContext } from "react";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { usePathname, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { ImageCtx } from "../../hooks/contexts/useImageCtx";
 import Flip from "../modification/flip";
-import { useEffect } from "react";
-import Crop from "../modification/crop/crop";
-
-interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-  }
 
 // Little popup toolbox for editing options on a specific image
 // some props drilling here, passing up tool name to activate elsewhere since it doesnt make good sense to activate viewModifyImage here
-const viewModifyImageToolbox = () => {
+export const viewModifyImageToolbox = () => {
 
     const router = useRouter();
 
@@ -32,13 +24,6 @@ const viewModifyImageToolbox = () => {
                 console.error("Error in handleModifyImage while flipping image:", error);
             }
         } 
-        // else if (toolType == 'crop' && activeImageCtx) {
-        //     try {
-        //         await Crop(activeImageCtx, updateImageInfo);
-        //     } catch (error) {
-        //         console.error("Error in handleModifyImage while flipping image:", error);
-        //     }
-        // } 
         else {
             if (activeImageCtx) {
                 router.push({
@@ -59,7 +44,6 @@ const viewModifyImageToolbox = () => {
                     <Feather name='crop' size={30}/>
                 </TouchableOpacity>
 
-                {/* !!! ONLY WORKS ONCE  */}
                 <TouchableOpacity onPress={() => handlePress('flip')}> 
                     <MaterialCommunityIcons name='mirror' size={30}/>
                 </TouchableOpacity>

@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import { Feather } from '@expo/vector-icons';
+import CroppableImage from '@/components/modification/crop/croppableImage';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 interface ImageInfo {
@@ -34,6 +35,11 @@ export default function ModifyImageScreen() {
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
   const [imageData, setImageData] = useState<ImageData>();
   const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
+  const [isCropping, setIsCropping] = useState<boolean>(true);
+
+  useEffect(() => {
+    console.log("image data yet? ", imageData)
+  }, [images, imageData])
 
 // Since some manipulations affect imageInfo in image coming through as the param.... it won't reflect on view bc not pulling image from context here
   useEffect(() => {
@@ -57,36 +63,27 @@ export default function ModifyImageScreen() {
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
 
-    if (activatedTool == 'crop' && imageData) {
-      handleCrop();
-    }
+    // if (activatedTool == 'crop' && imageData) {
+    //   handleCrop();
+    // }
   }, [ activatedTool, imageData ])
 
   // Activate crop
   const handleCrop = async () => {
     if (imageData) { 
       try {
-        await Crop(imageData, updateImageInfo);
-        const { imgWidth, imgHeight } = adjustImageSize(imageData.imageInfo.width, imageData.imageInfo.height); // adjust image to fully fit the space
-
+        setIsCropping(true);
+        await Crop(imageData, updateImageInfo).then(() => {
+          // setIsCropping(false);
+        })
+        // const { imgWidth, imgHeight } = adjustImageSize(imageData.imageInfo.width, imageData.imageInfo.height); // adjust image to fully fit the space
       } catch (error) {
         console.error("Error in handleModifyImage while flipping image:", error);
       }
     }
   }
 
-  const handlePress = async () => {
-    if (activeImageCtx) {
-      try {
-        await Crop(activeImageCtx, updateImageInfo);
-      } catch (error) {
-          console.error("Error in handleModifyImage while flipping image:", error);
-      }
-    }
-  } 
-
-
-    // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
+  // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
   // Reason for using ImageInfo here when canvas uses ImageData is bc some image manipulations affect image at the pixel level.
   const adjustImageSize = (currWidth: number, currHeight: number) => {
 
@@ -124,10 +121,22 @@ return (
       <View style={styles.canvas} >
         <View style={styles.imageContainer} >
 
-        {encodedUri && 
+        {/* primary image to edit appears but if currently in cropping mode, image will appear dark and another copy will overlay it which will be cropped */}
+        {encodedUri &&
         <View>
-          <Image style={[{height: imageDimension?.imgHeight, width: imageDimension?.imgWidth}]} source={encodedUri}
-          /> 
+          {/* <Image style={[{height: imageDimension?.imgHeight, width: imageDimension?.imgWidth}]} source={encodedUri} */}
+          <Image // this image will appear regardless
+            style={[isCropping ? styles.imageDark : styles.image]} 
+            resizeMode='contain'
+            source={encodedUri}
+          />
+
+          {isCropping && imageData &&
+            <CroppableImage // this image is the active image being cropped and will overlay the other if being cropped to have live cropping
+             image={imageData} encodedUri={encodedUri}
+            />
+          } 
+
         </View>
         }
         </View>
@@ -136,9 +145,6 @@ return (
 
     {/* placement of settings for active tool, (active tool would be displayed where bottom toolbar is) */}
     <View style={styles.editSettings}>
-    <TouchableOpacity onPress={() => handlePress()}>
-            <Feather name='crop' size={30}/>
-        </TouchableOpacity>
     </View>
 
     {/* bottom toolbar */}
@@ -186,9 +192,17 @@ const styles = StyleSheet.create({
   imageContainer: {
       display: 'flex',
       alignContent: 'center', justifyContent: 'flex-end', // flex end or else it isn't centered??
-      borderWidth: .5, borderColor: 'black',
       height: '95%', width: '95%',
       overflow: 'hidden',
+  },
+  image: {
+    height: '100%',
+    width: '100%', 
+  },  
+  imageDark: {
+    height: '100%',
+    width: '100%',
+    opacity: .3 // may need ot add this over a black box the size of the iamge behind it
   },
   editSettings: {
     display: 'flex',

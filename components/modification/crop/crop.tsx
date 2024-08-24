@@ -31,12 +31,10 @@ const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: Image
             { compress: 1, format: ImageManipulator.SaveFormat.PNG }
         );
 
-        console.log("test")
-
         updateImageInfo(imageData.imageInfo, result);
 
     } catch ( error ) {
-        console.error('Error flipping the image:', error);
+        console.error('Error cropping the image:', error);
     }
 }
 
