@@ -1,4 +1,5 @@
-import React, { useContext, createContext, useState, Dispatch, SetStateAction } from "react";
+import React, { createContext, useState, Dispatch, SetStateAction } from "react";
+import { useContext } from "react";
 import { SaveLocally } from "../../components/save/saveLocally";
 
 interface ImageInfo { // native image object
@@ -6,31 +7,33 @@ interface ImageInfo { // native image object
   width: number;
   height: number;
 }
-interface ImageData {
+
+interface ImageData { // custom image object that contains native imageInfo and custom additional data
   imageInfo: ImageInfo;
   ogImageInfo: ImageInfo;
   top: number;
   left: number;
   width: number;
   height: number;
-  contrast?: number;
 }
+
+// Accessible values from this context component
 interface ImageCtxType {
-  images: Map<string, ImageData>;
-  setImages: Dispatch<SetStateAction<Map<string, ImageData>>>;
+  images: ImageData[];
+  setImages: Dispatch<SetStateAction<ImageData[]>>;
   activeImageCtx: ImageData | undefined;
   setActiveImageCtx: Dispatch<SetStateAction<ImageData | undefined>>;
-  deleteImage: (uri: string) => void;
   updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void; 
+  deleteImage: (uri: string) => void;
 }
 
 const defaultValue: ImageCtxType = {
-  images: new Map(),
-  setImages: () => new Map(),
+  images: [],
+  setImages: () => [],
   activeImageCtx: undefined,  
   setActiveImageCtx: () => {},
-  deleteImage: () => {},
   updateImageInfo: () => {},
+  deleteImage: () => {},
 };
 
 export const ImageCtx = createContext<ImageCtxType>(defaultValue);
@@ -46,45 +49,50 @@ export const useImageCxt = () => {
 };
   
 export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
-
-  const [images, setImages] = useState<Map<string, ImageData>>(new Map());
+  const [images, setImages] = useState<ImageData[]>([]);
   const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
-  const updateImageInfo = async (original: ImageInfo, cached: ImageInfo) => {
+   // Takes in the image info of the og and the cached in order to create a new local uri (vs the cache uri of the cached image).
+   // Replaces the image in images array with the new cached size and local uri from the cached image. (This is for expo-image-manipulation purposes).
+  const updateImageInfo = async (originalImage: ImageInfo, cachedImage: ImageInfo) => {
+    // save cached image locally
+    const newLocalUri = await SaveLocally(cachedImage);
 
-    const newLocalUri = await SaveLocally(cached);
+    const index = images.findIndex(img => img.imageInfo.uri == originalImage.uri);
 
-    setImages((prevImages) => {
-      // shallow copy only in reference object in memory, (more efficient that copying all the actual array values) - purpose: helps with triggering rerender 
-      const newImages = new Map(prevImages); // Create a new Map based on the previous state
+    if (index !== -1) {
+      // Create a new array with the updated item
+      const newImages = [...images]; // Shallow copy of the array
+      const updatedImageInfo = { ...images[index].imageInfo, uri: newLocalUri, width: cachedImage.width, height: cachedImage.height };
+      newImages[index] = { ...images[index], imageInfo: updatedImageInfo }; // Update the specific image
+      setImages(newImages); // Set the new images array to state
 
-      const imageToUpdate = newImages.get(original.uri); // find the og image
-      if (imageToUpdate) {
-        imageToUpdate.imageInfo = {
-          ...imageToUpdate.imageInfo,
-          uri: newLocalUri,
-          width: cached.width,
-          height: cached.height
-        };
+     // Update active image context if necessary
+     if (activeImageCtx?.imageInfo.uri == originalImage.uri) {
+      setActiveImageCtx({ ...activeImageCtx, imageInfo: updatedImageInfo });
+    }} else {
 
-        // Set the modified entry back in the Map
-        newImages.set(original.uri, imageToUpdate);
+      // replace original imageInfo
+      setImages((prevImages) => 
+      prevImages.map(img => 
+          img.imageInfo.uri == originalImage.uri 
+          ? { ...img, imageInfo: { uri: newLocalUri, height: cachedImage.height, width: cachedImage.width } } 
+          : img
+        )
+      );
+
+      if (activeImageCtx?.imageInfo.uri == originalImage.uri) {
+        activeImageCtx.imageInfo.uri == newLocalUri
       }
-      return newImages;
-    })
+    };
   }
 
   const deleteImage = (uri: string): void => {
+    setImages((prevImages) =>
+      prevImages.filter((image) => image.imageInfo.uri !== uri)
+    );
+  };
 
-    setImages((prevImages) => {
-      // Create a shallow copy of the Map
-      const newImages = new Map(prevImages);
-      // Use the delete method to remove the image with the specified URI
-      newImages.delete(uri);
-
-      return newImages; // Return the modified Map to update the state
-    });
-  }
 
   return (
     // Accessible values from this context component
@@ -94,8 +102,8 @@ export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children
         setImages,
         activeImageCtx,
         setActiveImageCtx,
-        deleteImage,
         updateImageInfo,
+        deleteImage,
       }}
     >
       {children}

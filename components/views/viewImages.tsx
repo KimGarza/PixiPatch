@@ -30,6 +30,8 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
     const handleDeleteImage = (imageToDelete: ImageData | null) => {
         if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
     }
+
+    // Convert Map to an Array bc JSX doesn't recognize a map as iterable
     
     return (
         <View>

@@ -8,7 +8,6 @@ import { useRouter } from 'expo-router';
 import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import CroppableImage from '@/components/modification/crop/croppableImage';
 import FilterableImage from '@/components/modification/Filters/filterableImage';
-import FilterInterface from '@/components/modification/Filters/filterInterface';
 import viewModifyImageToolbox from '@/components/views/viewModifyImageToolbox';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -141,7 +140,7 @@ return (
 
     {/* placement of settings for active tool, (active tool would be displayed where bottom toolbar is) */}
     <View style={styles.editSettings}>
-      {isFiltering && <FilterInterface/>}
+      {/* {isFiltering && <FilterInterface/>} */}
     </View>
 
     {/* bottom toolbar */}
