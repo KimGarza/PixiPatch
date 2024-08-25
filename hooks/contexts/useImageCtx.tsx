@@ -1,5 +1,4 @@
-import React, { createContext, useState, Dispatch, SetStateAction } from "react";
-import { useContext } from "react";
+import React, { useContext, createContext, useState, Dispatch, SetStateAction } from "react";
 import { SaveLocally } from "../../components/save/saveLocally";
 
 interface ImageInfo { // native image object
@@ -7,37 +6,31 @@ interface ImageInfo { // native image object
   width: number;
   height: number;
 }
-
-interface ImageData { // custom image object that contains native imageInfo and custom additional data
+interface ImageData {
   imageInfo: ImageInfo;
   ogImageInfo: ImageInfo;
   top: number;
   left: number;
   width: number;
   height: number;
+  contrast?: number;
 }
-
-// Accessible values from this context component
 interface ImageCtxType {
-  images: ImageData[];
-  setImages: Dispatch<SetStateAction<ImageData[]>>;
+  images: Map<string, ImageData>;
+  setImages: Dispatch<SetStateAction<Map<string, ImageData>>>;
   activeImageCtx: ImageData | undefined;
   setActiveImageCtx: Dispatch<SetStateAction<ImageData | undefined>>;
-  updateImagePosition: (uri: string, newTop: number, newLeft: number) => void; 
-  updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void; 
-  updateImageDataDimensions: (image: ImageData) => void; 
   deleteImage: (uri: string) => void;
+  updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void; 
 }
 
 const defaultValue: ImageCtxType = {
-  images: [],
-  setImages: () => [],
+  images: new Map(),
+  setImages: () => new Map(),
   activeImageCtx: undefined,  
   setActiveImageCtx: () => {},
-  updateImagePosition: () => {},
-  updateImageInfo: () => {},
-  updateImageDataDimensions: () => {},
   deleteImage: () => {},
+  updateImageInfo: () => {},
 };
 
 export const ImageCtx = createContext<ImageCtxType>(defaultValue);
@@ -53,85 +46,45 @@ export const useImageCxt = () => {
 };
   
 export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
-  const [images, setImages] = useState<ImageData[]>([]);
+
+  const [images, setImages] = useState<Map<string, ImageData>>(new Map());
   const [activeImageCtx, setActiveImageCtx] = useState<ImageData>();
 
-  const updateImagePosition = (uri: string, newTop: number, newLeft: number): void => { // void is return type
+  const updateImageInfo = async (original: ImageInfo, cached: ImageInfo) => {
 
-    const foundImage = images.find(img => img.imageInfo.uri == uri);
-    if (foundImage) {
-      foundImage.left = newLeft;
-      foundImage.top = newTop;
-    }
-   };
+    const newLocalUri = await SaveLocally(cached);
 
-   // Takes in the image info of the og and the cached in order to create a new local uri (vs the cache uri of the cached image).
-   // Replaces the image in images array with the new cached size and local uri from the cached image. (This is for expo-image-manipulation purposes).
-  const updateImageInfo = async (originalImage: ImageInfo, cachedImage: ImageInfo) => {
-    // save cached image locally
-    const newLocalUri = await SaveLocally(cachedImage);
+    setImages((prevImages) => {
+      // shallow copy only in reference object in memory, (more efficient that copying all the actual array values) - purpose: helps with triggering rerender 
+      const newImages = new Map(prevImages); // Create a new Map based on the previous state
 
-    const index = images.findIndex(img => img.imageInfo.uri == originalImage.uri);
+      const imageToUpdate = newImages.get(original.uri); // find the og image
+      if (imageToUpdate) {
+        imageToUpdate.imageInfo = {
+          ...imageToUpdate.imageInfo,
+          uri: newLocalUri,
+          width: cached.width,
+          height: cached.height
+        };
 
-    if (index !== -1) {
-      // Create a new array with the updated item
-      const newImages = [...images]; // Shallow copy of the array
-      const updatedImageInfo = { ...images[index].imageInfo, uri: newLocalUri, width: cachedImage.width, height: cachedImage.height };
-      newImages[index] = { ...images[index], imageInfo: updatedImageInfo }; // Update the specific image
-      setImages(newImages); // Set the new images array to state
-
-     // Update active image context if necessary
-     if (activeImageCtx?.imageInfo.uri == originalImage.uri) {
-      setActiveImageCtx({ ...activeImageCtx, imageInfo: updatedImageInfo });
-    }
-  } else {
-
-    // replace original imageInfo
-    setImages((prevImages) => 
-    prevImages.map(img => 
-        img.imageInfo.uri == originalImage.uri 
-        ? { ...img, imageInfo: { uri: newLocalUri, height: cachedImage.height, width: cachedImage.width } } 
-        : img
-      )
-    );
-
-    if (activeImageCtx?.imageInfo.uri == originalImage.uri) {
-      activeImageCtx.imageInfo.uri == newLocalUri
-    }
-  };
-}
-
-  // Updates the dimensions of the ImageData submited with the new values based on the max width of 200
-  const updateImageDataDimensions = async (image: ImageData) => {
-
-    const { width, height } = adjustImageDataSize(image.imageInfo.width, image.imageInfo.height);
-
-    setImages((prevImages) => 
-    prevImages.map(img => 
-        img.imageInfo.uri == image.imageInfo.uri 
-        ? { ...img, width: width, height: height} 
-        : img
-      )
-    );
-  };
+        // Set the modified entry back in the Map
+        newImages.set(original.uri, imageToUpdate);
+      }
+      return newImages;
+    })
+  }
 
   const deleteImage = (uri: string): void => {
-    setImages((prevImages) =>
-      prevImages.filter((image) => image.imageInfo.uri !== uri)
-    );
-  };
 
-  // Takes in the width and height of the raw image, to evaluate what the actual image aspect ratio is, 
-  // then adjust image size to come in when picked as reasonable size for canvas, while maintaining aspect ratio of ImageInfo
-  const adjustImageDataSize = (imageInfoWidth: number, imageInfoHeight: number) => {
-    const maxWidth = 200;
-    const aspectRatio = imageInfoWidth / imageInfoHeight;
-    return {
-      width: maxWidth,
-      height: maxWidth / aspectRatio,
-    };
-  };
+    setImages((prevImages) => {
+      // Create a shallow copy of the Map
+      const newImages = new Map(prevImages);
+      // Use the delete method to remove the image with the specified URI
+      newImages.delete(uri);
 
+      return newImages; // Return the modified Map to update the state
+    });
+  }
 
   return (
     // Accessible values from this context component
@@ -141,10 +94,8 @@ export const ImageProvider: React.FC<{children?: React.ReactNode}> = ({ children
         setImages,
         activeImageCtx,
         setActiveImageCtx,
-        updateImagePosition,
-        updateImageInfo,
-        updateImageDataDimensions,
         deleteImage,
+        updateImageInfo,
       }}
     >
       {children}

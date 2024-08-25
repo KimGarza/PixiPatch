@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import Crop from '@/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { ImageCtx } from '@/components/image/ImageCtx';
+import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import { Feather } from '@expo/vector-icons';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -23,6 +23,7 @@ interface ImageData {
   left: number;
   width: number;
   height: number;
+  contrast?: number;
 }
 
 // Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
@@ -31,7 +32,7 @@ export default function ModifyImageContent() {
   const { image, activatedTool } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
 
   const router = useRouter();
-  const { updateImageInfo, activeImageCtx, images } = useContext(ImageCtx);
+  const { updateImageInfo, activeImageCtx, images } = useImageCxt();
 
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
   const [imageData, setImageData] = useState<ImageData>();

@@ -20,9 +20,10 @@ interface ImageData {
 interface Props {
     image: ImageData;
     encodedUri: ImageSourcePropType;
+    dimensions: {imgWidth: number, imgHeight: number}; // this sizing was retrieved from onchangelayout once image was displayed with 100% x 100%
 }
 
-const CroppableImage = ({ image, encodedUri }: Props) => {
+const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
 
     const [cropBox, setCropBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
     // by default, set to imageData w/h but it will immediately adjust to the size which fills the view area using the onChangeLayout
@@ -56,7 +57,7 @@ const CroppableImage = ({ image, encodedUri }: Props) => {
     return (
         <View style={styles.imageToCrop}>
             <Image
-                style={styles.imageToCrop}
+                style={[styles.imageToCrop, {width: dimensions.imgWidth, height: dimensions.imgHeight}]}
                 source={encodedUri}
                 onLayout={handleImageLayout}
             />

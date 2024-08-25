@@ -50,6 +50,7 @@ const EditorContent = () => {
     left: number;
     width: number;
     height: number;
+    contrast?: number;
   }
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed

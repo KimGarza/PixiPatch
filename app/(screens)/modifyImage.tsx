@@ -7,6 +7,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import CroppableImage from '@/components/modification/crop/croppableImage';
+import FilterableImage from '@/components/modification/Filters/filterableImage';
+import FilterInterface from '@/components/modification/Filters/filterInterface';
+import viewModifyImageToolbox from '@/components/views/viewModifyImageToolbox';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 interface ImageInfo {
@@ -21,6 +24,7 @@ interface ImageData {
   left: number;
   width: number;
   height: number;
+  contrast?: number;
 }
 
 // Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
@@ -33,8 +37,10 @@ export default function ModifyImageScreen() {
 
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
   const [imageData, setImageData] = useState<ImageData>();
-  const [imageDimension, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
-  const [isCropping, setIsCropping] = useState<boolean>(true);
+  const [imageDimensions, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
+
+  const [isCropping, setIsCropping] = useState<boolean>(false);
+  const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
   useEffect(() => {
   }, [images, imageData])
@@ -61,9 +67,11 @@ export default function ModifyImageScreen() {
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
 
-    // if (activatedTool == 'crop' && imageData) {
-    //  setIsCropping(true);
-    // }
+    if (activatedTool == 'crop' && imageData) {
+      setIsCropping(true);
+    } else if (activatedTool == 'filter' && imageData) {
+      setIsFiltering(true);
+    }
   }, [ activatedTool, imageData ])
 
   // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
@@ -104,30 +112,36 @@ return (
       <View style={styles.canvas} >
         <View style={styles.imageContainer} >
 
-        {/* primary image to edit appears but if currently in cropping mode, image will appear dark and another copy will overlay it which will be cropped */}
-        {encodedUri &&
+        {encodedUri && (
         <View>
-          {/* <Image style={[{height: imageDimension?.imgHeight, width: imageDimension?.imgWidth}]} source={encodedUri} */}
-          <Image // this image will appear regardless
-            style={[isCropping ? styles.imageDark : styles.image]} 
-            resizeMode='contain'
+          {/* Primary image: Appears always, darkened if cropping */}
+          <Image
+            style={[isCropping ? styles.imageDark : styles.image]}
+            resizeMode="contain"
             source={encodedUri}
           />
 
-          {isCropping && imageData &&
-            <CroppableImage // this image is the active image being cropped and will overlay the other if being cropped to have live cropping
-             image={imageData} encodedUri={encodedUri}
-            />
-          } 
-
+          {/* Conditional rendering based on current mode (cropping, filtering, etc.) */}
+          {isCropping && imageData && imageDimensions ? (
+            <CroppableImage image={imageData} encodedUri={encodedUri} dimensions={imageDimensions}/>
+          ) : isFiltering && imageData && imageDimensions ? (
+            <FilterableImage image={imageData} encodedUri={encodedUri} dimensions={imageDimensions}/>
+          // ) : isErasing ? (
+          //   // Default view or image when not in any specific mode
+          //   <ErasableImage image={imageData} encodedUri={encodedUri} />
+          // ) : isDrawing ? (
+          //   // Default view or image when not in any specific mode
+          //   <DrawableImage image={imageData} encodedUri={encodedUri} />
+          ) : (<></>)}
         </View>
-        }
+      )}
         </View>
       </View>
     </View>
 
     {/* placement of settings for active tool, (active tool would be displayed where bottom toolbar is) */}
     <View style={styles.editSettings}>
+      {isFiltering && <FilterInterface/>}
     </View>
 
     {/* bottom toolbar */}
