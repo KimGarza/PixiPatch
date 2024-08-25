@@ -37,7 +37,6 @@ export default function ModifyImageScreen() {
   const [isCropping, setIsCropping] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("image data yet? ", imageData)
   }, [images, imageData])
 
 // Since some manipulations affect imageInfo in image coming through as the param.... it won't reflect on view bc not pulling image from context here

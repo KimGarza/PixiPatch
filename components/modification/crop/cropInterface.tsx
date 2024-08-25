@@ -1,17 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, StyleSheet } from 'react-native';
 import useCropPanResponder from './useCropPanResponder';
-
 interface ImageInfo {
     uri: string;
-    width: number;
-    height: number;
-  }
-  interface ImageData {
-    imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
     width: number;
     height: number;
   }
@@ -24,11 +15,16 @@ interface Props {
         width: number;
         height: number;
     }>>
+    imageMaxDimensions: {width: number, height: number}
 }
 
-const CropInterface = ({ cropBox, setCropBox }: Props) => {
+const CropInterface = ({ cropBox, setCropBox, imageMaxDimensions }: Props) => {
 
-    const panHandlers = useCropPanResponder({cropBox, setCropBox});
+    const panHandlers = useCropPanResponder({cropBox, setCropBox, imageMaxDimensions});
+
+    useEffect(() => {
+      console.log("cropbox in cropinterface ", cropBox)
+  }, [cropBox])
 
   return (
     <View style={{ 
