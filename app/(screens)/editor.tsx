@@ -30,20 +30,13 @@ const EditorScreen = () => {
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
   const [ drawMenuToggle, setDrawMenuToggle ] = useState<boolean>(false);
-  const [ filterMenuToggle, setFilterMenuToggle ] = useState<boolean>(false);
   // misc
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    console.log("images from editor ", images);
+    // console.log("images from editor ", images);
 
   }, [images, activeImageCtx])
-  
-  interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-  }
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
@@ -56,10 +49,6 @@ const EditorScreen = () => {
 
   const handleToggleDrawMenuCallback = () => {
     setDrawMenuToggle(!drawMenuToggle);
-  }
-
-  const handleToggleFilterMenuCallback = () => {
-    setFilterMenuToggle(!filterMenuToggle);
   }
 
 return (

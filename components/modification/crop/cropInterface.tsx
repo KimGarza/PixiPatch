@@ -6,11 +6,13 @@ interface Props {
 }
 
 const CropInterface = ({ imageMaxDimensions }: Props) => {
+  console.log("imagedimensions ", imageMaxDimensions)
+
   const positionRef = useRef({ x: 0, y: 0 });
   const dimensRef = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
 
   const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-  const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
+  const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: dimensRef.current.width, height: dimensRef.current.height });
 
   // 1. starting off before the first touch we are at 0, 0 and max h and w
   // 2. Now after the first gesture, these values will add x, y or subtract amount to reflect new last position/left off
@@ -31,7 +33,7 @@ const CropInterface = ({ imageMaxDimensions }: Props) => {
         dimensRef.current.height = initialDimens.current.height - gestureState.dy;
 
         setPosition({ x: positionRef.current.x, y: positionRef.current.y });
-        setDimens({ width: dimens.width, height: dimens.height });
+        setDimens({ width: dimensRef.current.width, height: dimensRef.current.height });
       },
       onPanResponderRelease: (evt, gestureState) => {
 
@@ -45,6 +47,9 @@ const CropInterface = ({ imageMaxDimensions }: Props) => {
 
         initialTouch.current = { x: x, y: y };
         initialDimens.current = { width: w, height: h };
+
+        console.log("current dimensions ", dimens, " or ref ", dimensRef.current)
+
       }
     })
   ).current;
@@ -56,7 +61,7 @@ const CropInterface = ({ imageMaxDimensions }: Props) => {
       left: position.x,
       width: dimens.width,
       height: dimens.height,
-      borderWidth: 5, borderColor: 'blue', borderStyle: 'solid'
+      borderWidth: 2, borderColor: 'blue', borderStyle: 'solid'
     }}>
       <View style={[styles.corner, { left: -5, top: -5 }]} {...panResponderLeftCorner.panHandlers} />
       {/* Add other corners */}

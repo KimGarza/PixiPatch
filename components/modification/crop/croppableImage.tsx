@@ -23,6 +23,9 @@ interface Props {
     dimensions: {imgWidth: number, imgHeight: number}; // this sizing was retrieved from onchangelayout once image was displayed with 100% x 100%
 }
 
+const height = 595.111;
+const width = 448;
+
 const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
 
     const [cropBox, setCropBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -54,9 +57,9 @@ const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
     }, [cropBox])
 
     return (
-        <View style={styles.imageToCrop}>
+        <View style={styles.image}>
             <Image
-                style={[styles.imageToCrop, {width: dimensions.imgWidth, height: dimensions.imgHeight}]}
+                style={styles.image}
                 source={encodedUri}
                 onLayout={handleImageLayout}
             />
@@ -69,7 +72,7 @@ const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
 export default CroppableImage;
 
 const styles = StyleSheet.create({
-    imageToCrop: { // this is being used by view and image bc both are required for image to be visible
+    image: { // this is being used by view and image bc both are required for image to be visible
         height: '100%',
         width: '100%',
         position: 'absolute',
