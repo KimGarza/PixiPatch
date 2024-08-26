@@ -51,7 +51,6 @@ const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
     }
 
     useEffect(() => {
-        console.log("cropbox in croppableImage ", cropBox)
     }, [cropBox])
 
     return (
@@ -62,7 +61,7 @@ const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
                 onLayout={handleImageLayout}
             />
 
-            { cropBox.width != 0 && <CropInterface cropBox={cropBox} setCropBox={setCropBox} imageMaxDimensions={displayImgDimensions}/> }
+            { cropBox.width != 0 && <CropInterface imageMaxDimensions={displayImgDimensions}/> }
         </View>
     );
 };

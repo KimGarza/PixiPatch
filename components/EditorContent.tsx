@@ -33,10 +33,10 @@ const EditorContent = () => {
   // misc
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
-  useEffect(() => {
-    console.log("images from editor ", images);
+  // useEffect(() => {
+  //   console.log("images from editor ", images);
 
-  }, [images, activeImageCtx])
+  // }, [images, activeImageCtx])
   
   interface ImageInfo {
     uri: string;

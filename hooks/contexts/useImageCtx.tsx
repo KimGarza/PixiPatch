@@ -43,7 +43,7 @@ export const useImageCxt = () => {
   const context = useContext(ImageCtx);
 
   if (context === undefined) {
-    throw new Error("useImageContext must be used within an ImageProvider");
+    throw new Error("useImageCxt must be used within an ImageProvider");
   }
   return context;
 };
