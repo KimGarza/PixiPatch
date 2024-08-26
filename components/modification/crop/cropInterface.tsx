@@ -1,69 +1,50 @@
 import React, { useRef, useState } from 'react';
 import { View, StyleSheet, PanResponder } from 'react-native';
+import useTopLeftPanResponder from './useTopLeftPanResponder';
+import useTopRightPanResponder from './useTopRightPanResponder';
 
 interface Props {
     imageMaxDimensions: { width: number, height: number }
 }
 
 const CropInterface = ({ imageMaxDimensions }: Props) => {
-  console.log("imagedimensions ", imageMaxDimensions)
 
-  const positionRef = useRef({ x: 0, y: 0 });
+  // TL - top left, BR - bottom right, etc...
+  const TLPositionRef = useRef({ x: 0, y: 0 });
+  const [TLPosition, setTLPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+
   const dimensRef = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
-
-  const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: dimensRef.current.width, height: dimensRef.current.height });
+
+  const TRPositionRef = useRef({ x: 0, y: 0 });
+  const [TRPosition, setTRPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
 
   // 1. starting off before the first touch we are at 0, 0 and max h and w
   // 2. Now after the first gesture, these values will add x, y or subtract amount to reflect new last position/left off
-  const initialTouch = useRef({ x: 0, y: 0 });
-  const initialDimens = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
+  const TLinitialPositionRef = useRef({ x: 0, y: 0 });
+  const TRinitialPositionRef = useRef({ x: 0, y: 0 });
+  const initialDimensRef = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
 
-  const panResponderLeftCorner = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: (evt, gestureState) => {
+  const { topLeft }= useTopLeftPanResponder(
+    {TLPositionRef, dimensRef, setTLPosition, setDimens, TLinitialPositionRef, initialDimensRef}
+  );
 
-        // 1. we add the initial count of everything as we equate dx and dy to the new x and y with considering whatever the initial dimensions are
-        // 2. now when we start moving again, it will equate the value to the gesture state but simply add or subtract initial to start it in the correct location rather than 0,0 full h and w
-        positionRef.current.x = initialTouch.current.x + gestureState.dx;
-        positionRef.current.y = initialTouch.current.y + gestureState.dy;
-
-        dimensRef.current.width = initialDimens.current.width - gestureState.dx;
-        dimensRef.current.height = initialDimens.current.height - gestureState.dy;
-
-        setPosition({ x: positionRef.current.x, y: positionRef.current.y });
-        setDimens({ width: dimensRef.current.width, height: dimensRef.current.height });
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-
-        // 1. whatever the initial value was that we started at will now add the current dx, dy bc that is the new "left off" value subtracting from the initial
-        // 2. so now we continue to stack values but only on initial dimens and initial touch
-        const x = gestureState.dx + initialTouch.current.x;
-        const y = gestureState.dy + initialTouch.current.y;
-
-        const w = initialDimens.current.width - gestureState.dx;
-        const h = initialDimens.current.height - gestureState.dy;
-
-        initialTouch.current = { x: x, y: y };
-        initialDimens.current = { width: w, height: h };
-
-        console.log("current dimensions ", dimens, " or ref ", dimensRef.current)
-
-      }
-    })
-  ).current;
+  const { topRight }= useTopRightPanResponder(
+    {TRPositionRef, dimensRef, setTRPosition, setDimens, TRinitialPositionRef, initialDimensRef}
+  );
 
   return (
     <View style={{
       position: 'absolute',
-      top: position.y,
-      left: position.x,
+      top: TLPosition.y,
+      left: TLPosition.x,
+      right: TRPosition.x,
       width: dimens.width,
       height: dimens.height,
       borderWidth: 2, borderColor: 'blue', borderStyle: 'solid'
     }}>
-      <View style={[styles.corner, { left: -5, top: -5 }]} {...panResponderLeftCorner.panHandlers} />
+      <View style={[styles.corner, { left: -5, top: -5 }]} {...topLeft.panHandlers } />
+      <View style={[styles.corner, { right: -5, top: -5 }]} {...topRight.panHandlers } />
       {/* Add other corners */}
     </View>
   );
