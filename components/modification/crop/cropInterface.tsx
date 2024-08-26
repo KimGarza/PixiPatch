@@ -12,37 +12,39 @@ const CropInterface = ({ imageMaxDimensions }: Props) => {
   const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
 
+  // 1. starting off before the first touch we are at 0, 0 and max h and w
+  // 2. Now after the first gesture, these values will add x, y or subtract amount to reflect new last position/left off
   const initialTouch = useRef({ x: 0, y: 0 });
+  const initialDimens = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
 
   const panResponderLeftCorner = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        // Capture the initial touch point
-        initialTouch.current = { x: gestureState.x0, y: gestureState.y0 };
-      },
       onPanResponderMove: (evt, gestureState) => {
-        // Calculate the displacement from the initial touch
-        const dx = gestureState.moveX - initialTouch.current.x;
-        const dy = gestureState.moveY - initialTouch.current.y;
 
-        // Apply the displacement
-        const newX = positionRef.current.x + dx;
-        const newY = positionRef.current.y + dy;
+        // 1. we add the initial count of everything as we equate dx and dy to the new x and y with considering whatever the initial dimensions are
+        // 2. now when we start moving again, it will equate the value to the gesture state but simply add or subtract initial to start it in the correct location rather than 0,0 full h and w
+        positionRef.current.x = initialTouch.current.x + gestureState.dx;
+        positionRef.current.y = initialTouch.current.y + gestureState.dy;
 
-        const newWidth = Math.max(0, dimensRef.current.width - dx);
-        const newHeight = Math.max(0, dimensRef.current.height - dy);
+        dimensRef.current.width = initialDimens.current.width - gestureState.dx;
+        dimensRef.current.height = initialDimens.current.height - gestureState.dy;
 
-        // Update the refs and state
-        positionRef.current = { x: newX, y: newY };
-        dimensRef.current = { width: newWidth, height: newHeight };
-
-        setPosition({ x: newX, y: newY });
-        setDimens({ width: newWidth, height: newHeight });
+        setPosition({ x: positionRef.current.x, y: positionRef.current.y });
+        setDimens({ width: dimens.width, height: dimens.height });
       },
-      onPanResponderRelease: () => {
-        // Reset initial touch
-        initialTouch.current = { x: 0, y: 0 };
+      onPanResponderRelease: (evt, gestureState) => {
+
+        // 1. whatever the initial value was that we started at will now add the current dx, dy bc that is the new "left off" value subtracting from the initial
+        // 2. so now we continue to stack values but only on initial dimens and initial touch
+        const x = gestureState.dx + initialTouch.current.x;
+        const y = gestureState.dy + initialTouch.current.y;
+
+        const w = initialDimens.current.width - gestureState.dx;
+        const h = initialDimens.current.height - gestureState.dy;
+
+        initialTouch.current = { x: x, y: y };
+        initialDimens.current = { width: w, height: h };
       }
     })
   ).current;
