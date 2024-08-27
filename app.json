@@ -18,7 +18,8 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.elemental_editor"
     },
     "web": {
       "bundler": "metro",
@@ -26,7 +27,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "with-rn-image-crop-picker",
+        {
+          "PhotoLibraryUsageDescription": "Allow app XYZ to access your photos",
+          "CameraUsageDescription": "Allow app XYZ to access your camera",
+          "MicrophoneUsageDescription": "Allow app XYZ to access your microphone"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

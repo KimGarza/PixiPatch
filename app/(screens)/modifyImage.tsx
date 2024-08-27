@@ -68,9 +68,7 @@ export default function ModifyImageScreen() {
 
     if (activatedTool == 'crop' && imageData) {
       setIsCropping(true);
-    } else if (activatedTool == 'filter' && imageData) {
-      setIsFiltering(true);
-    }
+    } 
   }, [ activatedTool, imageData ])
 
   // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.

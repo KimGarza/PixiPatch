@@ -23,48 +23,46 @@ interface Props {
     dimensions: {imgWidth: number, imgHeight: number}; // this sizing was retrieved from onchangelayout once image was displayed with 100% x 100%
 }
 
-const height = 595.111;
-const width = 448;
+const CroppableImage = ({ image, encodedUri }: Props) => {
 
-const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
-
-    const [cropBox, setCropBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
     // by default, set to imageData w/h but it will immediately adjust to the size which fills the view area using the onChangeLayout
-    const [ displayImgDimensions, setDisplayImgDimensions ] = useState({width: image.width, height: image.height})
+    const [ displayImgDimensions, setDisplayImgDimensions ] = useState({width: 0, height: 0})
 
-    // due to the fact that most images have a hight pixel res / density and intrinsic units will be adjsuted for display purposes
-    // we must calculate the ratio of the actual imageInfo.w and h to the displayed size. This will help calculate for crop region.
-    const calculateActualCropRegion = () => {
-        const scaleWidth = image.imageInfo.width / displayImgDimensions.width; // the actual imageInfo (pixels) width / by the width that it conforms to to fit the view area to get the scaleWidth which will be used again to calculate the parrellel crop area to the real imageinfo
-        const scaleHeight = image.imageInfo.height / displayImgDimensions.height;
-    }
+    const [position, setPosition] = useState<{top: number, bottom: number, left: number, right: number}>({top: 0, bottom: 0, left: 0, right: 0});
+    const [dimens, setDimens] = useState<{width: number, height: number}>({width: 0, height: 0});
 
     // finding the size that the image adjusted to in intrinsic values since they pertain to what the user sees when they crop
     const handleImageLayout = ( event: LayoutChangeEvent ) => {
-
         const { width, height } = event.nativeEvent.layout;
         setDisplayImgDimensions({width, height});
-
-        setCropBox({
-            x: 0,
-            y: 0,
-            width: width,
-            height: height
-        });
     }
 
-    useEffect(() => {
-    }, [cropBox])
+    const handlePositionCallback = (updatedPosition: {top: number, bottom: number, left: number, right: number}) => {
+        console.log("position callback ", updatedPosition)
+        setPosition(updatedPosition)
+    }
+
+    const handleDimensionsCallback = (updatedDimensions: {width: number, height: number}) => {
+        console.log("position callback ", updatedDimensions)
+        setDimens(updatedDimensions)
+    }
 
     return (
-        <View style={styles.image}>
+        <View style={styles.fullOpacityImage}>
             <Image
-                style={styles.image}
+                style={[styles.fullOpacityImage, dimens.width != 0 && { // conditional to check if the callbacks have been activated, if so dimens.width would not be 0
+                    left: position.left,
+                    top: position.top,
+                    bottom: position.bottom,
+                    right: position.right,
+                    width: dimens.width,
+                    height: dimens.height,
+                  }]}
                 source={encodedUri}
                 onLayout={handleImageLayout}
             />
 
-            { cropBox.width != 0 && <CropInterface imageMaxDimensions={displayImgDimensions}/> }
+            {displayImgDimensions.width > 0 && <CropInterface imageMaxDimensions={displayImgDimensions} setDimensCallback={handleDimensionsCallback} updatePositionCallback={handlePositionCallback}/>}
         </View>
     );
 };
@@ -72,7 +70,7 @@ const CroppableImage = ({ image, encodedUri, dimensions }: Props) => {
 export default CroppableImage;
 
 const styles = StyleSheet.create({
-    image: { // this is being used by view and image bc both are required for image to be visible
+    fullOpacityImage: { // this is being used by view and image bc both are required for image to be visible
         height: '100%',
         width: '100%',
         position: 'absolute',

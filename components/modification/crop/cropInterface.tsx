@@ -1,61 +1,55 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, PanResponder } from 'react-native';
-import useTopLeftPanResponder from './useTopLeftPanResponder';
-import useTopRightPanResponder from './useTopRightPanResponder';
+import useTopPanResponder from './useTopPanResponder';
+import useBottomPanResponder from './useBottomPanResponder';
 
 interface Props {
-    imageMaxDimensions: { width: number, height: number }
+    imageMaxDimensions: { width: number, height: number },
+    updatePositionCallback: (position: {top: number, bottom: number, left: number, right: number}) => void,
+    setDimensCallback: (dimensions:  { width: number, height: number }) => void,
 }
 
-const CropInterface = ({ imageMaxDimensions }: Props) => {
+const CropInterface = ({ imageMaxDimensions, setDimensCallback, updatePositionCallback }: Props) => {
 
-  // TL - top left, BR - bottom right, etc...
-  const TLPositionRef = useRef({ x: 0, y: 0 });
-  const [TLPosition, setTLPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const positionRef = useRef({top: 0, bottom: 0, left: 0, right: 0});
+  const initialPositionsRef = useRef({top: 0, bottom: 0, left: 0, right: 0});
+  const [position, setPosition] = useState<{top: number, bottom: number, left: number, right: number}>({top: 0, bottom: 0, left: 0, right: 0});
 
   const dimensRef = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
-  const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: dimensRef.current.width, height: dimensRef.current.height });
-
-  const TRPositionRef = useRef({ x: 0, y: 0 });
-  const [TRPosition, setTRPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-
-  // 1. starting off before the first touch we are at 0, 0 and max h and w
-  // 2. Now after the first gesture, these values will add x, y or subtract amount to reflect new last position/left off
-  const TLinitialPositionRef = useRef({ x: 0, y: 0 });
-  const TRinitialPositionRef = useRef({ x: 0, y: 0 });
+  const [dimens, setDimens] = useState<{ width: number, height: number }>({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
   const initialDimensRef = useRef({ width: imageMaxDimensions.width, height: imageMaxDimensions.height });
 
-  const { topLeft }= useTopLeftPanResponder(
-    {TLPositionRef, dimensRef, setTLPosition, setDimens, TLinitialPositionRef, initialDimensRef}
-  );
-
-  const { topRight }= useTopRightPanResponder(
-    {TRPositionRef, dimensRef, setTRPosition, setDimens, TRinitialPositionRef, initialDimensRef}
-  );
+  const { topPanHandlers } = useTopPanResponder({imageMaxDimensions, positionRef, initialPositionsRef, setPosition, dimensRef, initialDimensRef, setDimens, setDimensCallback, updatePositionCallback});
+  const { bottomPanHandlers } = useBottomPanResponder({imageMaxDimensions, positionRef, initialPositionsRef, setPosition, dimensRef, initialDimensRef, setDimens, setDimensCallback, updatePositionCallback});
 
   return (
     <View style={{
+      display: 'flex',
       position: 'absolute',
-      top: TLPosition.y,
-      left: TLPosition.x,
-      right: TRPosition.x,
+      top: position.top,
+      bottom: position.bottom,
+      // left: position.left,
+      // right: position.right,
       width: dimens.width,
       height: dimens.height,
       borderWidth: 2, borderColor: 'blue', borderStyle: 'solid'
     }}>
-      <View style={[styles.corner, { left: -5, top: -5 }]} {...topLeft.panHandlers } />
-      <View style={[styles.corner, { right: -5, top: -5 }]} {...topRight.panHandlers } />
+      {/* 10% NOT 50% FOR LEFT? */}
+      {/* //TOP */}
+      <View style={[styles.handle, { top: -5, left: '10%', }]} {...topPanHandlers } />
+      {/* BOTTOM */}
+      <View style={[styles.handle, { bottom: -5, left: '10%', }]} {...bottomPanHandlers } />
       {/* Add other corners */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  corner: {
+  handle: {
     position: 'absolute',
-    maxWidth: 20,
-    maxHeight: 20,
-    minWidth: 20,
+    maxWidth: '80%',
+    maxHeight: 30,
+    minWidth: '100%',
     minHeight: 20,
     borderWidth: 2, borderColor: 'white', borderStyle: 'solid',
   },
