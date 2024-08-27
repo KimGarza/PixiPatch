@@ -1,9 +1,13 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ImageCtx } from '../../hooks/contexts/useImageCtx';
+import { useImageCtx } from '../../hooks/contexts/useImageCtx';
 import * as FileSystem from 'expo-file-system';
 
+interface Item {
+  id: string,
+  zIndex: number
+}
 interface ImageInfo {
   uri: string;
   width: number;
@@ -25,7 +29,7 @@ interface ImagePickerUtilProps {
 // Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
 const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
-  const { setImages } = useContext(ImageCtx);
+  const { setImages, images } = useImageCtx();
 
   const adjustImageSize = (width: number, height: number) => {
     const maxWidth = 200;
@@ -38,16 +42,23 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
   // converts basic photo and converts it to ImageData Type which just adds additional data for app
   const convertToImageData = (image: ImageInfo) => {
-    const { width, height } = adjustImageSize(image.width, image.height)
-    const imageData: ImageData = {
-      imageInfo: image,
-      ogImageInfo: { ...image },
-      top: Math.floor(Math.random() * (100 - 30)) + 30,
-      left: Math.floor(Math.random() * (200 - 30)) + 30,
-      width: width,
-      height: height
+
+    try {
+      
+      const { width, height } = adjustImageSize(image.width, image.height)
+      const imageData: ImageData = {
+        imageInfo: image,
+        ogImageInfo: { ...image },
+        top: Math.floor(Math.random() * (100 - 30)) + 30,
+        left: Math.floor(Math.random() * (200 - 30)) + 30,
+        width: width,
+        height: height,
+      }
+      return imageData;
+    } catch (error) {
+      console.log("error ", error)
     }
-    return imageData;
+    
   }
 
   useEffect(() => {
@@ -86,7 +97,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
       const imageDataArr = selectedImages.map(convertToImageData);
 
       // uses the ImageCtx to update useState of the images
-      setImages(prevImagesData => [...prevImagesData, ...imageDataArr]);
+      setImages(prevImages => [...prevImages, ...imageDataArr]);
     }
   };
 

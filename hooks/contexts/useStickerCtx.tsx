@@ -7,10 +7,15 @@ import { useContext, useState } from "react";
 import { Dispatch, SetStateAction, createContext } from "react";
 import { ImageSourcePropType } from 'react-native';
 
+interface Item {
+    id: string,
+    zIndex: number
+  }
 interface StickerData {
     sticker: ImageSourcePropType;
     top: number;
     left: number;
+    item: Item;
 }
 
 interface StickerCtxType {

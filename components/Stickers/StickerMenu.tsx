@@ -4,6 +4,10 @@ import { useContext } from 'react';
 import { ImageSourcePropType } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
+interface Item {
+  id: string,
+  zIndex: number
+}
 interface Sticker {
   uri: string;
   width: number;
@@ -68,7 +72,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     const converted: StickerData = { // this is not making a new random vaues each time :(
       sticker: sticker,
       top: Math.floor(Math.random() * (300 - 50)) + 50,
-      left: Math.floor(Math.random() * (300 - 30)) + 30
+      left: Math.floor(Math.random() * (300 - 30)) + 30,
     }
 
     return converted;
