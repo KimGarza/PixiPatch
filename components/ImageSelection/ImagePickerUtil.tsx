@@ -1,53 +1,9 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { ImageSourcePropType } from 'react-native';
+import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import * as FileSystem from 'expo-file-system';
-// All images, stickers, drawings will be combined since all are orderable (discriminated union)
-interface BaseItem { 
-  id: string;
-  type: string; // discriminate within the union
-  zIndex: number;
-}
-interface ImageItem extends BaseItem {
-  id: string;
-  type: 'image'; // discriminate
-  zIndex: number;
-  imageInfo: ImageInfo;
-  ogImageInfo: ImageInfo;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-interface StickerItem extends BaseItem {
-  id: string;
-  type: 'sticker'; // discriminate
-  zIndex: number;
-  sticker: ImageSourcePropType;
-  top: number;
-  left: number;
-}
-interface DrawingItem extends BaseItem {
-  id: string;
-  type: 'drawing'; // discriminate
-  zIndex: number;
-  path: Point[];
-  top: number;
-  left: number;
-}
-
-// values required for some attributes
-type Point = {
-  x: number;
-  y: number;
-};
-interface ImageInfo {
-  uri: string;
-  width: number;
-  height: number;
-}
+import { ImageItem, ImageInfo } from '@/customTypes/itemTypes';
 interface ImagePickerUtilProps {
   toggle: boolean;
 }

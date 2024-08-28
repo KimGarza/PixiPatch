@@ -1,73 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
-import { ImageCtx } from '../../hooks/contexts/useImageCtx';
-import { ImageSourcePropType } from 'react-native';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
+import { ImageItem } from '@/customTypes/itemTypes';
 
-interface BaseItem { 
-    id: string;
-    type: string; // discriminate within the union
-    zIndex: number;
-  }
-  interface ImageItem extends BaseItem {
-    id: string;
-    type: 'image'; // discriminate
-    zIndex: number;
-    imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-  }
-  interface StickerItem extends BaseItem {
-    id: string;
-    type: 'sticker'; // discriminate
-    zIndex: number;
-    sticker: ImageSourcePropType;
-    top: number;
-    left: number;
-  }
-  interface DrawingItem extends BaseItem {
-    id: string;
-    type: 'drawing'; // discriminate
-    zIndex: number;
-    path: Point[];
-    top: number;
-    left: number;
-  }
-  
-  type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
-  
-  // values required for some attributes`
-  type Point = {
-    x: number;
-    y: number;
-  };
-  interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-  }
-
-interface DraggableImageProps {
+interface MutablbleImageProps {
     image: ImageItem;
-    isAnotherImageActive: boolean; // is there a different image already active, if so, deactivate this image.
-    deleteImage: (image: ImageItem) => void;
 }
 
 // Represents an image with complex capabilities such as draggable, rotatable, etc... (actual ImageItem is an attribute).
 // Uses panResponder to evaluate x and y movement coordinates.
-const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
+const MutableImage = ({ image }: MutablbleImageProps) => {
 
-    const { setActiveItemCtx, activeItemCtx } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
+    // quick note on active item. Active item can be sticker, drawing or an image. Whichever at the root level of each sticker, image, etc... if tapped, then it is the new activated
+    // item, which now everything is using context and will check for state updates with useEffect to keep up with which item is active
+    const { setActiveItemCtx, activeItemCtx, deleteItems } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
+    let activeImageCast = activeItemCtx as ImageItem; // cast item as ImageItem so it's drillable for checking parts of ImageItem specifically since item could be other item types
 
-    const [activedImage, setActivedImage] = useState<ImageItem |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
     const { panHandlers, positionX, positionY  } = useDragPanResponder();
 
@@ -105,10 +58,8 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
         });
 
     useEffect(() => {
-        if (isAnotherImageActive) {
-            setActivedImage(null);
-        }
-    }, [isAnotherImageActive])
+        activeImageCast = activeItemCtx as ImageItem;
+    }, [activeItemCtx])
 
     // when user taps image, it gets coordniates for location to display image modification toolbox.
     // checks if the image tapped was already active, if so, deactivates it, otherwise activates it including setting it as the new "activeImage" in ctx
@@ -117,19 +68,12 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
         const { locationX, locationY } = event.nativeEvent;
         setTapCoordinates({x: locationX, y: locationY});
 
-        if (image.imageInfo.uri == activedImage?.imageInfo.uri) {
-            setActivedImage(null);
+        if (image.imageInfo.uri == activeImageCast?.imageInfo.uri) {
             setTapCoordinates({x: 0, y: 0});
-            setActiveItemCtx(undefined); // ctx
+            setActiveItemCtx(undefined);
         } else {
-            setActivedImage(image);
             setActiveItemCtx(image); // ctx
         }
-    }
-
-    const handleRemoveImage = () => {
-        deleteImage(image);
-        setActivedImage(null);
     }
 
     return (
@@ -138,11 +82,11 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
                 style={[styles.imageContainer, { width: image.width, height: image.height, top: image.top, left: image.left }, animatedStyle]}
                 {...panHandlers} // Apply PanResponder only when the image is not active
             >
-                {activeItemCtx && !isAnotherImageActive &&
+                {activeItemCtx && activeImageCast.imageInfo.uri == image.imageInfo.uri &&
                 <View >
                     <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
-                        <TouchableOpacity onPress={handleRemoveImage}> 
-                            <Fontisto name={'close'} size={20} color={'#c0b9ac'} style={styles.editingIcon}/>
+                        <TouchableOpacity onPress={() => {deleteItems({id: image.id, itemType: 'image'})}}> 
+                            <Fontisto name={'close'} size={40} color={'#c0b9ac'} style={styles.editingIcon}/>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -153,12 +97,14 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
                         style={[{
                             width: image.width,
                             height: image.height,
-                        }, activedImage?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]}
+                        }, activeImageCast?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]} // checking the casted ImageItem which is active in ctx against the current image
                     />
                 </TouchableOpacity>
 
                 {/* little popup toolbox for editing options on a specific image */}
-                {image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>}
+                {activeItemCtx && activeImageCast.imageInfo.uri == image.imageInfo.uri ? (
+                    image && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>
+                ) : (<></>)}
             </Animated.View>
         </GestureDetector>
     );

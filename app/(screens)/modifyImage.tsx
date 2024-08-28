@@ -5,26 +5,12 @@ import { useEffect, useState } from 'react';
 import Crop from '@/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import CroppableImage from '@/components/modification/crop/croppableImage';
 import FilterableImage from '@/components/modification/Filters/filterableImage';
-import viewModifyImageToolbox from '@/components/views/viewModifyImageToolbox';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
+import { ImageItem } from '@/customTypes/itemTypes';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
-interface ImageInfo {
-  uri: string;
-  width: number;
-  height: number;
-}
-interface ImageData {
-  imageInfo: ImageInfo;
-  ogImageInfo: ImageInfo;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  contrast?: number;
-}
 
 // Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
 export default function ModifyImageScreen() {
@@ -32,24 +18,25 @@ export default function ModifyImageScreen() {
   const { image, activatedTool } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
 
   const router = useRouter();
-  const { updateImageInfo, activeImageCtx, images } = useImageCxt();
+  // const { updateImageInfo, activeImageCtx, images } = useImageCxt();
+  const {images} = useItemCtx();
 
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
-  const [imageData, setImageData] = useState<ImageData>();
+  const [imageItem, setImageItem] = useState<ImageItem>();
   const [imageDimensions, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
 
   const [isCropping, setIsCropping] = useState<boolean>(false);
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
   useEffect(() => {
-  }, [images, imageData])
+  }, [images, imageItem])
 
 // Since some manipulations affect imageInfo in image coming through as the param.... it won't reflect on view bc not pulling image from context here
   useEffect(() => {
     if (image) {
       try {
-        const parsedImg: ImageData = JSON.parse(image as string); // deserialized the local param into ImageData
-        setImageData(parsedImg);
+        const parsedImg: ImageItem = JSON.parse(image as string); // deserialized the local param into ImageData
+        setImageItem(parsedImg);
         setEncodedUri({ uri: encodeURI(parsedImg.imageInfo.uri) }); // this is the only way to have a valid source for the image in the view!
 
         const { imgWidth, imgHeight } = adjustImageSize(parsedImg.imageInfo.width, parsedImg.imageInfo.height); // adjust image to fully fit the space
@@ -66,13 +53,13 @@ export default function ModifyImageScreen() {
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
 
-    if (activatedTool == 'crop' && imageData) {
+    if (activatedTool == 'crop' && imageItem) {
       setIsCropping(true);
     } 
-  }, [ activatedTool, imageData ])
+  }, [ activatedTool, imageItem ])
 
   // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
-  // Reason for using ImageInfo here when canvas uses ImageData is bc some image manipulations affect image at the pixel level.
+  // Reason for using ImageInfo here when canvas uses imageItem is bc some image manipulations affect image at the pixel level.
   const adjustImageSize = (currWidth: number, currHeight: number) => {
 
     const canvasAspectRatio = width / canvasHeight;
@@ -119,10 +106,10 @@ return (
           />
 
           {/* Conditional rendering based on current mode (cropping, filtering, etc.) */}
-          {isCropping && imageData && imageDimensions ? (
-            <CroppableImage image={imageData} encodedUri={encodedUri} dimensions={imageDimensions}/>
-          ) : isFiltering && imageData && imageDimensions ? (
-            <FilterableImage image={imageData} encodedUri={encodedUri} dimensions={imageDimensions}/>
+          {isCropping && imageItem && imageDimensions ? (
+            <CroppableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
+          ) : isFiltering && imageItem && imageDimensions ? (
+            <FilterableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
           // ) : isErasing ? (
           //   // Default view or image when not in any specific mode
           //   <ErasableImage image={imageData} encodedUri={encodedUri} />

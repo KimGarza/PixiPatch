@@ -5,7 +5,6 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from "expo-router";
-import { ImageCtx } from "../../hooks/contexts/useImageCtx";
 import Flip from "../modification/flip";
 
 // Little popup toolbox for editing options on a specific image
@@ -14,26 +13,26 @@ export const viewModifyImageToolbox = () => {
 
     const router = useRouter();
 
-    const { activeImageCtx, updateImageInfo, images } = useContext(ImageCtx);
+    // const { activeImageCtx, updateImageInfo, images } = useContext(ImageCtx);
 
-    const handlePress = async (toolType: string) => {
-        if (toolType == 'flip' && activeImageCtx) {
-            try {
-                console.log("tries to flip")
-                await Flip(activeImageCtx, updateImageInfo);
-            } catch (error) {
-                console.error("Error in handleModifyImage while flipping image:", error);
-            }
-        } 
-        else {
-            if (activeImageCtx) {
-                router.push({
-                    pathname: '/(screens)/modifyImage',
-                    params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
-                });
-            }
-        }
-    }
+    // const handlePress = async (toolType: string) => {
+    //     if (toolType == 'flip' && activeImageCtx) {
+    //         try {
+    //             console.log("tries to flip")
+    //             await Flip(activeImageCtx, updateImageInfo);
+    //         } catch (error) {
+    //             console.error("Error in handleModifyImage while flipping image:", error);
+    //         }
+    //     } 
+    //     else {
+    //         if (activeImageCtx) {
+    //             router.push({
+    //                 pathname: '/(screens)/modifyImage',
+    //                 params: { image: JSON.stringify(activeImageCtx), activatedTool: toolType }
+    //             });
+    //         }
+    //     }
+    // }
 
     return (
         <View style={styles.editingTools}>
@@ -41,7 +40,11 @@ export const viewModifyImageToolbox = () => {
             {/* each tool is essentially a button which routes to the modifyImage screen and passes through props a specific name such as 'crop' */}
             <StyledIconContainer dimensions={35}> 
 
-                <TouchableOpacity onPress={() => handlePress('crop')}>
+                 <TouchableOpacity >
+                    <Feather name='crop' size={30}/>
+                </TouchableOpacity>
+
+                {/* <TouchableOpacity onPress={() => handlePress('crop')}>
                     <Feather name='crop' size={30}/>
                 </TouchableOpacity>
 
@@ -63,7 +66,7 @@ export const viewModifyImageToolbox = () => {
 
                 <TouchableOpacity onPress={() => handlePress('eraser')}>
                     <FontAwesome5 name='eraser' size={30}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </StyledIconContainer>
         </View>

@@ -1,7 +1,6 @@
 // import { StyleSheet, View } from "react-native";
 // import React from 'react';
 // import Slider from "@react-native-community/slider";
-// import { useImageCxt } from "@/hooks/contexts/useImageCtx";
 // import { useEffect, useState } from "react";
 // import * as ImageManipulator from 'expo-image-manipulator';
 

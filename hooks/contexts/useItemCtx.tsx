@@ -1,55 +1,9 @@
 import React, { createContext, useState,  } from "react";
-import { ImageSourcePropType } from "react-native";
 import { useContext } from "react";
 import { Dispatch, SetStateAction } from "react";
-
-// All images, stickers, drawings will be combined since all are orderable (discriminated union)
-interface BaseItem { 
-  id: string;
-  type: string; // discriminate within the union
-  zIndex: number;
-}
-interface ImageItem extends BaseItem {
-  id: string;
-  type: 'image'; // discriminate
-  zIndex: number;
-  imageInfo: ImageInfo;
-  ogImageInfo: ImageInfo;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-interface StickerItem extends BaseItem {
-  id: string;
-  type: 'sticker'; // discriminate
-  zIndex: number;
-  sticker: ImageSourcePropType;
-  top: number;
-  left: number;
-}
-interface DrawingItem extends BaseItem {
-  id: string;
-  type: 'drawing'; // discriminate
-  zIndex: number;
-  path: Point[];
-  top: number;
-  left: number;
-}
+import { ImageItem, StickerItem, DrawingItem } from '@/customTypes/itemTypes';
 
 type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
-
-// values required for some attributes
-type Point = {
-  x: number;
-  y: number;
-};
-interface ImageInfo {
-  uri: string;
-  width: number;
-  height: number;
-}
-
 interface CreateItemProps {
   itemType: 'image' | 'sticker' | 'drawing';
   properties: ImageItem[] | StickerItem[] | DrawingItem[];

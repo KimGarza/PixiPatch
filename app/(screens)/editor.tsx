@@ -2,10 +2,8 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
-import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import { BackgroundCtx } from '@/components/background/BackgroundCtx';
 import { StickerCtx } from '@/components/Stickers/StickersCtx';
-
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
 import StickerMenu from '@/components/Stickers/StickerMenu';
@@ -26,7 +24,6 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 const EditorScreen = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
-  const { activeImageCtx } = useImageCxt();
   const { background } = useContext(BackgroundCtx);
   const { images } = useItemCtx();
   // menus
@@ -38,8 +35,8 @@ const EditorScreen = () => {
 
   useEffect(() => {
     // console.log("images from editor ", images);
-
-  }, [images, activeImageCtx])
+    // activeImageCtx
+  }, [images])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {

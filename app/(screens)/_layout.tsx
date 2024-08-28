@@ -4,12 +4,11 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from '../../hooks/useColorScheme'
-import { ImageProvider } from '@/hooks/contexts/useImageCtx';
 import { BackgroundProvider } from '@/components/background/BackgroundCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';
 import { DrawProvider } from '@/components/modification/drawing/DrawCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useItemCtx, ItemProvider } from '@/hooks/contexts/useItemCtx';
+import { ItemProvider } from '@/hooks/contexts/useItemCtx';
 
 // prevents the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,7 +33,6 @@ export default function RootLayout() {
   return (
     <BackgroundProvider>
     <ItemProvider>
-    <ImageProvider>
     <StickerProvider>
     <DrawProvider>
     <GestureHandlerRootView>
@@ -44,7 +42,6 @@ export default function RootLayout() {
     </GestureHandlerRootView>
     </DrawProvider>
     </StickerProvider>
-    </ImageProvider>
     </ItemProvider>
     </BackgroundProvider>
   );

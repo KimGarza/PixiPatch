@@ -1,24 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, ImageSourcePropType, View, LayoutChangeEvent } from 'react-native';
 import CropInterface from './cropInterface';
-
-interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-}
-
-interface ImageData {
-    imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-}
+import { ImageItem } from '@/customTypes/itemTypes';
 
 interface Props {
-    image: ImageData;
+    image: ImageItem;
     encodedUri: ImageSourcePropType;
     dimensions: {imgWidth: number, imgHeight: number}; // this sizing was retrieved from onchangelayout once image was displayed with 100% x 100%
 }

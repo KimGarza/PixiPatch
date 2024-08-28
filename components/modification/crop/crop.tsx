@@ -1,21 +1,7 @@
 import * as ImageManipulator from 'expo-image-manipulator';
+import { ImageItem, ImageInfo } from '@/customTypes/itemTypes';
 
-interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-}
-
-interface ImageData {
-    imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-}
-
-const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
+const Crop = async (imageItem: ImageItem, updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
 
     try {
         const cropRegion = {
@@ -26,12 +12,12 @@ const Crop = async (imageData: ImageData, updateImageInfo: (originalImage: Image
         };
 
         const result  = await ImageManipulator.manipulateAsync(
-            imageData.imageInfo.uri,
+            imageItem.imageInfo.uri,
             [{ crop: cropRegion }],
             { compress: 1, format: ImageManipulator.SaveFormat.PNG }
         );
 
-        updateImageInfo(imageData.imageInfo, result);
+        updateImageInfo(imageItem.imageInfo, result);
 
     } catch ( error ) {
         console.error('Error cropping the image:', error);
