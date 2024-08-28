@@ -2,20 +2,16 @@ import React, { createContext, useState,  } from "react";
 import { ImageSourcePropType } from "react-native";
 import { useContext } from "react";
 
-
-// canvas item which can be ordered by tapping/import will be part of Discriminated Union.
-// This is 
-
-// All images, stickers, drawings will be an item (or in this case have one)
-// This will be the "discriminated union" since it is the field typescript can use to be similar and bond them
-interface BaseItem {
+// All images, stickers, drawings will be combined since all are orderable (discriminated union)
+interface BaseItem { 
   id: string;
-  type: string;
+  type: string; // discriminate within the union
   zIndex: number;
 }
-
 interface ImageItem extends BaseItem {
-  type: 'image';
+  id: string;
+  type: 'image'; // discriminate
+  zIndex: number;
   imageInfo: ImageInfo;
   ogImageInfo: ImageInfo;
   top: number;
@@ -23,43 +19,48 @@ interface ImageItem extends BaseItem {
   width: number;
   height: number;
 }
-
 interface StickerItem extends BaseItem {
-  type: 'sticker';
+  id: string;
+  type: 'sticker'; // discriminate
+  zIndex: number;
   sticker: ImageSourcePropType;
   top: number;
   left: number;
 }
-
 interface DrawingItem extends BaseItem {
-  type: 'drawing';
+  id: string;
+  type: 'drawing'; // discriminate
+  zIndex: number;
   path: Point[];
   top: number;
   left: number;
 }
 
-type Item = ImageItem | StickerItem | DrawingItem;
+type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
 
 // values required for some attributes
 type Point = {
   x: number;
   y: number;
 };
-
 interface ImageInfo {
   uri: string;
   width: number;
   height: number;
 }
 
+interface CreateItemProps {
+  itemType: 'image' | 'sticker' | 'drawing';
+  properties: Partial<ImageItem[] & StickerItem[] & DrawingItem[]>;
+}
 interface ItemCtxType {
-  createItem: () => {newItem: Item}
+  createItems: ({itemType, properties}: CreateItemProps) => void
   bringToFront: (existingId: string) => void
   items: Item[];
 }
 
 const defaultValue: ItemCtxType = {
-  createItem: () => ({ newItem: { id: '', zIndex: 0 } }),
+  createItems: () => {},
   bringToFront: () => {},
   items: []
 };
@@ -74,29 +75,94 @@ export const useItemCtx = () => {
   }
   return context;
 };
-  
+
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
 
+  const createImageItem = (item: Partial<ImageItem>) => {
+    const id = generateId();
+    const zIndex = generateLargestZIndex();
 
-  // Generates a new item w/new index and zIndex larger than the largest one. Creates new array based on memory address to the old to replace with the new item added.
-  const createItem = () => {
-    const id = Math.random().toString(36).slice(2, 11);
-    let zIndex = 1;
+    return {
+      id: id, zIndex: zIndex, type: 'image',
+      imageInfo: item.imageInfo,
+      ogImageInfo: item.ogImageInfo || item.imageInfo,
+      top: item.top,
+      left: item.left,
+      width: item.width,
+      height: item.height,
+    } as ImageItem;
+  }
 
+  const createStickerItem = (item: Partial<StickerItem>) => {
+    const id = generateId();
+    const zIndex = generateLargestZIndex();
+
+    return {
+      id: id, zIndex: zIndex, type: 'sticker',
+      sticker: item.sticker,
+      top: item.top,
+      left: item.left,
+    } as StickerItem;
+  }
+  
+  const createDrawingItem = (item: Partial<DrawingItem>) => {
+    const id = generateId();
+    const zIndex = generateLargestZIndex();
+
+    return {
+      id: id, zIndex: zIndex, type: 'drawing',
+      path: item.path,
+      top: item.top,
+      left: item.left,
+    } as DrawingItem;
+  }
+
+  const generateLargestZIndex = () => {
     if (items.length > 0) {
       const largestZIndex = items.reduce((highest, current) =>
         current.zIndex > highest.zIndex ? current : highest
       );
-      zIndex = largestZIndex.zIndex + 1; // add 1 to the largest zIndex so that the current item is now the largest ZIndex
-    };  
-
-    const newItem = { id: id, zIndex: zIndex}
-    setItems((prevItems) => [...prevItems, newItem]);
-
-    return { newItem };
+      return largestZIndex.zIndex + 1; // add 1 to the largest zIndex so that the current item will now have the largest ZIndex
+    };
   }
 
+  const generateId = () => {
+    return Math.random().toString(36).slice(2, 11);
+  }
+
+  const createItems = ({ itemType, properties }: CreateItemProps) => {
+    const newItems: Item[] = [];
+
+    switch (itemType) {
+      case 'image':
+        const imageItems = properties as Partial<ImageItem>[]
+        if (imageItems) {
+          imageItems.forEach((item, index) => {
+            newItems.push(createImageItem(item));
+          })
+        }
+        break;
+      case 'sticker': 
+        const stickerItems = properties as Partial<StickerItem>[]
+        if (stickerItems) {
+          stickerItems.forEach((item, index) => {
+            newItems.push(createStickerItem(item));
+          })
+        }
+        break;
+      case 'drawing': 
+        const drawingItems = properties as Partial<DrawingItem>[];
+        drawingItems.forEach((item, index) => {
+          newItems.push(createDrawingItem(item));
+        })
+        break;
+    }
+
+    newItems.forEach((newItem, index) => {
+      setItems((prevItems) => [...prevItems, newItem]);
+    })
+  }
 
   const bringToFront = (existingId: string) => {
 
@@ -124,7 +190,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   return (
     <ItemCtx.Provider
       value={{
-        createItem,
+        createItems,
         bringToFront,
         items,
       }}

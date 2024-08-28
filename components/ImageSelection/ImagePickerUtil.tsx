@@ -43,8 +43,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   // converts basic photo and converts it to ImageData Type which just adds additional data for app
   const convertToImageData = (image: ImageInfo) => {
 
-    try {
-      
+    try { // to adjust the images size to convert to a better viewable on screen (logical units in)
       const { width, height } = adjustImageSize(image.width, image.height)
       const imageData: ImageData = {
         imageInfo: image,
@@ -58,12 +57,11 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     } catch (error) {
       console.log("error ", error)
     }
-    
   }
 
   useEffect(() => {
     handlePickImage(); // should happen on each press
-  }, [toggle]) // this is only working bc toggle updates but after we use this func it should not need this 
+  }, [toggle]) // try getting rid of toggle!
   
   const handlePickImage = async () => {
 
