@@ -1,23 +1,52 @@
 import React, { useEffect, useContext, useState } from 'react';
+import { ImageSourcePropType } from 'react-native';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useImageCtx } from '../../hooks/contexts/useImageCtx';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import * as FileSystem from 'expo-file-system';
-
-interface Item {
-  id: string,
-  zIndex: number
+// All images, stickers, drawings will be combined since all are orderable (discriminated union)
+interface BaseItem { 
+  id: string;
+  type: string; // discriminate within the union
+  zIndex: number;
 }
-interface ImageInfo {
-  uri: string;
-  width: number;
-  height: number;
-}
-interface ImageData {
+interface ImageItem extends BaseItem {
+  id: string;
+  type: 'image'; // discriminate
+  zIndex: number;
   imageInfo: ImageInfo;
   ogImageInfo: ImageInfo;
   top: number;
   left: number;
+  width: number;
+  height: number;
+}
+interface StickerItem extends BaseItem {
+  id: string;
+  type: 'sticker'; // discriminate
+  zIndex: number;
+  sticker: ImageSourcePropType;
+  top: number;
+  left: number;
+}
+interface DrawingItem extends BaseItem {
+  id: string;
+  type: 'drawing'; // discriminate
+  zIndex: number;
+  path: Point[];
+  top: number;
+  left: number;
+}
+
+type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
+
+// values required for some attributes
+type Point = {
+  x: number;
+  y: number;
+};
+interface ImageInfo {
+  uri: string;
   width: number;
   height: number;
 }
@@ -29,7 +58,7 @@ interface ImagePickerUtilProps {
 // Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
 const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
-  const { setImages, images } = useImageCtx();
+  const { createItems } = useItemCtx();
 
   const adjustImageSize = (width: number, height: number) => {
     const maxWidth = 200;
@@ -41,22 +70,33 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
   };
 
   // converts basic photo and converts it to ImageData Type which just adds additional data for app
-  const convertToImageData = (image: ImageInfo) => {
+  const convertToImageItem = (image: ImageInfo) => {
+    let newWidth = 100;
+    let newHeight = 100;
 
     try { // to adjust the images size to convert to a better viewable on screen (logical units in)
+
       const { width, height } = adjustImageSize(image.width, image.height)
-      const imageData: ImageData = {
-        imageInfo: image,
-        ogImageInfo: { ...image },
-        top: Math.floor(Math.random() * (100 - 30)) + 30,
-        left: Math.floor(Math.random() * (200 - 30)) + 30,
-        width: width,
-        height: height,
-      }
-      return imageData;
+      newWidth = width;
+      newHeight = height;
+
     } catch (error) {
       console.log("error ", error)
     }
+
+    const imageItem: ImageItem = { // returns image regardless of if wxh adjustment fails
+      id: '',
+      type: 'image',
+      zIndex: 0,
+      imageInfo: image,
+      ogImageInfo: { ...image },
+      top: Math.floor(Math.random() * (100 - 30)) + 30,
+      left: Math.floor(Math.random() * (200 - 30)) + 30,
+      width: newWidth,
+      height: newHeight,
+    }
+
+    return imageItem;
   }
 
   useEffect(() => {
@@ -67,13 +107,12 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
     // ask for permission to access the library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
     if (!permissionResult.granted) {
       Alert.alert('Sorry, Elemental Editor need permission to access your photos!');
       return;
     }
 
-    // select the image
+    // select the image(s)
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
@@ -81,7 +120,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     });
 
     if (!pickerResult.canceled) {
-      // creates array of images (type ImageInfo) by mapping the pickerResult and setting values to ImageInfo Type for each 
+      // creates array of selectedImages by mapping the pickerResult images and setting values to ImageInfo type for each 
       const selectedImages = pickerResult.assets.map(asset => ({
         uri: asset.uri,
         width: asset.width,
@@ -91,11 +130,10 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
       await saveImagesLocally(selectedImages);
 
-      // converts the images into imageData for extra data
-      const imageDataArr = selectedImages.map(convertToImageData);
+      // converts the images into imageData for extra details such as logical units width x height
+      const imageItemArr = selectedImages.map(convertToImageItem);
 
-      // uses the ImageCtx to update useState of the images
-      setImages(prevImages => [...prevImages, ...imageDataArr]);
+      createItems({ itemType: 'image', properties: imageItemArr});
     }
   };
 

@@ -51,7 +51,7 @@ interface ImageInfo {
 
 interface CreateItemProps {
   itemType: 'image' | 'sticker' | 'drawing';
-  properties: Partial<ImageItem[] & StickerItem[] & DrawingItem[]>;
+  properties: ImageItem[] | StickerItem[] | DrawingItem[];
 }
 interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void
@@ -79,7 +79,7 @@ export const useItemCtx = () => {
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
 
-  const createImageItem = (item: Partial<ImageItem>) => {
+  const createImageItem = (item: ImageItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
 
@@ -94,7 +94,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     } as ImageItem;
   }
 
-  const createStickerItem = (item: Partial<StickerItem>) => {
+  const createStickerItem = (item: StickerItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
 
@@ -106,7 +106,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     } as StickerItem;
   }
   
-  const createDrawingItem = (item: Partial<DrawingItem>) => {
+  const createDrawingItem = (item: DrawingItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
 
@@ -136,7 +136,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     switch (itemType) {
       case 'image':
-        const imageItems = properties as Partial<ImageItem>[]
+        const imageItems = properties as ImageItem[]
         if (imageItems) {
           imageItems.forEach((item, index) => {
             newItems.push(createImageItem(item));
@@ -144,7 +144,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         }
         break;
       case 'sticker': 
-        const stickerItems = properties as Partial<StickerItem>[]
+        const stickerItems = properties as StickerItem[]
         if (stickerItems) {
           stickerItems.forEach((item, index) => {
             newItems.push(createStickerItem(item));
@@ -152,7 +152,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         }
         break;
       case 'drawing': 
-        const drawingItems = properties as Partial<DrawingItem>[];
+        const drawingItems = properties as DrawingItem[];
         drawingItems.forEach((item, index) => {
           newItems.push(createDrawingItem(item));
         })
