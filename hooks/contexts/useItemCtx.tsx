@@ -57,12 +57,16 @@ interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void
   bringToFront: (existingId: string) => void
   items: Item[];
+  images: ImageItem[];
+  stickers: StickerItem[];
 }
 
 const defaultValue: ItemCtxType = {
   createItems: () => {},
   bringToFront: () => {},
-  items: []
+  items: [],
+  images: [],
+  stickers: []
 };
 
 export const ItemCtx = createContext<ItemCtxType>(defaultValue);
@@ -78,6 +82,8 @@ export const useItemCtx = () => {
 
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [stickers, setStickers] = useState<StickerItem[]>([]);
 
   const createImageItem = (item: ImageItem) => {
     const id = generateId();
@@ -140,6 +146,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         if (imageItems) {
           imageItems.forEach((item, index) => {
             newItems.push(createImageItem(item));
+            setImages(prevImages => [...prevImages, item]);
           })
         }
         break;
@@ -148,6 +155,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         if (stickerItems) {
           stickerItems.forEach((item, index) => {
             newItems.push(createStickerItem(item));
+            setStickers(prevStickers => [...prevStickers, item]);
           })
         }
         break;
@@ -193,6 +201,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         createItems,
         bringToFront,
         items,
+        images,
+        stickers
       }}
     >
       {children}

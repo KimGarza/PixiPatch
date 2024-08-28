@@ -5,6 +5,8 @@ import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 import { useImageCxt } from '@/hooks/contexts/useImageCtx';
 import { BackgroundCtx } from '@/components/background/BackgroundCtx';
 import { StickerCtx } from '@/components/Stickers/StickersCtx';
+
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
 import StickerMenu from '@/components/Stickers/StickerMenu';
 import BackgroundMenu from '@/components/background/BackgroundMenu';
@@ -24,8 +26,9 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 const EditorScreen = () => { 
   // contexts
   const { stickers } = useContext(StickerCtx);
-  const { images, activeImageCtx } = useImageCxt();
+  const { activeImageCtx } = useImageCxt();
   const { background } = useContext(BackgroundCtx);
+  const { images } = useItemCtx();
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);

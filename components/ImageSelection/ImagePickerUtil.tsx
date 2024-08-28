@@ -38,8 +38,6 @@ interface DrawingItem extends BaseItem {
   left: number;
 }
 
-type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
-
 // values required for some attributes
 type Point = {
   x: number;
@@ -50,7 +48,6 @@ interface ImageInfo {
   width: number;
   height: number;
 }
-
 interface ImagePickerUtilProps {
   toggle: boolean;
 }

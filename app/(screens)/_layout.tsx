@@ -9,7 +9,7 @@ import { BackgroundProvider } from '@/components/background/BackgroundCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';
 import { DrawProvider } from '@/components/modification/drawing/DrawCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ItemOrderProvider } from '@/hooks/contexts/useItemOrderCtx';
+import { useItemCtx, ItemProvider } from '@/hooks/contexts/useItemCtx';
 
 // prevents the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,7 +33,7 @@ export default function RootLayout() {
 
   return (
     <BackgroundProvider>
-    <ItemOrderProvider>
+    <ItemProvider>
     <ImageProvider>
     <StickerProvider>
     <DrawProvider>
@@ -45,7 +45,7 @@ export default function RootLayout() {
     </DrawProvider>
     </StickerProvider>
     </ImageProvider>
-    </ItemOrderProvider>
+    </ItemProvider>
     </BackgroundProvider>
   );
 }
