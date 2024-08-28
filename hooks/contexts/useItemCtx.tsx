@@ -1,6 +1,7 @@
 import React, { createContext, useState,  } from "react";
 import { ImageSourcePropType } from "react-native";
 import { useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 // All images, stickers, drawings will be combined since all are orderable (discriminated union)
 interface BaseItem { 
@@ -53,20 +54,32 @@ interface CreateItemProps {
   itemType: 'image' | 'sticker' | 'drawing';
   properties: ImageItem[] | StickerItem[] | DrawingItem[];
 }
+
+interface DeleteItemProps {
+  id: string;
+  itemType: 'image' | 'sticker' | 'drawing';
+}
+
 interface ItemCtxType {
-  createItems: ({itemType, properties}: CreateItemProps) => void
-  bringToFront: (existingId: string) => void
+  createItems: ({itemType, properties}: CreateItemProps) => void;
+  deleteItems: ({id, itemType}: DeleteItemProps) => void;
+  bringToFront: (existingId: string) => void;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
+  activeItemCtx: ImageItem | StickerItem | DrawingItem | undefined;
+  setActiveItemCtx: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
 }
 
 const defaultValue: ItemCtxType = {
   createItems: () => {},
+  deleteItems: () => {},
   bringToFront: () => {},
   items: [],
   images: [],
-  stickers: []
+  stickers: [],
+  activeItemCtx: undefined,  
+  setActiveItemCtx: () => {},
 };
 
 export const ItemCtx = createContext<ItemCtxType>(defaultValue);
@@ -82,6 +95,7 @@ export const useItemCtx = () => {
 
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
+  const [activeItemCtx, setActiveItemCtx] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [stickers, setStickers] = useState<StickerItem[]>([]);
 
@@ -172,6 +186,17 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     })
   }
 
+  
+  const deleteItems = ({ id, itemType }: DeleteItemProps) => {
+
+    setItems(prevItems => prevItems.filter(item => item.id !== id))
+    if (itemType == 'image') {
+      setImages(prevImages => prevImages.filter(image => image.id !== id))
+    } else if (itemType == 'sticker') {
+      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+    }
+  }
+
   const bringToFront = (existingId: string) => {
 
     let largestZIndex = 0;
@@ -194,15 +219,17 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     }
   }
     
-
   return (
     <ItemCtx.Provider
       value={{
         createItems,
+        deleteItems,
         bringToFront,
         items,
         images,
-        stickers
+        stickers,
+        activeItemCtx,
+        setActiveItemCtx
       }}
     >
       {children}

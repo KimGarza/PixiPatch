@@ -2,14 +2,16 @@ import { View } from "react-native";
 import { useContext, useState, useEffect } from "react";
 import { ImageCtx } from "../../hooks/contexts/useImageCtx";
 import MutableImage from "../image/MutableImage";
-
-interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
+import { useItemCtx } from "@/hooks/contexts/useItemCtx";
+  interface BaseItem { 
+    id: string;
+    type: string; // discriminate within the union
+    zIndex: number;
   }
-
-  interface ImageData {
+  interface ImageItem extends BaseItem {
+    id: string;
+    type: 'image'; // discriminate
+    zIndex: number;
     imageInfo: ImageInfo;
     ogImageInfo: ImageInfo;
     top: number;
@@ -17,22 +19,29 @@ interface ImageInfo {
     width: number;
     height: number;
   }
-
+  interface ImageInfo {
+    uri: string;
+    width: number;
+    height: number;
+  }
   interface ViewImagesProps {
-    images: ImageData[],
+    images: ImageItem[],
 }
 
 // images are selected by user, stored in context which provider is wrapped around editorContent. Props value of those images sent to viewImages.
 const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
 
-    const [ newActiveImage, setNewActiveImage ] = useState<ImageData | null>(null);
-    const { deleteImage, activeImageCtx } = useContext(ImageCtx);
-    const handleDeleteImage = (imageToDelete: ImageData | null) => {
-        if (imageToDelete) { deleteImage(imageToDelete.imageInfo.uri); }
+    const { deleteItems } = useItemCtx();
+
+    const [ newActiveImage, setNewActiveImage ] = useState<ImageItem | null>(null);
+    const { activeImageCtx } = useContext(ImageCtx);
+
+    const handleDeleteImage = (imageToDelete: ImageItem) => {
+        if (imageToDelete) { 
+            deleteItems({ id: imageToDelete.id, itemType: 'image'}); 
+        }
     }
 
-    // Convert Map to an Array bc JSX doesn't recognize a map as iterable
-    
     return (
         <View>
             {images.map((imageCtx, index) => (

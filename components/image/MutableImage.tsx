@@ -6,37 +6,68 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import { ImageCtx } from '../../hooks/contexts/useImageCtx';
-import { Feather } from '@expo/vector-icons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { ImageSourcePropType } from 'react-native';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 
-interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-}
-
-interface ImageData {
+interface BaseItem { 
+    id: string;
+    type: string; // discriminate within the union
+    zIndex: number;
+  }
+  interface ImageItem extends BaseItem {
+    id: string;
+    type: 'image'; // discriminate
+    zIndex: number;
     imageInfo: ImageInfo;
     ogImageInfo: ImageInfo;
     top: number;
     left: number;
     width: number;
     height: number;
-}
+  }
+  interface StickerItem extends BaseItem {
+    id: string;
+    type: 'sticker'; // discriminate
+    zIndex: number;
+    sticker: ImageSourcePropType;
+    top: number;
+    left: number;
+  }
+  interface DrawingItem extends BaseItem {
+    id: string;
+    type: 'drawing'; // discriminate
+    zIndex: number;
+    path: Point[];
+    top: number;
+    left: number;
+  }
+  
+  type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
+  
+  // values required for some attributes`
+  type Point = {
+    x: number;
+    y: number;
+  };
+  interface ImageInfo {
+    uri: string;
+    width: number;
+    height: number;
+  }
 
 interface DraggableImageProps {
-    image: ImageData;
+    image: ImageItem;
     isAnotherImageActive: boolean; // is there a different image already active, if so, deactivate this image.
-    deleteImage: (image: ImageData) => void;
+    deleteImage: (image: ImageItem) => void;
 }
 
-// Represents an image with complex capabilities such as draggable, rotatable, etc... (actual ImageData is an attribute).
+// Represents an image with complex capabilities such as draggable, rotatable, etc... (actual ImageItem is an attribute).
 // Uses panResponder to evaluate x and y movement coordinates.
 const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableImageProps) => {
 
-    const { setActiveImageCtx, updateImageDataDimensions } = useContext(ImageCtx); // to track and update the currently active image to avoid props drilling to the modify image
+    const { setActiveItemCtx, activeItemCtx } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
 
-    const [activedImage, setActivedImage] = useState<ImageData |  null>(null);
+    const [activedImage, setActivedImage] = useState<ImageItem |  null>(null);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
     const { panHandlers, positionX, positionY  } = useDragPanResponder();
 
@@ -89,10 +120,10 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
         if (image.imageInfo.uri == activedImage?.imageInfo.uri) {
             setActivedImage(null);
             setTapCoordinates({x: 0, y: 0});
-            setActiveImageCtx(undefined); // ctx
+            setActiveItemCtx(undefined); // ctx
         } else {
             setActivedImage(image);
-            setActiveImageCtx(image); // ctx
+            setActiveItemCtx(image); // ctx
         }
     }
 
@@ -101,30 +132,19 @@ const MutableImage = ({ image, isAnotherImageActive, deleteImage }: DraggableIma
         setActivedImage(null);
     }
 
-    // const handleTest = () => {
-    //     image.imageInfo.width = 167;
-    //     image.imageInfo.height = 453;
-
-    //     setActiveImageCtx(image);
-
-    //     updateImageDataDimensions(image);
-    // }
-
     return (
         <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
             <Animated.View 
                 style={[styles.imageContainer, { width: image.width, height: image.height, top: image.top, left: image.left }, animatedStyle]}
                 {...panHandlers} // Apply PanResponder only when the image is not active
             >
-                {activedImage && !isAnotherImageActive &&
+                {activeItemCtx && !isAnotherImageActive &&
                 <View >
-
                     <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
                         <TouchableOpacity onPress={handleRemoveImage}> 
                             <Fontisto name={'close'} size={20} color={'#c0b9ac'} style={styles.editingIcon}/>
                         </TouchableOpacity>
                     </View>
-                    
                 </View>
                 }
                 <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
