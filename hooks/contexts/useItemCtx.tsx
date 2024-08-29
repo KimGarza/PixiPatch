@@ -9,15 +9,11 @@ interface CreateItemProps {
   properties: ImageItem[] | StickerItem[] | DrawingItem[];
 }
 
-interface DeleteItemProps {
-  id: string;
-  itemType: 'image' | 'sticker' | 'drawing';
-}
-
 interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void;
   deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
   bringToFront: (id: string, itemType: string) => void;
+  frontItem: Item | undefined;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
@@ -29,6 +25,7 @@ const defaultValue: ItemCtxType = {
   createItems: () => {},
   deleteItems: () => {},
   bringToFront: () => {},
+  frontItem: undefined,
   items: [],
   images: [],
   stickers: [],
@@ -50,6 +47,7 @@ export const useItemCtx = () => {
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [activeItemCtx, setActiveItemCtx] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
+  const [frontItem, setFrontItem] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [stickers, setStickers] = useState<StickerItem[]>([]);
 
@@ -157,14 +155,18 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     const largestZIndex = generateLargestZIndex();
     console.log("id, largestZIndex ", id, largestZIndex);
 
-    setItems((prevItems) => prevItems.map((item) => item.id == id ? { ...item, zIndex: largestZIndex } : item));
-
-    if (itemType == 'image') {
-      setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
-    } else if (itemType == 'sticker') {
-      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
-    } else if (itemType == 'drawing') {
-      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+    const foundItem = items.find(item => item.id === id);
+    if (foundItem) {
+      setItems((prevItems) => prevItems.map((item) => item.id == id ? { ...item, zIndex: largestZIndex } : item));
+      setFrontItem(foundItem);
+  
+      if (itemType == 'image') {
+        setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
+      } else if (itemType == 'sticker') {
+        // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+      } else if (itemType == 'drawing') {
+        // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+      }
     }
   }
 
@@ -174,6 +176,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         createItems,
         deleteItems,
         bringToFront,
+        frontItem,
         items,
         images,
         stickers,

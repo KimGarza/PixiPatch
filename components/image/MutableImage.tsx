@@ -18,9 +18,10 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
 
     // quick note on active item. Active item can be sticker, drawing or an image. Whichever at the root level of each sticker, image, etc... if tapped, then it is the new activated
     // item, which now everything is using context and will check for state updates with useEffect to keep up with which item is active
-    const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
+    const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
     const [ tapCount, setTappedCount ] = useState<number>(0);
     let activeImageCast = activeItemCtx as ImageItem; // cast item as ImageItem so it's drillable for checking parts of ImageItem specifically since item could be other item types
+    let frontImageCast = frontItem as ImageItem; // cast item as ImageItem so it's drillable for checking parts of ImageItem specifically since item could be other item types
 
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
     const { panHandlers, positionX, positionY  } = useDragPanResponder();
@@ -60,7 +61,15 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
 
     useEffect(() => {
         activeImageCast = activeItemCtx as ImageItem;
-    }, [activeItemCtx])
+        frontImageCast = frontItem as ImageItem;
+        if (frontItem != undefined) {
+            console.log("frontImageCast ", frontImageCast.id)
+            if ( frontImageCast.id != image.id ) { // if frontItem from context was updated, but it is no the current image, that means another image was tapped, so let's not store tap count anymore for the current image
+                setTappedCount(0);
+            } 
+        }
+        
+    }, [activeItemCtx, frontItem])
 
     // when user taps image, it gets coordniates for location to display image modification toolbox.
     // checks if the image tapped was already active, if so, deactivates it, otherwise activates it including setting it as the new "activeImage" in ctx
