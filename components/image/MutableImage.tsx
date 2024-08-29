@@ -72,8 +72,8 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
 
             console.log("first tap, bringing to front", tapCount)
             setTappedCount(1); 
-            bringToFront(image.id);
-            console.log("iamge indez z", image.zIndex)
+            bringToFront(image.id, 'image');
+            console.log("tapped image's zIndex", image.zIndex)
 
         }
         else if (tapCount == 1) {
@@ -100,7 +100,7 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
     return (
         <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
             <Animated.View 
-                style={[styles.imageContainer, { width: image.width, height: image.height, top: image.top, left: image.left }, animatedStyle]}
+                style={[styles.imageContainer, { width: image.width, height: image.height, top: image.top, left: image.left, zIndex: image.zIndex }, animatedStyle]}
                 {...panHandlers} // Apply PanResponder only when the image is not active
             >
                 {activeItemCtx && activeImageCast.imageInfo.uri == image.imageInfo.uri &&
@@ -112,7 +112,7 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
                     </View>
                 </View>
                 }
-                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}} style={{zIndex: image.zIndex}}>
                     <Image
                         source={{ uri: image.imageInfo.uri }}
                         style={[{
@@ -136,7 +136,7 @@ export default MutableImage;
 
 const styles = StyleSheet.create({
     imageContainer: {
-      position: 'relative',
+      position: 'absolute',
       borderWidth: 1, borderColor: 'green'
     },
     closeContainer: {

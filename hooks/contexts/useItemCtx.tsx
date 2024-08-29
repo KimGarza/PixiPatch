@@ -17,7 +17,7 @@ interface DeleteItemProps {
 interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void;
   deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
-  bringToFront: (existingId: string) => void;
+  bringToFront: (id: string, itemType: string) => void;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
@@ -101,7 +101,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       );
       return largestZIndex.zIndex + 1; // add 1 to the largest zIndex so that the current item will now have the largest ZIndex
     };
-    return 1;
+    return 2;
   }
 
   const generateId = () => {
@@ -152,15 +152,20 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     }
   }
 
-  const bringToFront = (id: string) => {
+  const bringToFront = (id: string, itemType: string) => {
 
     const largestZIndex = generateLargestZIndex();
-    console.log("bring to front ", largestZIndex, items);
+    console.log("id, largestZIndex ", id, largestZIndex);
 
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id == id ? { ...item, zIndex: largestZIndex } : item
-      ));
+    setItems((prevItems) => prevItems.map((item) => item.id == id ? { ...item, zIndex: largestZIndex } : item));
+
+    if (itemType == 'image') {
+      setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
+    } else if (itemType == 'sticker') {
+      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+    } else if (itemType == 'drawing') {
+      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+    }
   }
 
   return (

@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
   canvasContainer: {
     height: canvasHeight * .85,
     width: width,
-    zIndex: 999999999999999
   },
   canvas: {
       display: 'flex',
@@ -167,7 +166,6 @@ const styles = StyleSheet.create({
       overflow: 'hidden',
       height: '100%', width: '100%',
       borderWidth: 1, borderColor: 'black',
-      zIndex: 999999999999999
   },
   // image container and image were very tricky to get right and center due to some confusion with alignItems making img disapear
   imageContainer: {

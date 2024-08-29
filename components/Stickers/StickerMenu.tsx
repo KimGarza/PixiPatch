@@ -4,17 +4,6 @@ import { useContext } from 'react';
 import { ImageSourcePropType } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
-interface Item {
-  id: string,
-  zIndex: number
-}
-interface Sticker {
-  uri: string;
-  width: number;
-  height: number;
-  type: string | undefined;
-}
-
 interface StickerData {
   sticker: ImageSourcePropType;
   top: number;

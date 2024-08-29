@@ -40,7 +40,7 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
     const imageItem: ImageItem = { // returns image regardless of if wxh adjustment fails
       id: '',
       type: 'image',
-      zIndex: 0,
+      zIndex: 2,
       imageInfo: image,
       ogImageInfo: { ...image },
       top: Math.floor(Math.random() * (100 - 30)) + 30,
