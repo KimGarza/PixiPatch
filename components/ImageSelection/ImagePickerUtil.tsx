@@ -85,7 +85,6 @@ const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
 
       // converts the images into imageData for extra details such as logical units width x height
       const imageItemArr = selectedImages.map(convertToImageItem);
-
       createItems({ itemType: 'image', properties: imageItemArr});
     }
   };

@@ -16,7 +16,7 @@ interface DeleteItemProps {
 
 interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void;
-  deleteItems: ({id, itemType}: DeleteItemProps) => void;
+  deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
   bringToFront: (existingId: string) => void;
   items: Item[];
   images: ImageItem[];
@@ -57,7 +57,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     const id = generateId();
     const zIndex = generateLargestZIndex();
 
-    return {
+    const newImageItem = {
       id: id, zIndex: zIndex, type: 'image',
       imageInfo: item.imageInfo,
       ogImageInfo: item.ogImageInfo || item.imageInfo,
@@ -66,6 +66,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       width: item.width,
       height: item.height,
     } as ImageItem;
+
+    return newImageItem;
   }
 
   const createStickerItem = (item: StickerItem) => {
@@ -99,6 +101,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       );
       return largestZIndex.zIndex + 1; // add 1 to the largest zIndex so that the current item will now have the largest ZIndex
     };
+    return 1;
   }
 
   const generateId = () => {
@@ -106,15 +109,14 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
 
   const createItems = ({ itemType, properties }: CreateItemProps) => {
-    const newItems: Item[] = [];
-
     switch (itemType) {
       case 'image':
         const imageItems = properties as ImageItem[]
         if (imageItems) {
           imageItems.forEach((item, index) => {
-            newItems.push(createImageItem(item));
-            setImages(prevImages => [...prevImages, item]);
+            const newItem = createImageItem(item);
+            setImages(prevImages => [...prevImages, newItem]);
+            setItems((prevItems) => [...prevItems, newItem]);
           })
         }
         break;
@@ -122,57 +124,45 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         const stickerItems = properties as StickerItem[]
         if (stickerItems) {
           stickerItems.forEach((item, index) => {
-            newItems.push(createStickerItem(item));
-            setStickers(prevStickers => [...prevStickers, item]);
+            const newItem = createStickerItem(item);
+            setStickers(prevStickers => [...prevStickers, newItem]);
+            setItems((prevItems) => [...prevItems, newItem]);
           })
         }
         break;
       case 'drawing': 
         const drawingItems = properties as DrawingItem[];
         drawingItems.forEach((item, index) => {
-          newItems.push(createDrawingItem(item));
+          const newItem = createDrawingItem(item);
+          setItems((prevItems) => [...prevItems, newItem]);
         })
         break;
     }
-
-    newItems.forEach((newItem, index) => {
-      setItems((prevItems) => [...prevItems, newItem]);
-    })
   }
 
-  
-  const deleteItems = ({ id, itemType }: DeleteItemProps) => {
+  const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing') => {
+    setItems((prevItems) => prevItems.filter(item => item.id !== id))
 
-    setItems(prevItems => prevItems.filter(item => item.id !== id))
     if (itemType == 'image') {
       setImages(prevImages => prevImages.filter(image => image.id !== id))
     } else if (itemType == 'sticker') {
       // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+    } else if (itemType == 'drawing') {
+      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
     }
   }
 
-  const bringToFront = (existingId: string) => {
+  const bringToFront = (id: string) => {
 
-    let largestZIndex = 0;
-    // find the largest zIndex currently existing within the items array
-    if (items.length > 0) {
-      const item = items.reduce((highest, current) =>
-        current.zIndex > highest.zIndex ? current : highest
-      );
+    const largestZIndex = generateLargestZIndex();
+    console.log("bring to front ", largestZIndex, items);
 
-      largestZIndex = item.zIndex;
-    }; 
-
-    if (largestZIndex != 0) {
-
-      setItems((prevItems) => 
-        prevItems.map((item) => 
-          item.id == existingId ? { ...item, zIndex: largestZIndex + 1 } : item
-        )
-      );
-    }
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id == id ? { ...item, zIndex: largestZIndex } : item
+      ));
   }
-    
+
   return (
     <ItemCtx.Provider
       value={{

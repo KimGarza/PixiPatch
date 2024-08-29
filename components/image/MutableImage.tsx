@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, GestureResponderEvent, Text } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 import useDragPanResponder from './useDragPanResponder';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -18,7 +18,8 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
 
     // quick note on active item. Active item can be sticker, drawing or an image. Whichever at the root level of each sticker, image, etc... if tapped, then it is the new activated
     // item, which now everything is using context and will check for state updates with useEffect to keep up with which item is active
-    const { setActiveItemCtx, activeItemCtx, deleteItems } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
+    const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront } = useItemCtx(); // to track and update the currently active image to avoid props drilling to the modify image
+    const [ tapCount, setTappedCount ] = useState<number>(0);
     let activeImageCast = activeItemCtx as ImageItem; // cast item as ImageItem so it's drillable for checking parts of ImageItem specifically since item could be other item types
 
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
@@ -63,17 +64,37 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
 
     // when user taps image, it gets coordniates for location to display image modification toolbox.
     // checks if the image tapped was already active, if so, deactivates it, otherwise activates it including setting it as the new "activeImage" in ctx
+
+    // need to make it so it recognizes if another image was tapped and if so, set tapcount back to 0
     const handleTap = (event: GestureResponderEvent) => {
 
-        const { locationX, locationY } = event.nativeEvent;
-        setTapCoordinates({x: locationX, y: locationY});
+        if (tapCount == 0) {
 
-        if (image.imageInfo.uri == activeImageCast?.imageInfo.uri) {
-            setTapCoordinates({x: 0, y: 0});
-            setActiveItemCtx(undefined);
-        } else {
-            setActiveItemCtx(image); // ctx
+            console.log("first tap, bringing to front", tapCount)
+            setTappedCount(1); 
+            bringToFront(image.id);
+            console.log("iamge indez z", image.zIndex)
+
         }
+        else if (tapCount == 1) {
+
+            console.log("second tap, activating", tapCount)
+            setTappedCount(2);
+
+            const { locationX, locationY } = event.nativeEvent;
+            setTapCoordinates({x: locationX, y: locationY});
+            setActiveItemCtx(image);
+        } else if (tapCount == 2) {
+            if (image.imageInfo.uri == activeImageCast?.imageInfo.uri) {
+                console.log("should be here, tap 3 ", tapCount)
+
+                setTapCoordinates({x: 0, y: 0});
+                setActiveItemCtx(undefined);
+
+                setTappedCount(0);
+            }
+        }
+        
     }
 
     return (
@@ -85,7 +106,7 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
                 {activeItemCtx && activeImageCast.imageInfo.uri == image.imageInfo.uri &&
                 <View >
                     <View style={{position: 'absolute', top: - 10, left: - 10 + image.width}}>
-                        <TouchableOpacity onPress={() => {deleteItems({id: image.id, itemType: 'image'})}}> 
+                        <TouchableOpacity onPress={() => {deleteItems(image.id, 'image')}}>
                             <Fontisto name={'close'} size={40} color={'#c0b9ac'} style={styles.editingIcon}/>
                         </TouchableOpacity>
                     </View>
@@ -97,6 +118,7 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
                         style={[{
                             width: image.width,
                             height: image.height,
+                            zIndex: image.zIndex,
                         }, activeImageCast?.imageInfo.uri == image.imageInfo.uri && styles.imageSelected,]} // checking the casted ImageItem which is active in ctx against the current image
                     />
                 </TouchableOpacity>
@@ -114,7 +136,6 @@ export default MutableImage;
 
 const styles = StyleSheet.create({
     imageContainer: {
-      zIndex: 4,
       position: 'relative',
       borderWidth: 1, borderColor: 'green'
     },
@@ -129,10 +150,9 @@ const styles = StyleSheet.create({
     image: {
         position: 'absolute',
         flexDirection: 'column', // idk why but this helps with the scattering
-        zIndex: 2,
     },
     imageSelected: {
         borderWidth: 2, borderColor: '#c0b9ac',
-        zIndex: 4,
+        zIndex: 999,
     },
   });

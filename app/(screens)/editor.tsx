@@ -25,7 +25,7 @@ const EditorScreen = () => {
   // contexts
   const { stickers } = useContext(StickerCtx);
   const { background } = useContext(BackgroundCtx);
-  const { images } = useItemCtx();
+  const { images, items } = useItemCtx();
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
@@ -34,8 +34,6 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    // console.log("images from editor ", images);
-    // activeImageCtx
   }, [images])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed

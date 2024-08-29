@@ -1,26 +1,7 @@
 import { View } from "react-native";
 import MutableImage from "../image/MutableImage";
-  interface BaseItem { 
-    id: string;
-    type: string; // discriminate within the union
-    zIndex: number;
-  }
-  interface ImageItem extends BaseItem {
-    id: string;
-    type: 'image'; // discriminate
-    zIndex: number;
-    imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-  }
-  interface ImageInfo {
-    uri: string;
-    width: number;
-    height: number;
-  }
+import { ImageItem } from '@/customTypes/itemTypes';
+
   interface ViewImagesProps {
     images: ImageItem[],
 }
