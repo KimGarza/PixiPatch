@@ -77,6 +77,9 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
     // need to make it so it recognizes if another image was tapped and if so, set tapcount back to 0
     const handleTap = (event: GestureResponderEvent) => {
 
+        if (tapCount == 0 && frontImageCast != undefined && frontImageCast.id == image.id) { // if the image is already in the foreground but user clicks it, they want to activate it
+            setActiveItemCtx(image);
+        }
         if (tapCount == 0) {
 
             console.log("first tap, bringing to front", tapCount)
