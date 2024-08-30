@@ -24,12 +24,10 @@ const CroppableImage = ({ image, encodedUri }: Props) => {
     }
 
     const handlePositionCallback = (updatedPosition: {top: number, bottom: number, left: number, right: number}) => {
-        console.log("position callback ", updatedPosition)
         setPosition(updatedPosition)
     }
 
     const handleDimensionsCallback = (updatedDimensions: {width: number, height: number}) => {
-        console.log("position callback ", updatedDimensions)
         setDimens(updatedDimensions)
     }
 

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from '../../hooks/useColorScheme'
 import { BackgroundProvider } from '@/components/background/BackgroundCtx';
 import { StickerProvider } from '@/components/Stickers/StickersCtx';
-import { DrawProvider } from '@/components/modification/drawing/DrawCtx';
+import { DrawProvider } from '@/tools/drawing/DrawCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ItemProvider } from '@/hooks/contexts/useItemCtx';
 

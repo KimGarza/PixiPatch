@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   editSettings: {
     display: 'flex',
     flexDirection: 'row',
-    borderWidth: 2, borderColor: 'green',
     height: canvasHeight * .15, width: '100%',
     backgroundColor: '#bec6ba',
   },

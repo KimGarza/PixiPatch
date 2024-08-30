@@ -63,7 +63,6 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
         activeImageCast = activeItemCtx as ImageItem;
         frontImageCast = frontItem as ImageItem;
         if (frontItem != undefined) {
-            console.log("frontImageCast ", frontImageCast.id)
             if ( frontImageCast.id != image.id ) { // if frontItem from context was updated, but it is no the current image, that means another image was tapped, so let's not store tap count anymore for the current image
                 setTappedCount(0);
             } 
@@ -82,15 +81,12 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
         }
         if (tapCount == 0) {
 
-            console.log("first tap, bringing to front", tapCount)
             setTappedCount(1); 
             bringToFront(image.id, 'image');
-            console.log("tapped image's zIndex", image.zIndex)
 
         }
         else if (tapCount == 1) {
 
-            console.log("second tap, activating", tapCount)
             setTappedCount(2);
 
             const { locationX, locationY } = event.nativeEvent;
@@ -98,7 +94,6 @@ const MutableImage = ({ image }: MutablbleImageProps) => {
             setActiveItemCtx(image);
         } else if (tapCount == 2) {
             if (image.imageInfo.uri == activeImageCast?.imageInfo.uri) {
-                console.log("should be here, tap 3 ", tapCount)
 
                 setTapCoordinates({x: 0, y: 0});
                 setActiveItemCtx(undefined);
@@ -149,7 +144,6 @@ export default MutableImage;
 const styles = StyleSheet.create({
     imageContainer: {
       position: 'absolute',
-      borderWidth: 1, borderColor: 'green'
     },
     closeContainer: {
         position: 'absolute',

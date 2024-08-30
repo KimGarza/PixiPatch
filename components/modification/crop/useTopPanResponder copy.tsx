@@ -22,7 +22,6 @@ function useTopPanResponder({ imageMaxDimensions, positionRef, initialPositionsR
             
                 // this means the user is swiping down and if up, not past 0 but what about too far down but need to protect against cropping past the images max height
                 if (initialPositionsRef.current.top + gestureState.dy >= 0 && initialPositionsRef.current.top + gestureState.dy <= (imageMaxDimensions.height - 15)) {
-                    console.log("position top data ", positionRef.current.top)
                     positionRef.current.top = initialPositionsRef.current.top + gestureState.dy; // current top position ref will change by equating to gestureState. dy + the initial (left off) value
                     setPosition(positionRef.current);
                     dimensRef.current.height = initialDimensRef.current.height - gestureState.dy;

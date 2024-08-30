@@ -153,7 +153,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const bringToFront = (id: string, itemType: string) => {
 
     const largestZIndex = generateLargestZIndex();
-    console.log("id, largestZIndex ", id, largestZIndex);
 
     const foundItem = items.find(item => item.id === id);
     if (foundItem) {

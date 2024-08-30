@@ -1,22 +1,10 @@
 import { useRef, useContext } from 'react';
 import { PanResponder, PanResponderInstance, GestureResponderEvent, PanResponderGestureState } from 'react-native';
 import { DrawCtx } from './DrawCtx';
+import { Point, PathData, DrawingData } from '@/customTypes/itemTypes';
+import { RefObject } from 'react';
 
-// type for path
-type Point = {
-  x: number;
-  y: number;
-};
-type PathData = Point[];
-
-interface DrawingData {
-  path: PathData;
-  top: number;
-  left: number;
-}
-
-// custom hook for pan responder
-function usePanResponder(onPathUpdate: (newPath: PathData) => void) { 
+function usePanResponder(onPathUpdate: (newPath: PathData) => void, finishStroke: () => void, testRef: RefObject<PathData>) { 
 // basically within usePanResponder, we pass new useRef.current values to onPathUpdate function with each new gesture, this in turn sends it up to DrawUtil which
 
   const { setDrawingData } = useContext(DrawCtx);
@@ -25,8 +13,6 @@ function usePanResponder(onPathUpdate: (newPath: PathData) => void) {
   const convertToDrawingData = (path: PathData) => {
     const covnerted: DrawingData = {
       path: path,
-      top: Math.floor(Math.random() * (51 - 10)) + 10,
-      left: Math.floor(Math.random() * (61 - 20)) + 20
     }
     return covnerted;
   }
@@ -49,9 +35,13 @@ function usePanResponder(onPathUpdate: (newPath: PathData) => void) {
         currentPathRef.current = [...currentPathRef.current, { x: locationX, y: locationY }]; 
         onPathUpdate(currentPathRef.current);
       },
+      // onPanResponderRelease: () => {
+      //   const drawing = convertToDrawingData(currentPathRef.current); 
+      //   console.log("on release here is the drawing: ", drawing);
+      //   setDrawingData(prevDrawingData => [...prevDrawingData, drawing]);
+      // },
       onPanResponderRelease: () => {
-        const drawing = convertToDrawingData(currentPathRef.current); 
-        setDrawingData(prevDrawingData => [...prevDrawingData, drawing]);
+        setDrawingData(prevData => [...prevData, { path: currentPathRef.current, size: 3, color: "blue" }]);
       },
     })
   ).current;

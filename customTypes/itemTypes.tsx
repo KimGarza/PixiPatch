@@ -45,3 +45,8 @@ export interface BaseItem {
     width: number;
     height: number;
   }
+
+export type PathData = Point[];
+export interface DrawingData {
+    path: PathData;
+}

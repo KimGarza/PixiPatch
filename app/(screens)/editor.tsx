@@ -8,7 +8,8 @@ import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
 import StickerMenu from '@/components/Stickers/StickerMenu';
 import BackgroundMenu from '@/components/background/BackgroundMenu';
-import DrawUtil from '@/components/modification/drawing/DrawUtil';
+import DrawUtil from '@/tools/drawing/DrawUtil';
+import DrawMenu from '@/tools/drawing/drawMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
 import HomeButton from '@/components/utils/homeButton';
@@ -25,7 +26,7 @@ const EditorScreen = () => {
   // contexts
   const { stickers } = useContext(StickerCtx);
   const { background } = useContext(BackgroundCtx);
-  const { images, items } = useItemCtx();
+  const { images } = useItemCtx();
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
@@ -88,6 +89,8 @@ return (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
           <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
+        ) : drawMenuToggle ? (
+          <DrawMenu menuToggle={handleToggleDrawMenuCallback}/>
         ) : (
           // primary tools
       <View style={styles.primaryTools}>

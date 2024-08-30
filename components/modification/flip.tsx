@@ -4,7 +4,6 @@ import { ImageItem } from '@/customTypes/itemTypes';
 // flipping is done at pixel level, reverses pixels. Rearranges the pixels to create a mirrored version of image.
 const Flip = async (imageItem: ImageItem, updateImageInfo: (original: ImageItem, cached: ImageItem) => void) => {
     try {
-        console.log("in the flip")
         const result = await ImageManipulator.manipulateAsync(
             imageItem.imageInfo.uri,
             [{ flip: ImageManipulator.FlipType.Horizontal }],
