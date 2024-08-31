@@ -75,7 +75,8 @@ return (
             <ViewStickers stickers={stickers}/>
 
             {/* Drawing */}
-            {drawMenuToggle && <DrawUtil isDrawing={drawMenuToggle}/>}
+            {/* {drawMenuToggle && <DrawUtil/>} */}
+            {/* <ViewDrawings drawings={drawings} */}
 
             {/* Pictures */}
             <ViewImages images={images}/> 
@@ -89,8 +90,6 @@ return (
           <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
         ) : backgroundMenuToggle ? (
           <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
-        ) : drawMenuToggle ? (
-          <DrawMenu menuToggle={handleToggleDrawMenuCallback}/>
         ) : (
           // primary tools
       <View style={styles.primaryTools}>

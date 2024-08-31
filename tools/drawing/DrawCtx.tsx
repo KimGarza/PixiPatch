@@ -1,20 +1,23 @@
 import React, { createContext, useState, Dispatch, SetStateAction, useContext, useEffect } from "react";
-import { DrawingData } from '@/customTypes/itemTypes';
+import { PathData } from '@/customTypes/itemTypes';
 
+// PathData is array of x, y coordinates + color + size
 interface DrawCtxType {
-    drawingData: DrawingData[]; // like image data, path with meta data for canvas purposes. holds array of path data which represents multiple strokes for one drawing
-    // need not hold more than one bc drawing contextx is kidn of like a temporary measure for in the moment drawings, (when done path data is removed)
-    // the actual drawing gets stored in itemctx after done
-    setDrawingData: Dispatch<SetStateAction<DrawingData[]>>;
-    setSizeAndColor: Dispatch<SetStateAction<{size: number, color: string}>>;
-    sizeAndColor: {size: number, color: string};
+    setDrawingPaths: Dispatch<SetStateAction<PathData[]>>;
+    drawingPaths: PathData[];
+    setActiveSize: Dispatch<SetStateAction<number>>;
+    setActiveColor: Dispatch<SetStateAction<string>>;
+    activeSize: number;
+    activeColor: string;
 }
 
 const defaultValue: DrawCtxType = {
-    drawingData: [],
-    setDrawingData: () => [],
-    setSizeAndColor: () => {},
-    sizeAndColor: {size: 3, color: 'black'}
+    setDrawingPaths: () => [],
+    drawingPaths: [],
+    setActiveSize: () => {},
+    setActiveColor: () => {},
+    activeSize: 3,
+    activeColor: 'black'
 }
 
 export const DrawCtx = createContext<DrawCtxType>(defaultValue);
@@ -34,19 +37,22 @@ interface DrawCtxProps {
 
 export const DrawProvider: React.FC<DrawCtxProps> = ({ children }) => {
 
+    const [drawingPaths, setDrawingPaths] = useState<PathData[]>([]);
+    const [activeSize, setActiveSize] = useState<number>(3);
+    const [activeColor, setActiveColor] = useState<string>('black');
     
-    const [drawingData, setDrawingData] = useState<DrawingData[]>([]);
-    const [sizeAndColor, setSizeAndColor] = useState<{size: number, color: string}>({size: 3, color: 'black'});
     useEffect(() => {
-        
-    }, [drawingData])
+        console.log("in ctx ", activeColor, activeSize )
+    }, [drawingPaths])
     return (
         <DrawCtx.Provider
-        value={{ // value is a prop
-            drawingData,
-            setDrawingData,
-            setSizeAndColor,
-            sizeAndColor
+        value={{
+            drawingPaths,
+            setDrawingPaths,
+            setActiveSize,
+            setActiveColor,
+            activeSize,
+            activeColor
           }}
         >
             {children}

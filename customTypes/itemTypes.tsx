@@ -28,9 +28,10 @@ export interface BaseItem {
     id: string;
     type: 'drawing'; // discriminate
     zIndex: number;
-    path: Point[];
+    paths: PathData[];
     top: number;
     left: number;
+    height: number, width: number
   }
   
   export type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
@@ -46,7 +47,8 @@ export interface BaseItem {
     height: number;
   }
 
-export type PathData = Point[];
-export interface DrawingData {
-    path: PathData;
+export type PathData = {
+  points: Point[];
+  strokeWidth: number;
+  strokeColor: string;
 }

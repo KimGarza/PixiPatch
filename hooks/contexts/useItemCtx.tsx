@@ -86,7 +86,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     return {
       id: id, zIndex: zIndex, type: 'drawing',
-      path: item.path,
+      paths: item.paths,
       top: item.top,
       left: item.left,
     } as DrawingItem;

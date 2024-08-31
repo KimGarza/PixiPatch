@@ -1,51 +1,23 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useEffect, useState } from 'react';
-import { Fontisto } from '@expo/vector-icons';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useDrawCtx } from './DrawCtx';
 
-interface Props {
-  menuToggle: () => void;
-}
-
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
-const DrawMenu: React.FC<Props> = ({ menuToggle }) => {
+const DrawMenu = () => {
 
-  const { setSizeAndColor } = useDrawCtx();
-
-  const [color, setColor] = useState<string>('black');
-  const [size, setSize] = useState<number>(3);
-
-  const handleCloseMenu = () => {
-    menuToggle();
-  }
-
-  useEffect(() => {
-    setSizeAndColor({size: size, color: color});
-  }, [size, color])
-
+  const { setActiveSize, setActiveColor } = useDrawCtx();
+  
   return (
     <View style={styles.container}>
 
-      <View style={styles.done}>
-        <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Done</Text>
-        {/* <SimpleLineIcons name='pencil' size={40} style={{top: -5}}/> */}
-      </View>
-
       <View style={styles.menuLayout}>
-
-        <View style={styles.close}>
-          <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
-          </TouchableOpacity>
-        </View>
 
         <View style={styles.sizeDots}>
         {[25, 20, 14, 7, 4, 2].map((size, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => setSize(size)}
+            onPress={() => setActiveSize(size)}
             style={styles.sizeDotContainer}
           >
             <View style={[styles.splotch, { backgroundColor: 'black', height: size, width: size }]} />
@@ -57,7 +29,7 @@ const DrawMenu: React.FC<Props> = ({ menuToggle }) => {
         {['#f21616', '#f95900', 'yellow', '#189b4e', '#549eff', '#6f24ff', '#ffa7c3'].map((color, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => setColor(color)}
+            onPress={() => setActiveColor(color)}
           >
             <View style={[styles.splotch, { backgroundColor: color }]} />
           </TouchableOpacity>

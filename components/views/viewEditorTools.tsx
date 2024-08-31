@@ -5,6 +5,8 @@ import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
 import DrawTool from '../../tools/drawing/DrawTool';
 import StickerTool from '../Stickers/StickerTool';
 import BackgroundTool from '../background/BackgroundTool';
+import { useRouter } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 
 interface ViewEditorToolsProps {
     backgroundMenuToggle: () => void,
@@ -13,6 +15,8 @@ interface ViewEditorToolsProps {
 }
 
 const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, drawMenuToggle, stickerMenuToggle}) => {
+
+    const router = useRouter();
 
     // callback to be handled as prop value upon using the stickerTool comp
     // maybe replace the tool content with one of these tools  isntead of menu callbacks?
@@ -41,9 +45,9 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
             <Ionicons name='image-outline' size={30}/>
         </BackgroundTool>
 
-        <DrawTool menuToggle={handleToggleDrawMenu}>
+        <TouchableOpacity onPress={() => {router.push('/(screens)/sketchBook')}}>
             <SimpleLineIcons name='pencil' size={30}/>
-        </DrawTool>
+        </TouchableOpacity>
 
         <Feather name='layout' size={30}/>
 
