@@ -1,23 +1,16 @@
-import { useRef } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import DrawUtil from '@/tools/drawing/DrawUtil';
 import DrawMenu from '@/tools/drawing/drawMenu';
 import HomeButton from '@/components/utils/homeButton';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
-import { useRouter } from 'expo-router';
 import { TouchableOpacity, Text } from 'react-native';
+import { useState } from 'react';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const SketchBookScreen = () => { 
-  const viewRef = useRef(null); // used to capture the canvas container View elemenet
-  const router = useRouter();
 
-  const handleDoneDrawing = () => {
-    // current drawing paths, save to drawings in item ctx
-    // remove all data from drawing ctx to clear
-    // rout back to editor which should display all drawings from ctx at same ratio drawn but shrunk to 100x100 or something
-  }
+  const [isDone, setIsDone] = useState<boolean>(false);
 
 return (
   <View style={styles.screenContainer}>
@@ -32,14 +25,14 @@ return (
     </View>
 
     {/* main canvas */}
-    <View style={styles.canvasContainer} ref={viewRef} collapsable={false} >
+    <View style={styles.canvasContainer} collapsable={false} >
 
         <View style={styles.canvas} >
-            <DrawUtil/>
+            <DrawUtil isDone={isDone}/>
         </View>
     </View>
 
-    <TouchableOpacity onPress={handleDoneDrawing}><View style={styles.done}>
+    <TouchableOpacity onPress={() => {setIsDone(true)}}><View style={styles.done}>
       <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Done</Text>
       {/* <SimpleLineIcons name='pencil' size={40} style={{top: -5}}/> */}
       </View>
@@ -49,7 +42,7 @@ return (
       <View style={styles.primaryTools}>
         <DrawMenu/>
       </View>
-      
+
     </View>
   );
 }
@@ -95,6 +88,7 @@ const styles = StyleSheet.create({
     right: 20,
     top: -50,
     alignItems: 'center',
-    gap: 1
+    gap: 1,
+    zIndex: 99999999999999999999999 // this zindex is required
   },
 });

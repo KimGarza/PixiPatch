@@ -13,8 +13,7 @@ export interface BaseItem {
     ogImageInfo: ImageInfo;
     top: number;
     left: number;
-    width: number;
-    height: number;
+    width: number; height: number;
   }
   export interface StickerItem extends BaseItem {
     id: string;
@@ -23,16 +22,27 @@ export interface BaseItem {
     sticker: ImageSourcePropType;
     top: number;
     left: number;
+    height: number, width: number
   }
   export interface DrawingItem extends BaseItem {
     id: string;
     type: 'drawing'; // discriminate
     zIndex: number;
-    paths: PathData[];
+    drawing: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number
   }
+
+  // export interface DrawingItem extends BaseItem {
+  //   id: string;
+  //   type: 'drawing'; // discriminate
+  //   zIndex: number;
+  //   paths: PathData[];
+  //   top: number;
+  //   left: number;
+  //   height: number, width: number
+  // }
   
   export type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
   

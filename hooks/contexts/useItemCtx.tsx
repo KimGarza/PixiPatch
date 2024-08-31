@@ -17,6 +17,7 @@ interface ItemCtxType {
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
+  drawings: DrawingItem[];
   activeItemCtx: ImageItem | StickerItem | DrawingItem | undefined;
   setActiveItemCtx: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
 }
@@ -29,6 +30,7 @@ const defaultValue: ItemCtxType = {
   items: [],
   images: [],
   stickers: [],
+  drawings: [],
   activeItemCtx: undefined,  
   setActiveItemCtx: () => {},
 };
@@ -50,6 +52,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [frontItem, setFrontItem] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [stickers, setStickers] = useState<StickerItem[]>([]);
+  const [drawings, setDrawings] = useState<DrawingItem[]>([]);
 
   const createImageItem = (item: ImageItem) => {
     const id = generateId();
@@ -74,7 +77,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     return {
       id: id, zIndex: zIndex, type: 'sticker',
-      sticker: item.sticker,
+      uri: item.uri,
       top: item.top,
       left: item.left,
     } as StickerItem;
@@ -86,7 +89,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     return {
       id: id, zIndex: zIndex, type: 'drawing',
-      paths: item.paths,
+      uri: item.uri,
       top: item.top,
       left: item.left,
     } as DrawingItem;
@@ -107,6 +110,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
 
   const createItems = ({ itemType, properties }: CreateItemProps) => {
+    console.log("here in create items and here are properties: ", properties)
     switch (itemType) {
       case 'image':
         const imageItems = properties as ImageItem[]
@@ -129,11 +133,15 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         }
         break;
       case 'drawing': 
+        console.log("here in drawing case");
         const drawingItems = properties as DrawingItem[];
-        drawingItems.forEach((item, index) => {
-          const newItem = createDrawingItem(item);
-          setItems((prevItems) => [...prevItems, newItem]);
-        })
+        if (drawingItems) {
+          drawingItems.forEach((item, index) => {
+            const newItem = createDrawingItem(item);
+            setDrawings(prevDrawings => [...prevDrawings, newItem]);
+            setItems((prevItems) => [...prevItems, newItem]);
+          })
+        }
         break;
     }
   }
@@ -179,6 +187,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         items,
         images,
         stickers,
+        drawings,
         activeItemCtx,
         setActiveItemCtx
       }}

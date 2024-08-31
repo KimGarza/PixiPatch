@@ -8,8 +8,6 @@ import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
 import StickerMenu from '@/components/Stickers/StickerMenu';
 import BackgroundMenu from '@/components/background/BackgroundMenu';
-import DrawUtil from '@/tools/drawing/DrawUtil';
-import DrawMenu from '@/tools/drawing/drawMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
 import HomeButton from '@/components/utils/homeButton';
@@ -17,6 +15,7 @@ import HomeButton from '@/components/utils/homeButton';
 import ViewEditorTools from '@/components/views/viewEditorTools';
 import ViewStickers from '@/components/views/viewStickers';
 import ViewImages from '@/components/views/viewImages';
+import ViewDrawings from '@/components/views/viewDrawings';
 // misc
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
@@ -26,7 +25,7 @@ const EditorScreen = () => {
   // contexts
   const { stickers } = useContext(StickerCtx);
   const { background } = useContext(BackgroundCtx);
-  const { images } = useItemCtx();
+  const { images, drawings } = useItemCtx();
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
@@ -35,7 +34,8 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-  }, [images])
+    console.log("drawings ", drawings)
+  }, [images, drawings, stickers])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
@@ -76,7 +76,7 @@ return (
 
             {/* Drawing */}
             {/* {drawMenuToggle && <DrawUtil/>} */}
-            {/* <ViewDrawings drawings={drawings} */}
+            <ViewDrawings drawings={drawings}/>
 
             {/* Pictures */}
             <ViewImages images={images}/> 
