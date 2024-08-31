@@ -19,7 +19,7 @@ export interface BaseItem {
     id: string;
     type: 'sticker'; // discriminate
     zIndex: number;
-    sticker: ImageSourcePropType;
+    uri: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number
@@ -28,7 +28,7 @@ export interface BaseItem {
     id: string;
     type: 'drawing'; // discriminate
     zIndex: number;
-    drawing: ImageSourcePropType;
+    uri: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number
