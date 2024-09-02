@@ -19,6 +19,7 @@ export interface BaseItem {
     id: string;
     type: 'sticker'; // discriminate
     zIndex: number;
+    imageInfo: ImageInfo;
     uri: ImageSourcePropType;
     top: number;
     left: number;
@@ -28,21 +29,12 @@ export interface BaseItem {
     id: string;
     type: 'drawing'; // discriminate
     zIndex: number;
+    imageInfo: ImageInfo;
     uri: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number
   }
-
-  // export interface DrawingItem extends BaseItem {
-  //   id: string;
-  //   type: 'drawing'; // discriminate
-  //   zIndex: number;
-  //   paths: PathData[];
-  //   top: number;
-  //   left: number;
-  //   height: number, width: number
-  // }
   
   export type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
   

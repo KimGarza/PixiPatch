@@ -4,13 +4,17 @@ import DrawMenu from '@/tools/drawing/drawMenu';
 import HomeButton from '@/components/utils/homeButton';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { TouchableOpacity, Text } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const SketchBookScreen = () => { 
 
   const [isDone, setIsDone] = useState<boolean>(false);
+
+  useEffect(() => {
+
+  }, [isDone])
 
 return (
   <View style={styles.screenContainer}>

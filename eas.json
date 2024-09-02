@@ -1,0 +1,47 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Debug"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "ios": {
+        "buildConfiguration": "Release",
+        "autoIncrement": "buildNumber"
+      },
+      "env": {
+        "API_KEY": "secret-value"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./path/to/your-key.json"
+      },
+      "ios": {
+        "appleId": "your-apple-id@example.com",
+        "ascAppId": "1234567890"
+      }
+    }
+  }
+}

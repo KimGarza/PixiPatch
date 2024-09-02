@@ -27,18 +27,18 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      [
-        "with-rn-image-crop-picker",
-        {
-          "PhotoLibraryUsageDescription": "Allow app XYZ to access your photos",
-          "CameraUsageDescription": "Allow app XYZ to access your camera",
-          "MicrophoneUsageDescription": "Allow app XYZ to access your microphone"
-        }
-      ]
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "571a94c7-800c-4a36-ac13-d5e488e37797"
+      }
     }
   }
 }

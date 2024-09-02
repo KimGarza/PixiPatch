@@ -14,6 +14,7 @@ interface ItemCtxType {
   deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
   bringToFront: (id: string, itemType: string) => void;
   frontItem: Item | undefined;
+  setFrontItem: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
@@ -27,6 +28,7 @@ const defaultValue: ItemCtxType = {
   deleteItems: () => {},
   bringToFront: () => {},
   frontItem: undefined,
+  setFrontItem: () => {},
   items: [],
   images: [],
   stickers: [],
@@ -77,6 +79,11 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     return {
       id: id, zIndex: zIndex, type: 'sticker',
+      imageInfo: {
+        uri: item.uri,
+        width: 800,
+        height: 800,
+      },
       uri: item.uri,
       top: item.top,
       left: item.left,
@@ -89,6 +96,11 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
     return {
       id: id, zIndex: zIndex, type: 'drawing',
+      imageInfo: {
+        uri: item.uri,
+        width: 800,
+        height: 800,
+      },
       uri: item.uri,
       top: item.top,
       left: item.left,
@@ -166,6 +178,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     if (foundItem) {
       setItems((prevItems) => prevItems.map((item) => item.id == id ? { ...item, zIndex: largestZIndex } : item));
       setFrontItem(foundItem);
+      setActiveItemCtx(undefined);
   
       if (itemType == 'image') {
         setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
@@ -184,6 +197,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         deleteItems,
         bringToFront,
         frontItem,
+        setFrontItem,
         items,
         images,
         stickers,

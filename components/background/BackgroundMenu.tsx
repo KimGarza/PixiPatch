@@ -20,10 +20,11 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 
   // background directory
   const backgroundDir: ImageSourcePropType[] = [
-    require('../../assets/images/backgrounds/background1.png'),
-    require('../../assets/images/backgrounds/background2.png'),
-    require('../../assets/images/backgrounds/background3.png'),
-    require('../../assets/images/backgrounds/background4.png'),
+    require('../../assets/images/backgrounds/backgroundblack.png'),
+    require('../../assets/images/backgrounds/backgroundmint.png'),
+    require('../../assets/images/backgrounds/backgroundpink.png'),
+    require('../../assets/images/backgrounds/backgroundsage.png'),
+    require('../../assets/images/backgrounds/backgroundwhite.png'),
   ];
 
 

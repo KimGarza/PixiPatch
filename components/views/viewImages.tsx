@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import MutableImage from "../image/MutableImage";
+import MutableItem from "../mutableItem/MutableItem";
 import { ImageItem } from '@/customTypes/itemTypes';
 
   interface ViewImagesProps {
@@ -12,9 +12,9 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
     return (
         <View>
             {images.map((image, index) => (
-                <MutableImage
+                <MutableItem
                     key={index}
-                    image={image}
+                    item={image}
                 />
             ))}
         </View>

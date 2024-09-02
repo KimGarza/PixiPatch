@@ -19,6 +19,7 @@ import ViewDrawings from '@/components/views/viewDrawings';
 // misc
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
+
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const EditorScreen = () => { 
