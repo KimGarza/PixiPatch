@@ -31,13 +31,13 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
     }, [isDone])
 
     const handleSaveDrawing = async () => {
-        console.log("handle save drawing, done")
         const newUri = await SaveDrawing(viewRef);
 
         if (newUri) {
             const drawingItem: DrawingItem[] = [
                 {
                  id: '', type: 'drawing', zIndex: 2,
+                 imageInfo: {uri: newUri, height: 1000, width: 1000},
                  uri: {uri: newUri},
                  top: Math.floor(Math.random() * (100 - 30)) + 30,
                  left: Math.floor(Math.random() * (200 - 30)) + 30,

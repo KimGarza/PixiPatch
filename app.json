@@ -7,6 +7,9 @@
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "assets/stickerPacks/**/*"
+    ],
     "splash": {
       "image": "./assets/images/tempSplash.png",
       "resizeMode": "contain",
@@ -27,7 +30,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

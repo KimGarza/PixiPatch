@@ -12,7 +12,10 @@ interface Props {
     item: ImageItem | StickerItem | DrawingItem;
 }
 
+
 const MutableItem = ({ item }: Props) => {
+
+    console.log("item in mutable ", item)
 
     const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront, frontItem, setFrontItem } = useItemCtx(); // actual active item & front item can be image, drawing or sticker
     const [ tapCount, setTappedCount ] = useState<number>(0);
@@ -93,9 +96,6 @@ const MutableItem = ({ item }: Props) => {
 
     // if there is a frontItem set, and it is not THIS current item, then reset the tapCounter so that it doesn't store the memory of how many even though another item has been brought to front
     useEffect(() => {
-        console.log("front item, ", frontItem)
-        console.log("active item, ", activeItemCtx)
-        console.log("tap count, ", tapCount)
         if (frontItem != undefined) {
             if ( frontItem.id != item.id ) {
                 setTappedCount(0);

@@ -4,12 +4,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import * as FileSystem from 'expo-file-system';
 import { ImageItem, ImageInfo } from '@/customTypes/itemTypes';
-interface ImagePickerUtilProps {
+interface Props {
   toggle: boolean;
 }
 
 // Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
-const ImagePickerUtil: React.FC<ImagePickerUtilProps> = ({ toggle }) => {
+const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
 
   const { createItems } = useItemCtx();
 

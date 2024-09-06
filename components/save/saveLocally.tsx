@@ -7,7 +7,8 @@ export const SaveLocally = async (incomingImage: ImageInfo) : Promise<string> =>
     const fileName = incomingImage.uri.split('/').pop();
     const newLocalUri = `${FileSystem.documentDirectory}${fileName}`;
 
-    await FileSystem.copyAsync({
+
+    await FileSystem.moveAsync({
         from: incomingImage.uri,
         to: newLocalUri,
     });

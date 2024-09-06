@@ -42,7 +42,6 @@ export const DrawProvider: React.FC<DrawCtxProps> = ({ children }) => {
     const [activeColor, setActiveColor] = useState<string>('black');
     
     useEffect(() => {
-        console.log("in ctx ", activeColor, activeSize )
     }, [drawingPaths])
     return (
         <DrawCtx.Provider

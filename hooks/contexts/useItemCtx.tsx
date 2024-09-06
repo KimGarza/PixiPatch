@@ -1,4 +1,4 @@
-import React, { createContext, useState,  } from "react";
+import React, { createContext, useEffect, useState,  } from "react";
 import { useContext } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { ImageItem, StickerItem, DrawingItem } from '@/customTypes/itemTypes';
@@ -76,17 +76,10 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const createStickerItem = (item: StickerItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
-
     return {
-      id: id, zIndex: zIndex, type: 'sticker',
-      imageInfo: {
-        uri: item.uri,
-        width: 800,
-        height: 800,
-      },
-      uri: item.uri,
-      top: item.top,
-      left: item.left,
+      ...item,
+      id: id,
+      zIndex: zIndex,
     } as StickerItem;
   }
   
@@ -122,7 +115,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
 
   const createItems = ({ itemType, properties }: CreateItemProps) => {
-    console.log("here in create items and here are properties: ", properties)
     switch (itemType) {
       case 'image':
         const imageItems = properties as ImageItem[]
@@ -136,16 +128,19 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         break;
       case 'sticker': 
         const stickerItems = properties as StickerItem[]
+        console.log("okayyy ", stickerItems)
+
         if (stickerItems) {
           stickerItems.forEach((item, index) => {
             const newItem = createStickerItem(item);
             setStickers(prevStickers => [...prevStickers, newItem]);
             setItems((prevItems) => [...prevItems, newItem]);
           })
+          console.log("stickerItems ", stickerItems)
+
         }
         break;
       case 'drawing': 
-        console.log("here in drawing case");
         const drawingItems = properties as DrawingItem[];
         if (drawingItems) {
           drawingItems.forEach((item, index) => {

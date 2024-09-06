@@ -28,7 +28,6 @@ const SaveDrawing = async (viewRef: RefObject<View>) => { // view is at current
             from: uri,
             to: newLocalUri,
         });
-        console.log("newLocalUri", newLocalUri)
 
       return newLocalUri;
     }

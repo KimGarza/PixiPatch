@@ -20,7 +20,6 @@ export interface BaseItem {
     type: 'sticker'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    uri: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number

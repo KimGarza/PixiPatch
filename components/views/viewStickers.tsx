@@ -1,35 +1,39 @@
-import { View, Image, ImageSourcePropType, StyleSheet} from 'react-native';
-interface StickerData {
-    sticker: ImageSourcePropType;
-    top: number;
-    left: number;
+import { View, Image, StyleSheet} from 'react-native';
+import MutableItem from '../mutableItem/MutableItem';
+import { StickerItem } from '@/customTypes/itemTypes';
+interface Props {
+    stickers: StickerItem[];
 }
 
-interface ViewStickersProps {
-    stickers: StickerData[];
-}
-
-const ViewStickers: React.FC<ViewStickersProps> = ({stickers}) => {
+const ViewStickers: React.FC<Props> = ({stickers}) => {
 
     return (
         <View>
-        {stickers.map((stickerCtx, index) => (
-            <View 
-            style={styles.stickers}
-            key={ index }>
-                <Image
-                source={ stickerCtx.sticker }
-                style={{
-                    width: 50, height: 50, 
-                    flexDirection: 'column',
-                    position: 'absolute',
-                    top: stickerCtx.top, 
-                    left: stickerCtx.left,
-                }} 
+            {stickers.map((sticker, index) => (
+                <MutableItem
+                    key={index}
+                    item={sticker}
                 />
-            </View>
-        ))}
+            ))}
         </View>
+        // <View>
+        // {stickers.map((sticker, index) => (
+        //     <View 
+        //     style={styles.stickers}
+        //     key={ index }>
+        //         <Image
+        //         source={ sticker.uri }
+        //         style={{
+        //             width: sticker.width, height: sticker.height, 
+        //             flexDirection: 'column',
+        //             position: 'absolute',
+        //             top: sticker.top, 
+        //             left: sticker.left,
+        //         }} 
+        //         />
+        //     </View>
+        // ))}
+        // </View>
     );
 }
 

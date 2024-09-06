@@ -3,7 +3,7 @@ import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/ve
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
 import DrawTool from '../../tools/drawing/DrawTool';
-import StickerTool from '../Stickers/StickerTool';
+import StickerTool from '../../tools/Stickers/StickerTool';
 import BackgroundTool from '../background/BackgroundTool';
 import { useRouter } from 'expo-router';
 import { TouchableOpacity } from 'react-native';

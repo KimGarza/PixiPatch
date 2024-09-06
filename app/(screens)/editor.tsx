@@ -3,10 +3,10 @@ import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
 import { BackgroundCtx } from '@/components/background/BackgroundCtx';
-import { StickerCtx } from '@/components/Stickers/StickersCtx';
+import { StickerCtx } from '@/tools/Stickers/StickersCtx';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
-import StickerMenu from '@/components/Stickers/StickerMenu';
+import StickerMenu from '@/tools/Stickers/StickerMenu';
 import BackgroundMenu from '@/components/background/BackgroundMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
@@ -19,14 +19,12 @@ import ViewDrawings from '@/components/views/viewDrawings';
 // misc
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
-
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const EditorScreen = () => { 
   // contexts
-  const { stickers } = useContext(StickerCtx);
   const { background } = useContext(BackgroundCtx);
-  const { images, drawings } = useItemCtx();
+  const { images, stickers, drawings } = useItemCtx();
   // menus
   const [ stickerMenuToggle, setStickerMenuToggle ] = useState<boolean>(false);
   const [ backgroundMenuToggle, setBackgroundMenuToggle ] = useState<boolean>(false);
@@ -35,7 +33,6 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    console.log("drawings ", drawings)
   }, [images, drawings, stickers])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
