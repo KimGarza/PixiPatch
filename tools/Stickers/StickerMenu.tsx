@@ -26,7 +26,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   let stickers = stickerAssets[selectedPack];
 
   useEffect(() => {
-    // convert the stickerAssets into an array of sticker objs
+    // convert the current tab of stickerAssets into an array of sticker objs
     const stickerList = Object.keys(stickers).map((key) => ({ // object.keys (keys) is each name in stickers object
       id: key, // so flower is now id and key
       source: stickers[key].srcUri, // find flower from stickers
@@ -40,7 +40,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     menuToggle();
   }
 
-  // when sticker from menu is selected, source is provided
+  // when sticker from menu is selected...
   const handleStickerSelect = async (sticker: ImageSourcePropType) => {
     // save sticker to local app storage
     const newLocalUri = await saveStickerLocally(sticker);
@@ -50,56 +50,45 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     createItems({itemType: 'sticker', properties: [stickerItem]});
   }
 
+  // ImageSourceProp value is passed in but then it's a number which represents the reference I believe in memory to the ImageSourceProp
   const saveStickerLocally = async (stickerUri: number | string | ImageSourcePropType) => {
-    let assetUri: string = '';
-
+    let assetUri: string = ''; // created then used within 2 different scopes
     try {
-      // Generate a file name
-      const fileName = `sticker_${Date.now()}.png`; // Use a dynamic name
+      // generate file name
+      const fileName = `sticker_${Date.now()}.png`; // use date for a dynamic name
 
+      console.log("in save locally here is filename ", fileName)
+      // if stickerUri is a number, it's a require() result reference
       if (typeof stickerUri === 'number') {
-        console.log("number ", stickerUri)
-        // If stickerUri is a number, it's a require() result
+
         const asset = Asset.fromModule(stickerUri);
-        await asset.downloadAsync(); // download to cache!
-        // wait did download work?
-        console.log("did download actually work? ", asset)
+         // download to cache!
+        await asset.downloadAsync();
 
         if (asset.localUri) {
           assetUri = asset.localUri;
         }
-
-      } else if (typeof stickerUri === 'object' && 'uri' in stickerUri) {
-        console.log("not number")
-        // If it's an object with a uri, use the uri directly
+        // Check if the sticker pack directory exists
+        const dirInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/`);
+        if (!dirInfo.exists) {
+          await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/`, { intermediates: true });
+        }
+        // Move the file to the new location
+        const newLocalUri = `${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/${fileName}`;
+        await FileSystem.moveAsync({
+          from: assetUri,
+          to: newLocalUri,
+        });
+        
+        return newLocalUri;
       } else {
-        throw new Error('Invalid sticker URI');
+        throw new Error('Invalid sticker URI', );
       }
-
-      const newLocalUri = `${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/${fileName}`;
-
-      // Check if the sticker pack directory exists
-      const dirInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/`);
-      if (!dirInfo.exists) {
-        console.log ("dir didnt exist")
-        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/`, { intermediates: true });
-      }
-      console.log ("dir existss!")
-      console.log ("asseturi rn ", assetUri)
-
-      // Move the file to the new location
-      await FileSystem.moveAsync({
-        from: assetUri,
-        to: newLocalUri,
-      });
-      
-      return newLocalUri;
-
-  } catch (error) {
-    console.error('Error downloading the sticker:', error);
-    return '';
-  }
-};
+    } catch (error) {
+      console.error('Error downloading the sticker:', error);
+      return '';
+    }
+  };
 
   // take uri of the sticker and convert to StickerItem
   const convertToStickerItem = (newUri: string) => {
@@ -117,27 +106,27 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     return converted;
   }
 
-    return (
-      <View style={styles.stickerTools}>
-        <View style={styles.menuLayout}>
+  return (
+    <View style={styles.stickerTools}>
+      <View style={styles.menuLayout}>
 
-          <View style={styles.close}>
-            <TouchableOpacity onPress={() => handleCloseMenu()}>
-            <Fontisto name={'close'} size={25}/>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.stickers}>
-              {viewStickers.map((sticker, index) => (
-              <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker.source)}>
-                <Image source={sticker.source} style={styles.sticker}/>
-              </TouchableOpacity>
-            ))}
-          </View>
-          
+        <View style={styles.close}>
+          <TouchableOpacity onPress={() => handleCloseMenu()}>
+          <Fontisto name={'close'} size={25}/>
+          </TouchableOpacity>
         </View>
+
+        <View style={styles.stickers}>
+            {viewStickers.map((sticker, index) => (
+            <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker.source)}>
+              <Image source={sticker.source} style={styles.sticker}/>
+            </TouchableOpacity>
+          ))}
+        </View>
+        
       </View>
-    );
+    </View>
+  );
 }
 
 export default StickerMenu;
