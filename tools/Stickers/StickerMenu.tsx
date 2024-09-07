@@ -20,7 +20,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
   const { createItems } = useItemCtx();
 
-  const [viewStickers, setViewStickers] = useState<{id: string, source: ImageSourcePropType, uri: string}[]>([]);
+  const [viewStickers, setViewStickers] = useState<{id: string, source: ImageSourcePropType}[]>([]);
   const [selectedPack, setSelectedPack] = useState<string>('basic');
   
   let stickers = stickerAssets[selectedPack];
@@ -30,7 +30,6 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     const stickerList = Object.keys(stickers).map((key) => ({ // object.keys (keys) is each name in stickers object
       id: key, // so flower is now id and key
       source: stickers[key].srcUri, // find flower from stickers
-      uri: stickers[key].uri,
     }));
     setViewStickers(stickerList);
 
@@ -44,6 +43,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   const handleStickerSelect = async (sticker: ImageSourcePropType) => {
     // save sticker to local app storage
     const newLocalUri = await saveStickerLocally(sticker);
+    console.log("newlocaluri ", newLocalUri, " viewstickers ", viewStickers)
     // convert to StickerItem type
     const stickerItem = convertToStickerItem(newLocalUri);
     // add to useItemCtx
@@ -75,7 +75,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
         }
         // Move the file to the new location
         const newLocalUri = `${FileSystem.documentDirectory}/stickerPacks/${selectedPack}/${fileName}`;
-        await FileSystem.moveAsync({
+        await FileSystem.copyAsync({
           from: assetUri,
           to: newLocalUri,
         });
