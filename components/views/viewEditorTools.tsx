@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
-import DrawTool from '../../tools/drawing/DrawTool';
 import StickerTool from '../../tools/Stickers/StickerTool';
 import BackgroundTool from '../background/BackgroundTool';
 import { useRouter } from 'expo-router';
@@ -17,7 +15,6 @@ interface ViewEditorToolsProps {
 const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, drawMenuToggle, stickerMenuToggle}) => {
 
     const router = useRouter();
-
     // callback to be handled as prop value upon using the stickerTool comp
     // maybe replace the tool content with one of these tools  isntead of menu callbacks?
     const handleToggleStickerMenu = () => {
@@ -26,10 +23,6 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
 
     const handleToggleBackgroundMenu = () => {
         backgroundMenuToggle();
-    }
-
-    const handleToggleDrawMenu = () => {
-        drawMenuToggle();
     }
 
     return (

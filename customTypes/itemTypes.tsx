@@ -29,7 +29,6 @@ export interface BaseItem {
     type: 'drawing'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    uri: ImageSourcePropType;
     top: number;
     left: number;
     height: number, width: number

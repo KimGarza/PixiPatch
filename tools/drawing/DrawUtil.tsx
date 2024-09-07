@@ -4,8 +4,6 @@ import usePanResponder from "./usePanResponder";
 import Svg, { Path } from 'react-native-svg';
 import { useDrawCtx } from "./DrawCtx";
 import { PathData, } from '@/customTypes/itemTypes';
-import { RefObject } from "react";
-import CaptureAndSave from "@/components/save/captureAndSave";
 import { useItemCtx } from "@/hooks/contexts/useItemCtx";
 import { DrawingItem } from "@/customTypes/itemTypes";
 import { useRouter } from "expo-router";
@@ -25,30 +23,33 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
     const viewRef = useRef(null);
 
     useEffect(() => {
-        if (isDone && viewRef != undefined && viewRef && viewRef != null) {
+        console.log("viewRef ", viewRef)
+        if (isDone && viewRef && viewRef != null) {
             handleSaveDrawing();
         }
     }, [isDone])
 
     const handleSaveDrawing = async () => {
-        const newUri = await SaveDrawing(viewRef);
-
-        if (newUri) {
-            const drawingItem: DrawingItem[] = [
-                {
-                 id: '', type: 'drawing', zIndex: 2,
-                 imageInfo: {uri: newUri, height: 1000, width: 1000},
-                 uri: {uri: newUri},
-                 top: Math.floor(Math.random() * (100 - 30)) + 30,
-                 left: Math.floor(Math.random() * (200 - 30)) + 30,
-                 height: 150, width: 150
-                }
-             ]
-             createItems({ itemType: 'drawing', properties: drawingItem });
-     
-             router.push('/(screens)/editor');
+        try {
+            const newUri = await SaveDrawing(viewRef);
+    
+            if (newUri) {
+                const drawingItem: DrawingItem[] = [
+                    {
+                     id: '', type: 'drawing', zIndex: 2,
+                     imageInfo: {uri: newUri, height: 1000, width: 1000},
+                     top: Math.floor(Math.random() * (100 - 30)) + 30,
+                     left: Math.floor(Math.random() * (200 - 30)) + 30,
+                     height: 150, width: 150
+                    }
+                 ]
+                 createItems({ itemType: 'drawing', properties: drawingItem });
+         
+                 router.push('/(screens)/editor');
+            }
+        } catch (error) {
+            console.log('Failed to save drawing ', error)
         }
-
     }
 
     const handlePathUpdateCallback = (newActivePath: PathData) => {

@@ -33,6 +33,7 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
+    console.log("tracking drawings", drawings)
   }, [images, drawings, stickers])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed

@@ -12,9 +12,9 @@ interface Props {
     item: ImageItem | StickerItem | DrawingItem;
 }
 
-
 const MutableItem = ({ item }: Props) => {
 
+    console.log("item ", item)
     const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront, frontItem, setFrontItem } = useItemCtx(); // actual active item & front item can be image, drawing or sticker
     const [ tapCount, setTappedCount ] = useState<number>(0);
 
@@ -34,7 +34,7 @@ const MutableItem = ({ item }: Props) => {
                 activeItemCast = activeItemCtx as ImageItem;
             }
             break;
-        case 'sticker': 
+        case 'sticker':
             itemCast = item as StickerItem;
             if (frontItem) {
                 frontItemCast = frontItem as StickerItem;
@@ -51,7 +51,6 @@ const MutableItem = ({ item }: Props) => {
             if (activeItemCtx) {
                 activeItemCast = activeItemCtx as DrawingItem;
             }
-
             break;
     }
 

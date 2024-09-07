@@ -1,10 +1,9 @@
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Text, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
 import DrawUtil from '@/tools/drawing/DrawUtil';
 import DrawMenu from '@/tools/drawing/drawMenu';
 import HomeButton from '@/components/utils/homeButton';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
-import { TouchableOpacity, Text } from 'react-native';
-import { useEffect, useState } from 'react';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -13,7 +12,6 @@ const SketchBookScreen = () => {
   const [isDone, setIsDone] = useState<boolean>(false);
 
   useEffect(() => {
-
   }, [isDone])
 
 return (
@@ -25,27 +23,26 @@ return (
         style={styles.headerImg}
         source={require('../../assets/images/ElementalEditorBanner.png')}
       />
-        <HomeButton/>
+      <HomeButton/>
     </View>
 
     {/* main canvas */}
     <View style={styles.canvasContainer} collapsable={false} >
 
-        <View style={styles.canvas} >
-            <DrawUtil isDone={isDone}/>
-        </View>
+      <View style={styles.canvas} >
+          <DrawUtil isDone={isDone}/>
+      </View>
+
+      <TouchableOpacity onPress={() => {setIsDone(!isDone)}} style={styles.done}>
+        <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Done</Text>
+        {/* <SimpleLineIcons name='pencil' size={40} style={{top: -5}}/> */}
+      </TouchableOpacity>
     </View>
 
-    <TouchableOpacity onPress={() => {setIsDone(true)}}><View style={styles.done}>
-      <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Done</Text>
-      {/* <SimpleLineIcons name='pencil' size={40} style={{top: -5}}/> */}
-      </View>
-    </TouchableOpacity>
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-
-      <View style={styles.primaryTools}>
-        <DrawMenu/>
-      </View>
+    <View style={styles.primaryTools}>
+      <DrawMenu/>
+    </View>
 
     </View>
   );
@@ -88,11 +85,9 @@ const styles = StyleSheet.create({
   },
   done: {
     position: 'absolute',
-    flexDirection: 'row',
-    right: 20,
-    top: -50,
-    alignItems: 'center',
-    gap: 1,
-    zIndex: 99999999999999999999999 // this zindex is required
-  },
+    bottom: 0, right: 0,
+    margin: 10,
+    zIndex: 9999999, // exactly this many 9s lel
+    justifyContent: 'flex-start',
+  }
 });

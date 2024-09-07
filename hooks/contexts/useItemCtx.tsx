@@ -90,13 +90,14 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     return {
       id: id, zIndex: zIndex, type: 'drawing',
       imageInfo: {
-        uri: item.uri,
+        uri: item.imageInfo.uri,
         width: 800,
         height: 800,
       },
-      uri: item.uri,
       top: item.top,
       left: item.left,
+      height: item.height,
+      width: item.width
     } as DrawingItem;
   }
 
@@ -141,6 +142,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         if (drawingItems) {
           drawingItems.forEach((item, index) => {
             const newItem = createDrawingItem(item);
+            console.log("newItem", newItem)
             setDrawings(prevDrawings => [...prevDrawings, newItem]);
             setItems((prevItems) => [...prevItems, newItem]);
           })
