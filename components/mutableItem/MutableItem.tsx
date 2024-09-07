@@ -15,8 +15,6 @@ interface Props {
 
 const MutableItem = ({ item }: Props) => {
 
-    console.log("item in mutable ", item)
-
     const { setActiveItemCtx, activeItemCtx, deleteItems, bringToFront, frontItem, setFrontItem } = useItemCtx(); // actual active item & front item can be image, drawing or sticker
     const [ tapCount, setTappedCount ] = useState<number>(0);
 

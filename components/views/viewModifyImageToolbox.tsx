@@ -18,7 +18,6 @@ export const viewModifyImageToolbox = () => {
     // const handlePress = async (toolType: string) => {
     //     if (toolType == 'flip' && activeImageCtx) {
     //         try {
-    //             console.log("tries to flip")
     //             await Flip(activeImageCtx, updateImageInfo);
     //         } catch (error) {
     //             console.error("Error in handleModifyImage while flipping image:", error);

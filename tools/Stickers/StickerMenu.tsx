@@ -43,7 +43,6 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   const handleStickerSelect = async (sticker: ImageSourcePropType) => {
     // save sticker to local app storage
     const newLocalUri = await saveStickerLocally(sticker);
-    console.log("newlocaluri ", newLocalUri, " viewstickers ", viewStickers)
     // convert to StickerItem type
     const stickerItem = convertToStickerItem(newLocalUri);
     // add to useItemCtx
@@ -57,7 +56,6 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
       // generate file name
       const fileName = `sticker_${Date.now()}.png`; // use date for a dynamic name
 
-      console.log("in save locally here is filename ", fileName)
       // if stickerUri is a number, it's a require() result reference
       if (typeof stickerUri === 'number') {
 

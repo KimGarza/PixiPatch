@@ -13,7 +13,6 @@ export const preloadStickerPacks = async (stickerPacks: string[]) => {
 
       if (!dirInfo.exists) {
         await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}/stickerPacks/${name}/`, { intermediates: true }) // similar to the -p option in the Unix mkdir command, which allows the creation of nested directories in a single command without throwing an error if some directories in the path already exist.
-        console.log(`Sticker pack ${name} directory in local app successfully created`);
       }
 
       // check local filestorage of app to see if count of files in directory of specific sticker pack matches count of ones in json file 
@@ -29,7 +28,6 @@ export const preloadStickerPacks = async (stickerPacks: string[]) => {
       }
     }
   } catch (error) {
-    console.log('Failed to load sticker pack basic ', error);
   }
 }
 
@@ -38,9 +36,7 @@ const saveStickersLocally = async (packName: string, stickerNames: string[]) => 
     for (const fileName of stickerNames) { // for each sticker file name string in the stickers: of the json...
 
       const asset = Asset.fromModule(`./assets/stickerPacks/${packName}/${fileName}`);
-      console.log("asset of filename ", fileName, asset)
       const encoded = encodeURI(asset.uri);
-      console.log("encoded uri of asset ", encoded)
 
       // cache asset
       const dirInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}/cache/`);
@@ -50,8 +46,6 @@ const saveStickersLocally = async (packName: string, stickerNames: string[]) => 
       // await asset.downloadAsync()
       await FileSystem.downloadAsync( encoded, `${FileSystem.documentDirectory}/cache/${asset.name}`)
       // await asset.downloadAsync();
-      console.log("downloaded asset?")
-
       // save locally to documentDirectory in app locally
       const newLocalUri = `${FileSystem.documentDirectory}/${packName}/${asset.name}`;
       await FileSystem.moveAsync({

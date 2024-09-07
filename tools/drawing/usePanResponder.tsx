@@ -43,7 +43,6 @@ function usePanResponder(onPathUpdate: (newPath: PathData) => void) {
       },
       onPanResponderRelease: () => {
 
-        // console.log("logging color and size within the release ", currentPathRef.current.strokeWidth, currentPathRef.current.strokeColor)
         setDrawingPaths(prevPaths => [ // setting the array of paths to add the new completed path
           ...prevPaths, 
           { 

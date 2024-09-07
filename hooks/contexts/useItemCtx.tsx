@@ -74,7 +74,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
 
   const createStickerItem = (item: StickerItem) => {
-    console.log("in createStickerItem ", item)
     const id = generateId();
     const zIndex = generateLargestZIndex();
     return {
@@ -129,16 +128,12 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         break;
       case 'sticker': 
         const stickerItems = properties as StickerItem[]
-        console.log("here in stickeritems ", stickerItems)
         if (stickerItems) {
           stickerItems.forEach((item, index) => {
             const newItem = createStickerItem(item);
-            console.log("new item ", newItem)
             setStickers(prevStickers => [...prevStickers, newItem]);
             setItems((prevItems) => [...prevItems, newItem]);
           })
-          console.log("stickerItems ", stickerItems)
-
         }
         break;
       case 'drawing': 
