@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState,  } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useContext } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { ImageItem, StickerItem, DrawingItem } from '@/customTypes/itemTypes';
@@ -13,6 +13,8 @@ interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void;
   deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
   bringToFront: (id: string, itemType: string) => void;
+  addPendingChanges: (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => void;
+  updatePending: () => void;
   frontItem: Item | undefined;
   setFrontItem: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
   items: Item[];
@@ -27,6 +29,8 @@ const defaultValue: ItemCtxType = {
   createItems: () => {},
   deleteItems: () => {},
   bringToFront: () => {},
+  updatePending: () => {},
+  addPendingChanges: () => {},
   frontItem: undefined,
   setFrontItem: () => {},
   items: [],
@@ -56,6 +60,9 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [stickers, setStickers] = useState<StickerItem[]>([]);
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
 
+  useEffect(() => {
+  }, [items])
+
   const createImageItem = (item: ImageItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
@@ -64,10 +71,10 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       id: id, zIndex: zIndex, type: 'image',
       imageInfo: item.imageInfo,
       ogImageInfo: item.ogImageInfo || item.imageInfo,
-      top: item.top,
-      left: item.left,
-      width: item.width,
-      height: item.height,
+      top: item.top, left: item.left,
+      width: item.width, height: item.height,
+      rotation: 0,
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
     } as ImageItem;
 
     return newImageItem;
@@ -80,6 +87,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       ...item,
       id: id,
       zIndex: zIndex,
+      rotation: 0,
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
     } as StickerItem;
   }
   
@@ -97,7 +106,9 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       top: item.top,
       left: item.left,
       height: item.height,
-      width: item.width
+      width: item.width,
+      rotation: 0,
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
     } as DrawingItem;
   }
 
@@ -142,7 +153,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         if (drawingItems) {
           drawingItems.forEach((item, index) => {
             const newItem = createDrawingItem(item);
-            console.log("newItem", newItem)
             setDrawings(prevDrawings => [...prevDrawings, newItem]);
             setItems((prevItems) => [...prevItems, newItem]);
           })
@@ -182,6 +192,78 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       }
     }
   }
+  
+  const addPendingChanges = (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => {
+    console.log("add pending changes to ", id, "pendingChanges ", pendingChanges);
+
+    const foundItem = items.find(item => item.id === id);
+    if (foundItem) {
+      setItems((prevItems) => prevItems.map((item) => item.id == id ? { 
+        ...item,
+        pendingChanges: {
+          scale: pendingChanges.scale,
+          rotation: pendingChanges.rotation,
+          positionX: pendingChanges.positionX,
+          positionY: pendingChanges.positionY}}
+        : item
+      ));
+
+      if (foundItem.type == 'image') {
+        setImages((prevImages) => prevImages.map((image) => image.id == id ? { 
+          ...image,
+          pendingChanges: {
+            scale: pendingChanges.scale,
+            rotation: pendingChanges.rotation,
+            positionX: pendingChanges.positionX,
+            positionY: pendingChanges.positionY}}
+          : image
+        ));
+      }
+    }
+  }
+  
+  const updatePending = () => {
+
+    items.forEach((item) => {
+      if (item.pendingChanges.rotation != 0 || item.pendingChanges.scale != 1) {
+
+        setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
+          ...prevItem,
+          width: (item.width * item.pendingChanges.scale),
+          height: (item.height * item.pendingChanges.scale),
+          top: item.pendingChanges.positionY,
+          left: item.pendingChanges.positionX,
+          rotation: item.pendingChanges.rotation,
+          pendingChanges: {
+            scale: 1,
+            rotation: 0,
+            positionX: item.left,
+            positionY: item.top}}
+          : item
+        ));
+
+        if (item.type == 'image') {
+        console.log('current top and left ', item.top, item.left, "and new: ", item.pendingChanges.positionY, item.pendingChanges.positionX)
+
+          setImages((prevImages) => prevImages.map((image) => image.id == item.id ? { 
+            ...image,
+            width: (item.width * item.pendingChanges.scale),
+            height: (item.height * item.pendingChanges.scale),
+            top: item.pendingChanges.positionY,
+            left: item.pendingChanges.positionX,
+            rotation: item.pendingChanges.rotation,
+            pendingChanges: {
+              scale: 1,
+              rotation: 0,
+              positionX: item.left,
+              positionY: item.top}}
+            : image
+          ));
+        }
+      }
+    })
+  }
+
 
   return (
     <ItemCtx.Provider
@@ -189,6 +271,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         createItems,
         deleteItems,
         bringToFront,
+        addPendingChanges,
+        updatePending,
         frontItem,
         setFrontItem,
         items,

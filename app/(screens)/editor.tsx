@@ -3,7 +3,6 @@ import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
 import { BackgroundCtx } from '@/components/background/BackgroundCtx';
-import { StickerCtx } from '@/tools/Stickers/StickersCtx';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
 import StickerMenu from '@/tools/Stickers/StickerMenu';
@@ -33,7 +32,6 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    console.log("tracking drawings", drawings)
   }, [images, drawings, stickers])
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
@@ -69,12 +67,11 @@ return (
       <ImageBackground source={background} style={styles.imageBackground}>
 
         <View style={styles.canvas} >
-
+          
             {/* Stickers */}
             <ViewStickers stickers={stickers}/>
 
             {/* Drawing */}
-            {/* {drawMenuToggle && <DrawUtil/>} */}
             <ViewDrawings drawings={drawings}/>
 
             {/* Pictures */}
@@ -84,13 +81,13 @@ return (
       </ImageBackground>
     </View>
 
-    {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
-        { stickerMenuToggle ? (
-          <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
-        ) : backgroundMenuToggle ? (
-          <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
-        ) : (
-          // primary tools
+      {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
+      { stickerMenuToggle ? (
+        <StickerMenu menuToggle={handleToggleStickerMenuCallback}/>
+      ) : backgroundMenuToggle ? (
+        <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback}/>
+      ) : (
+      // primary tools
       <View style={styles.primaryTools}>
         <ViewEditorTools
           backgroundMenuToggle={handleToggleBackgroundMenuCallback}
@@ -98,7 +95,7 @@ return (
           stickerMenuToggle={handleToggleStickerMenuCallback}
         />
       </View>
-  )}
+      )}
     </View>
   );
 }

@@ -6,7 +6,6 @@
 
 // const CropImage = () => {
 //   const [image, setImage] = useState('@/assets/images/ElementalEditorBanner.png');
-//   console.log("in crop iamge");
 
 //   const handleCropImage = () => {
 //     ImagePicker.openCropper({
@@ -15,10 +14,8 @@
 //       width: 300,
 //       height: 400,
 //     }).then(croppedImage => {
-//       console.log('Cropped image path: ', croppedImage.path);
 //       setImage(croppedImage.path); // Updating the image state to display the cropped image
 //     }).catch(e => {
-//       console.log(e);
 //     });
 //   };
 

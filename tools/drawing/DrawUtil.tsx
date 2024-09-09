@@ -23,7 +23,6 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
     const viewRef = useRef(null);
 
     useEffect(() => {
-        console.log("viewRef ", viewRef)
         if (isDone && viewRef && viewRef != null) {
             handleSaveDrawing();
         }
@@ -36,11 +35,13 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
             if (newUri) {
                 const drawingItem: DrawingItem[] = [
                     {
-                     id: '', type: 'drawing', zIndex: 2,
-                     imageInfo: {uri: newUri, height: 1000, width: 1000},
-                     top: Math.floor(Math.random() * (100 - 30)) + 30,
-                     left: Math.floor(Math.random() * (200 - 30)) + 30,
-                     height: 150, width: 150
+                        id: '', type: 'drawing', zIndex: 2,
+                        imageInfo: {uri: newUri, height: 1000, width: 1000},
+                        top: Math.floor(Math.random() * (100 - 30)) + 30,
+                        left: Math.floor(Math.random() * (200 - 30)) + 30,
+                        height: 150, width: 150,
+                        rotation: 0,
+                        pendingChanges: {scale: 1, rotation: 0}
                     }
                  ]
                  createItems({ itemType: 'drawing', properties: drawingItem });

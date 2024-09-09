@@ -1,9 +1,9 @@
-import { ImageSourcePropType } from "react-native";
-
 export interface BaseItem { 
-    id: string;
+    id: string; //?? need ot be here?
     type: string; // discriminate within the union
-    zIndex: number;
+    zIndex: number; //?? need ot be here?
+    rotation: number;
+    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
   export interface ImageItem extends BaseItem {
     id: string;
@@ -11,27 +11,30 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     ogImageInfo: ImageInfo;
-    top: number;
-    left: number;
+    top: number; left: number;
     width: number; height: number;
+    rotation: number;
+    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
   export interface StickerItem extends BaseItem {
     id: string;
     type: 'sticker'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    top: number;
-    left: number;
-    height: number, width: number
+    top: number; left: number;
+    height: number, width: number;
+    rotation: number;
+    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
   export interface DrawingItem extends BaseItem {
     id: string;
     type: 'drawing'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    top: number;
-    left: number;
-    height: number, width: number
+    top: number; left: number;
+    height: number, width: number;
+    rotation: number;
+    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
   
   export type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types

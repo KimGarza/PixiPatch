@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { PanResponder, PanResponderInstance, GestureResponderEvent, PanResponderGestureState } from 'react-native';
 import { useDrawCtx } from './DrawCtx';
 import { Point, PathData } from '@/customTypes/itemTypes';
