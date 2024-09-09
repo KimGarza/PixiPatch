@@ -194,7 +194,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
   
   const addPendingChanges = (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => {
-    console.log("add pending changes to ", id, "pendingChanges ", pendingChanges);
+    console.log("add pending changes ", pendingChanges);
 
     const foundItem = items.find(item => item.id === id);
     if (foundItem) {
@@ -225,10 +225,30 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const updatePending = () => {
 
     items.forEach((item) => {
-      if (item.pendingChanges.rotation != 0 || item.pendingChanges.scale != 1) {
+      console.log('updatePending current top and left ', item.top, item.left, "pending: ", item.pendingChanges.positionY, item.pendingChanges.positionX)
+      console.log("item type", item.type)
 
-        setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
-          ...prevItem,
+      setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
+        ...prevItem,
+        width: (item.width * item.pendingChanges.scale),
+        height: (item.height * item.pendingChanges.scale),
+        top: item.pendingChanges.positionY,
+        left: item.pendingChanges.positionX,
+        rotation: item.pendingChanges.rotation,
+        pendingChanges: {
+          scale: 1,
+          rotation: 0,
+          positionX: item.left,
+          positionY: item.top}}
+        : item
+      ));
+
+      console.log("item type", item.type)
+      if (item.type == 'image') {
+
+        console.log("am i an image? current ", item.top, item.left, "and is it same as id? ")
+        setImages((prevImages) => prevImages.map((image) => image.id == item.id ? { 
+          ...image,
           width: (item.width * item.pendingChanges.scale),
           height: (item.height * item.pendingChanges.scale),
           top: item.pendingChanges.positionY,
@@ -239,27 +259,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
             rotation: 0,
             positionX: item.left,
             positionY: item.top}}
-          : item
+          : image
         ));
-
-        if (item.type == 'image') {
-        console.log('current top and left ', item.top, item.left, "and new: ", item.pendingChanges.positionY, item.pendingChanges.positionX)
-
-          setImages((prevImages) => prevImages.map((image) => image.id == item.id ? { 
-            ...image,
-            width: (item.width * item.pendingChanges.scale),
-            height: (item.height * item.pendingChanges.scale),
-            top: item.pendingChanges.positionY,
-            left: item.pendingChanges.positionX,
-            rotation: item.pendingChanges.rotation,
-            pendingChanges: {
-              scale: 1,
-              rotation: 0,
-              positionX: item.left,
-              positionY: item.top}}
-            : image
-          ));
-        }
       }
     })
   }

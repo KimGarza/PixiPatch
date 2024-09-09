@@ -18,9 +18,11 @@ const MutableItem = ({ item }: Props) => {
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
     // related to saving state scaling, rotating and relocating
-    const { panHandlers, newPositionX, newPositionY  } = useDragPanResponder({initialX: item.left, initialY: item.top});
-    const positionX = useSharedValue(newPositionX.value);
-    const positionY = useSharedValue(newPositionY.value);
+    // const { panHandlers, newPositionX, newPositionY  } = useDragPanResponder({initialX: item.left, initialY: item.top});
+    const positionX = useSharedValue(item.left);
+    const positionY = useSharedValue(item.top);
+    const savedPositionX = useSharedValue(item.left);
+    const savedPositionY = useSharedValue(item.top);
     const scale = useSharedValue(1);
     const savedScale = useSharedValue(1);
     const rotation = useSharedValue(item.rotation);
@@ -32,22 +34,22 @@ const MutableItem = ({ item }: Props) => {
         scale: number,
       }>({
         positionX: positionX.value,
-        positionY: newPositionY.value,
+        positionY: positionY.value,
         rotation: rotation.value,
         scale: scale.value,
       });
      // Function to update the local state
     const updateTransformState = () => {
+        console.log("positionX, positionY", positionX, positionY);
         setTransformState({
-        positionX: newPositionX.value,
-        positionY: newPositionY.value,
+        positionX: positionX.value,
+        positionY: positionY.value,
         rotation: rotation.value,
         scale: scale.value,
         });
     };
     // Sync the transform state with context when the state changes
     useEffect(() => {
-        console.log('useEffect 1 positionX and y ', positionX, positionY, "new: ", newPositionX, newPositionY);
         addPendingChanges(
         item.id,
         {
@@ -116,6 +118,18 @@ const MutableItem = ({ item }: Props) => {
             break;
     }
 
+    const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+        // Update position based on gesture movement
+        positionX.value = event.translationX + savedPositionX.value;
+        positionY.value = event.translationY + savedPositionY.value;
+    })
+    .onEnd(() => {
+        // Save the final position after the gesture ends
+        savedPositionX.value = positionX.value;
+        savedPositionY.value = positionY.value;
+        runOnJS(updateTransformState)(); // Sync the new position with the state
+    });
 
     const pinchGesture = Gesture.Pinch()
         .onUpdate((event) => {
@@ -138,8 +152,8 @@ const MutableItem = ({ item }: Props) => {
         const animatedStyle = useAnimatedStyle(() => {
             return {
                 transform: [
-                    { translateX: newPositionX.value },
-                    { translateY: newPositionY.value },
+                    { translateX: positionX.value },
+                    { translateY: positionY.value },
                     { rotateZ: `${rotation.value}rad` },
                     { scale: scale.value }
                 ],
@@ -183,7 +197,7 @@ const MutableItem = ({ item }: Props) => {
     }
 
     return (
-        <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture)}>
+        <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}>
             <Animated.View
                 style={[styles.itemContainer, { 
                     width: item.width, 
@@ -192,7 +206,7 @@ const MutableItem = ({ item }: Props) => {
                     left: item.left, 
                     zIndex: item.zIndex }, 
                     animatedStyle]}
-                    {...panHandlers} // Apply PanResponder only when the image is not active
+                    // {...panHandlers} // Apply PanResponder only when the image is not active
                 >
                 {/* Close icon / remove item */}
                 {activeItemCtx && activeItemCtx.id == item.id && // if there is an active image currently and the current item's id matches the activeItem's id
