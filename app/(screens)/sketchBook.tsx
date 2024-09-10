@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },  
   canvasContainer: {
-    height: canvasHeight,
+    height: canvasHeight * .7,
     width: width,
   },
   canvas: {
@@ -77,10 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    height: height - canvasHeight - headerHeight,
-    gap: 30,
+    height: height - (canvasHeight * .79) , //eww
     zIndex: 9999999,
-    padding: 15,
     borderTopWidth: .6, borderColor: 'black',
   },
   done: {

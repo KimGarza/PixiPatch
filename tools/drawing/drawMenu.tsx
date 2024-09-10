@@ -1,20 +1,30 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useDrawCtx } from './DrawCtx';
+import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider, Panel3, Panel5, Panel4, HueCircular, BrightnessSlider, SaturationSlider, HSLSaturationSlider, LuminanceCircular, RedSlider, GreenSlider, BlueSlider } from 'reanimated-color-picker';
+import { useState } from 'react';
+import { Button } from 'react-native';
+import { Modal } from 'react-native';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const DrawMenu = () => {
 
   const { setActiveSize, setActiveColor } = useDrawCtx();
+  const [showModal, setShowModal] = useState(false);
+
+  const onSelectColor = ({ hex }: { hex: string }) => {
+    // do something with the selected color.
+    console.log(hex);
+    setActiveColor(hex);
+  };
   
   return (
-    <View style={styles.container}>
+    <View style={styles.menuLayout}>
 
-      <View style={styles.menuLayout}>
+      <View style={styles.sizeDots}>
 
-        <View style={styles.sizeDots}>
-        {[25, 20, 14, 7, 4, 2].map((size, index) => (
+          {[25, 20, 14, 7, 4, 2].map((size, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => setActiveSize(size)}
@@ -23,19 +33,23 @@ const DrawMenu = () => {
             <View style={[styles.splotch, { backgroundColor: 'black', height: size, width: size }]} />
           </TouchableOpacity>
         ))}
+
       </View>
 
-      <View style={styles.colorSplotches}>
-        {['#f21616', '#f95900', 'yellow', '#189b4e', '#549eff', '#6f24ff', '#ffa7c3'].map((color, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => setActiveColor(color)}
-          >
-            <View style={[styles.splotch, { backgroundColor: color }]} />
-          </TouchableOpacity>
-        ))}
+      <View style={styles.colorLayout}>
+
+          <ColorPicker style={styles.colorPickers} value='red' onComplete={onSelectColor} >
+            <HueSlider />
+            <BrightnessSlider />
+            <SaturationSlider />
+          </ColorPicker>
+
+          <ColorPicker style={styles.opacityPicker} value='red' onComplete={onSelectColor} >
+            <OpacitySlider/>
+          </ColorPicker>
+
       </View>
-      </View>
+      
     </View>
   );
 }
@@ -43,60 +57,67 @@ const DrawMenu = () => {
 export default DrawMenu;
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    position: 'relative',
-    width: width,
-    height: height - canvasHeight - headerHeight,
-    zIndex: 99999,
-    padding: 10,
-    gap: 10,
-    borderWidth: .5,
-    borderRadius: 15,
-    borderColor: 'black',
-    backgroundColor: '#fffaf8'
+  menuLayout: {
+    flexShrink: 1, // <3
+    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
+
+    // display: 'flex',
+    // flexDirection: 'column',
+    // flexWrap: 'wrap',
+    // position: 'relative',
+    // width: width,
+    // height: '100%',
+    // zIndex: 99999,
+    // borderWidth: .5,
+    // borderRadius: 15,
+    // borderColor: 'black',
+    // backgroundColor: '#fffaf8'
   },
-  colorSplotches: { // this already fits within bounds of bottomTooblar styles
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 10, paddingTop: 20, 
-    gap: 20,
-    rowGap: 15,
-    width: '100%', height: '100%',
+  sizeDots: { // this already fits within bounds of bottomTooblar styles
+    display: 'flex', flexWrap: 'wrap', flexDirection: 'row',
+    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
+    gap: 15,
+    width: '100%',
     zIndex: 9999,
+    padding: 15,
+    top: '5%',
   },
   sizeDotContainer: {
     borderWidth: .8, borderColor: 'black', borderRadius: 8,
     padding: 2,
     height: 40, width: 40,
-    justifyContent: 'center', alignItems: 'center'
-  },
-  sizeDots: { // this already fits within bounds of bottomTooblar styles
-    display: 'flex', flexWrap: 'wrap', flexDirection: 'row',
-    alignItems: 'center',
-    gap: 25,
-    rowGap: 15,
-    width: '100%', height: '100%',
-    zIndex: 9999,
+    justifyContent: 'center', alignItems: 'center',
   },
   splotch: {
     height: 30, width: 30, 
     borderRadius: 100,
   },
-  colorPicker: {
-    width: 300,
-    height: 300,
-  },
-  menuLayout: {
+  colorLayout: {
     display: 'flex',
-    flexWrap: 'wrap',
+    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
     flexDirection: 'row',
-    padding: 15,
+    position: 'relative',
+    width: '100%',
+    flexShrink: 1, // <3
+    padding: 30,
+    zIndex: 9999,
+
+  },
+  colorPickers: {
+    width: '80%', height: '100%',
+    padding: 5,
+    justifyContent: 'center',
+    gap: 30,
+    zIndex: 9999,
+
+  },
+  opacityPicker: {
+    position: 'absolute',
+    width: '70%', height: '100%',
+    padding: 5,
+    transform: [{ rotate: '90deg' }],
+    right: 0,
+    top: '5%'
   },
   close: {
     position: 'absolute',

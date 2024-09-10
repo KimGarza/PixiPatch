@@ -41,7 +41,7 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
                         left: Math.floor(Math.random() * (200 - 30)) + 30,
                         height: 150, width: 150,
                         rotation: 0,
-                        pendingChanges: {scale: 1, rotation: 0}
+                        pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
                     }
                  ]
                  createItems({ itemType: 'drawing', properties: drawingItem });
@@ -69,12 +69,6 @@ return (
         <View {...panResponder.panHandlers}>
 
             <Svg height="100%" width="100%">
-                <Path
-                d={pathData} // so this = the current M and L which are speicifc to how d works in Path comp is svg library
-                stroke={activeColor}
-                strokeWidth={activeSize}
-                fill="none"
-                />
 
 {/* display next the previous strokes that make up the image from drawCtx */}
         {drawingPaths.map((drawnPath, index) => (
@@ -84,8 +78,21 @@ return (
                 stroke={drawnPath.strokeColor}
                 strokeWidth={drawnPath.strokeWidth}
                 fill="none"
+                strokeLinejoin="round" // strokeLinejoin="miter" is default miter join when stroke breaks through acute angle can cause artifacts, this resolves it!!
+                strokeMiterlimit={10}
+                strokeLinecap="round"
             />
             ))}
+
+            <Path
+                d={pathData} // so this = the current M and L which are speicifc to how d works in Path comp is svg library
+                stroke={activeColor}
+                strokeWidth={activeSize}
+                fill="none"
+                strokeLinejoin="round"
+                strokeMiterlimit={10}
+                strokeLinecap="round"
+                />
             </Svg>
 
         </View>
