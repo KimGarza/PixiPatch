@@ -16,11 +16,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMobileAdsAppId": "pub-6378881238784666"
+      },
+      "bundleIdentifier": "com.elementaleditor"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMobileAdsAppId": "pub-6378881238784666"
       },
       "package": "com.anonymous.elemental_editor"
     },

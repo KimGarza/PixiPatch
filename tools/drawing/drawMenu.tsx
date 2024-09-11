@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     flexShrink: 1, // <3
     padding: 30,
     zIndex: 9999,
-
   },
   colorPickers: {
     width: '80%', height: '100%',
@@ -109,7 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 30,
     zIndex: 9999,
-
   },
   opacityPicker: {
     position: 'absolute',
