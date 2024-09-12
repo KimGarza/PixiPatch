@@ -11,7 +11,6 @@ interface Props {
 }
 
 const MutableItem = ({ item }: Props) => {
-
     const { setActiveItemCtx, activeItemCtx, deleteItems, addPendingChanges, bringToFront, frontItem, setFrontItem } = useItemCtx();
     const [ tapCount, setTapCount ] = useState<number>(0);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
@@ -155,8 +154,7 @@ const MutableItem = ({ item }: Props) => {
         });
 
     
-    const handleTap = (event: GestureResponderEvent) => {
-
+    const handleOnTap = (event: GestureResponderEvent) => {
         if (tapCount == 0 && frontItem == undefined) { // if this item is already in the foreground but user clicks it again, they want to activate it
             setActiveItemCtx(item);
         }
@@ -194,7 +192,7 @@ const MutableItem = ({ item }: Props) => {
                 {activeItemCtx && activeItemCtx.id == item.id && // if there is an active image currently and the current item's id matches the activeItem's id
                 <View >
                     <View style={[styles.trash, {left: - 15 + item.width, bottom: item.height * -1 - 10}]}>
-                        <TouchableOpacity onPress={() => {deleteItems(item.id, 'image')}}>
+                        <TouchableOpacity onPress={() => {deleteItems(item.id, item.type)}}>
                         <Animated.View style={trashIconAnimated}>
                             <Feather name={'trash'} size={30} color={'#ff0847'} style={styles.editingIcon}/>
                         </Animated.View>
@@ -203,7 +201,7 @@ const MutableItem = ({ item }: Props) => {
                 </View>
                 }
                 {/* Tapping item */}
-                <TouchableOpacity onPress={handleTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}} style={{zIndex: item.zIndex}}>
+                <TouchableOpacity onPress={handleOnTap} activeOpacity={.9} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}} style={{zIndex: item.zIndex}}>
                     <Image
                         source={{ uri: item.imageInfo.uri }}
                         style={[{
@@ -234,7 +232,6 @@ const styles = StyleSheet.create({
         zIndex: 5,
     },
     editingIcon: {
-        // backgroundColor: 'white',
         backgroundColor: 'white',
         borderRadius: 30,
         overflow: 'hidden',
@@ -244,13 +241,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     itemSelected: {
-        // borderWidth: 2, borderColor: '#c0b9ac',
         borderWidth: 2, borderColor: '#ff0847',
         zIndex: 999,
     },
     trash: {
         position: 'absolute',
         zIndex: 9,
-       
     }
   });

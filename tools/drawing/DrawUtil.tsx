@@ -8,6 +8,9 @@ import { useItemCtx } from "@/hooks/contexts/useItemCtx";
 import { DrawingItem } from "@/customTypes/itemTypes";
 import { useRouter } from "expo-router";
 import SaveDrawing from "@/components/save/saveDrawing";
+import GlobalDimensions from '@/components/dimensions/globalDimensions';
+
+const { width } = GlobalDimensions();
 interface Props {
     isDone: boolean;
 }
@@ -37,8 +40,8 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
                     {
                         id: '', type: 'drawing', zIndex: 2,
                         imageInfo: {uri: newUri, height: 1000, width: 1000},
-                        top: Math.floor(Math.random() * (100 - 30)) + 30,
-                        left: Math.floor(Math.random() * (200 - 30)) + 30,
+                        translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+                        translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
                         height: 150, width: 150,
                         rotation: 0,
                         pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}

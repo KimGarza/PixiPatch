@@ -1,21 +1,15 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import { useDrawCtx } from './DrawCtx';
-import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider, Panel3, Panel5, Panel4, HueCircular, BrightnessSlider, SaturationSlider, HSLSaturationSlider, LuminanceCircular, RedSlider, GreenSlider, BlueSlider } from 'reanimated-color-picker';
+import ColorPicker, { OpacitySlider, HueSlider, BrightnessSlider, SaturationSlider } from 'reanimated-color-picker';
 import { useState } from 'react';
-import { Button } from 'react-native';
-import { Modal } from 'react-native';
-
-const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const DrawMenu = () => {
 
   const { setActiveSize, setActiveColor } = useDrawCtx();
-  const [showModal, setShowModal] = useState(false);
 
   const onSelectColor = ({ hex }: { hex: string }) => {
     // do something with the selected color.
-    console.log(hex);
     setActiveColor(hex);
   };
   
@@ -49,7 +43,6 @@ const DrawMenu = () => {
           </ColorPicker>
 
       </View>
-      
     </View>
   );
 }
@@ -101,7 +94,6 @@ const styles = StyleSheet.create({
     flexShrink: 1, // <3
     padding: 30,
     zIndex: 9999,
-
   },
   colorPickers: {
     width: '80%', height: '100%',
@@ -109,7 +101,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 30,
     zIndex: 9999,
-
   },
   opacityPicker: {
     position: 'absolute',

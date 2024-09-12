@@ -60,9 +60,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [stickers, setStickers] = useState<StickerItem[]>([]);
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
 
-  useEffect(() => {
-  }, [items])
-
   const createImageItem = (item: ImageItem) => {
     const id = generateId();
     const zIndex = generateLargestZIndex();
@@ -74,7 +71,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       translateY: item.translateY, translateX: item.translateX,
       width: item.width, height: item.height,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
+      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     } as ImageItem;
 
     return newImageItem;
@@ -87,8 +84,9 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       ...item,
       id: id,
       zIndex: zIndex,
+      translateY: item.translateY, translateX: item.translateX,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
+      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     } as StickerItem;
   }
   
@@ -108,7 +106,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       height: item.height,
       width: item.width,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
+      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     } as DrawingItem;
   }
 
@@ -163,13 +161,13 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
   const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing') => {
     setItems((prevItems) => prevItems.filter(item => item.id !== id))
-
+console.log("itemType", itemType)
     if (itemType == 'image') {
       setImages(prevImages => prevImages.filter(image => image.id !== id))
     } else if (itemType == 'sticker') {
-      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+      setStickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
     } else if (itemType == 'drawing') {
-      // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+      setDrawings(prevDrawings => prevDrawings.filter(drawing => drawing.id !== id))
     }
   }
 
@@ -186,15 +184,15 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       if (itemType == 'image') {
         setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
       } else if (itemType == 'sticker') {
-        // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == id ? { ...sticker, zIndex: largestZIndex } : sticker));
       } else if (itemType == 'drawing') {
-        // setstickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
+        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == id ? { ...drawing, zIndex: largestZIndex } : drawing));
       }
     }
   }
   
   const addPendingChanges = (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => {
-console.log("pendingChanges in add pending changes", pendingChanges)
+
     const foundItem = items.find(item => item.id === id);
     if (foundItem) {
       setItems((prevItems) => prevItems.map((item) => item.id == id ? { 
@@ -206,7 +204,6 @@ console.log("pendingChanges in add pending changes", pendingChanges)
           positionY: pendingChanges.positionY}}
         : item
       ));
-
       if (foundItem.type == 'image') {
         setImages((prevImages) => prevImages.map((image) => image.id == id ? { 
           ...image,
@@ -217,6 +214,26 @@ console.log("pendingChanges in add pending changes", pendingChanges)
             positionY: pendingChanges.positionY}}
           : image
         ));
+      } else if (foundItem.type == 'sticker') {
+        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == id ? { 
+          ...sticker,
+          pendingChanges: {
+            scale: pendingChanges.scale,
+            rotation: pendingChanges.rotation,
+            positionX: pendingChanges.positionX,
+            positionY: pendingChanges.positionY}}
+          : sticker
+        ));
+      } else if (foundItem.type == 'drawing') {
+        setDrawings((prevDrawing) => prevDrawing.map((drawing) => drawing.id == id ? { 
+          ...drawing,
+          pendingChanges: {
+            scale: pendingChanges.scale,
+            rotation: pendingChanges.rotation,
+            positionX: pendingChanges.positionX,
+            positionY: pendingChanges.positionY}}
+          : drawing
+        ));
       }
     }
   }
@@ -224,8 +241,6 @@ console.log("pendingChanges in add pending changes", pendingChanges)
   const updatePending = () => {
 
     items.forEach((item) => {
-      console.log("updatePending in add update changes", item.pendingChanges)
-
       setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
         ...prevItem,
         width: (item.width * item.pendingChanges.scale),
@@ -255,6 +270,36 @@ console.log("pendingChanges in add pending changes", pendingChanges)
             positionX: 0,
             positionY: 0}}
           : image
+        ));
+      } if (item.type == 'sticker') {
+        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == item.id ? { 
+          ...sticker,
+          width: (item.width * item.pendingChanges.scale),
+          height: (item.height * item.pendingChanges.scale),
+          translateY: item.pendingChanges.positionY,
+          translateX: item.pendingChanges.positionX,
+          rotation: item.pendingChanges.rotation,
+          pendingChanges: {
+            scale: 1,
+            rotation: 0,
+            positionX: 0,
+            positionY: 0}}
+          : sticker
+        ));
+      } else if (item.type == 'drawing') {
+        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == item.id ? { 
+          ...drawing,
+          width: (item.width * item.pendingChanges.scale),
+          height: (item.height * item.pendingChanges.scale),
+          translateY: item.pendingChanges.positionY,
+          translateX: item.pendingChanges.positionX,
+          rotation: item.pendingChanges.rotation,
+          pendingChanges: {
+            scale: 1,
+            rotation: 0,
+            positionX: 0,
+            positionY: 0}}
+          : drawing
         ));
       }
     })

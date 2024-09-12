@@ -97,9 +97,11 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
         width: 1000,
         height: 1000,
       },
-      top: Math.floor(Math.random() * (300 - 50)) + 50,
-      left: Math.floor(Math.random() * (300 - 30)) + 30,
-      height: 80, width: 80
+      height: 80, width: 80,
+      translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+      translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+      rotation: 0, 
+      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     }
     return converted;
   }
