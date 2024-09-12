@@ -4,6 +4,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import * as FileSystem from 'expo-file-system';
 import { ImageItem, ImageInfo } from '@/customTypes/itemTypes';
+import GlobalDimensions from '../dimensions/globalDimensions';
+
+const { width } = GlobalDimensions();
 interface Props {
   toggle: boolean;
 }
@@ -43,8 +46,10 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
       zIndex: 2,
       imageInfo: image,
       ogImageInfo: { ...image },
-      top: Math.floor(Math.random() * (100 - 30)) + 30,
-      left: Math.floor(Math.random() * (200 - 30)) + 30,
+      translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+      translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+      rotation: 0,
+      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0},
       width: newWidth,
       height: newHeight,
     }

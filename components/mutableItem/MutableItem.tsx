@@ -4,7 +4,6 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem } from '@/customTypes/itemTypes';
-import useDragPanResponder from './useDragPanResponder';
 import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 interface Props {
@@ -14,33 +13,33 @@ interface Props {
 const MutableItem = ({ item }: Props) => {
 
     const { setActiveItemCtx, activeItemCtx, deleteItems, addPendingChanges, bringToFront, frontItem, setFrontItem } = useItemCtx();
-    const [ tapCount, setTappedCount ] = useState<number>(0);
+    const [ tapCount, setTapCount ] = useState<number>(0);
     const [tapCoordinates, setTapCoordinates] = useState<{x: number, y: number}>({x: 0, y: 0});
 
-    // related to saving state scaling, rotating and relocating
-    // const { panHandlers, newPositionX, newPositionY  } = useDragPanResponder({initialX: item.left, initialY: item.top});
-    const positionX = useSharedValue(item.left);
-    const positionY = useSharedValue(item.top);
-    const savedPositionX = useSharedValue(item.left);
-    const savedPositionY = useSharedValue(item.top);
+    // positionX, positionY, scale, rotation all related to how you can mutate an item, and all of which will be saved as pending changes, at which point upon useRouter screen change to another screen, it will take effect to execute those changes
+    // the allows the ctx of the item/image/sticker/drawing to retain the new translateY, translateX, rotation, height and width values without mutating the item while mutating in real time since it crashes.
+    const positionX = useSharedValue(item.translateX);
+    const positionY = useSharedValue(item.translateY);
+    const savedPositionX = useSharedValue(item.translateX);
+    const savedPositionY = useSharedValue(item.translateY);
     const scale = useSharedValue(1);
     const savedScale = useSharedValue(1);
     const rotation = useSharedValue(item.rotation);
     const savedRotation = useSharedValue(item.rotation);
+    // state value which saves each mutatable value (this is defaulted to the useRefs and set in the updateTransformState which occurs on end of the gestures using runOnJS(updateTransformState)() which prevents crashing)
     const [transformState, setTransformState] = useState<{
         positionX: number,
         positionY: number,
         rotation: number,
         scale: number,
       }>({
-        positionX: positionX.value,
-        positionY: positionY.value,
+        positionX: item.translateX,
+        positionY: item.translateY,
         rotation: rotation.value,
         scale: scale.value,
       });
-     // Function to update the local state
+
     const updateTransformState = () => {
-        console.log("positionX, positionY", positionX, positionY);
         setTransformState({
         positionX: positionX.value,
         positionY: positionY.value,
@@ -48,7 +47,8 @@ const MutableItem = ({ item }: Props) => {
         scale: scale.value,
         });
     };
-    // Sync the transform state with context when the state changes
+
+    // syncs the transform state with pending changes for this item in context when the state changes
     useEffect(() => {
         addPendingChanges(
         item.id,
@@ -60,19 +60,6 @@ const MutableItem = ({ item }: Props) => {
         });
     }, [transformState]);
 
-    //   useEffect(() => {
-    //     console.log('useEffect 2');
-    //     addPendingChanges(
-    //         item.id,
-    //         {
-    //             positionX: transformState.positionX,
-    //             positionY: transformState.positionY,
-    //             rotation: transformState.rotation,
-    //             scale: transformState.scale
-    //         }
-    //     );
-    //   }, [transformState]);
-    
     // this value will update after switch statement checks which itemType and will be THAT item type
     let activeItemCast: ImageItem | StickerItem | DrawingItem | undefined = activeItemCtx;
     let frontItemCast: ImageItem | StickerItem | DrawingItem | undefined = frontItem;
@@ -82,7 +69,7 @@ const MutableItem = ({ item }: Props) => {
     useEffect(() => {
         if (frontItem != undefined) {
             if ( frontItem.id != item.id ) {
-                setTappedCount(0);
+                setTapCount(0);
             }
         }
     }, [activeItemCtx, frontItem]) // has to keep checking if frontItem has been set, and active image for updating styling
@@ -118,20 +105,18 @@ const MutableItem = ({ item }: Props) => {
             break;
     }
 
-    const panGesture = Gesture.Pan()
+    const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
-        // Update position based on gesture movement
         positionX.value = event.translationX + savedPositionX.value;
         positionY.value = event.translationY + savedPositionY.value;
     })
     .onEnd(() => {
-        // Save the final position after the gesture ends
         savedPositionX.value = positionX.value;
         savedPositionY.value = positionY.value;
-        runOnJS(updateTransformState)(); // Sync the new position with the state
+        runOnJS(updateTransformState)(); // sync the new position with the state
     });
 
-    const pinchGesture = Gesture.Pinch()
+    const pinchGesture = Gesture.Pinch() // scale item
         .onUpdate((event) => {
             scale.value = savedScale.value * event.scale;
         })
@@ -140,7 +125,7 @@ const MutableItem = ({ item }: Props) => {
             runOnJS(updateTransformState)();
         });
 
-    const rotationGesture = Gesture.Rotation()
+    const rotationGesture = Gesture.Rotation() // rotate item
         .onUpdate((event) => {
             rotation.value = savedRotation.value + event.rotation;
         })
@@ -149,7 +134,7 @@ const MutableItem = ({ item }: Props) => {
             runOnJS(updateTransformState)();
         });
 
-        const animatedStyle = useAnimatedStyle(() => {
+        const animatedStyle = useAnimatedStyle(() => { // animates item based on gesure changes which effect useRef
             return {
                 transform: [
                     { translateX: positionX.value },
@@ -163,8 +148,8 @@ const MutableItem = ({ item }: Props) => {
         const trashIconAnimated = useAnimatedStyle(() => {
             return {
                 transform: [
-                    { rotateZ: `${-rotation.value}rad` },  // Invert the rotation
-                    { scale: 1 / scale.value }  // Invert the scale
+                    { rotateZ: `${-rotation.value}rad` },  // invert the rotation to prevent trashcan icon from rotating with image (like a counter balance)
+                    { scale: 1 / scale.value }  // invert the scale
                 ],
             };
         });
@@ -175,14 +160,14 @@ const MutableItem = ({ item }: Props) => {
         if (tapCount == 0 && frontItem == undefined) { // if this item is already in the foreground but user clicks it again, they want to activate it
             setActiveItemCtx(item);
         }
-        if (tapCount == 0) { // frontItem is set within bringToFront which should tell each MutableItem to update itself and check that it is not currently frontItem anymore // CHECK THAT ACTIVE IMAGE IS ALSO CONSIDERED IN BRINGTOFRONT
+        if (tapCount == 0) { // in ctx, frontItem is set to this item - which since useEffect array contains frontItemCtx, this item will now have highest zIndex // CHECK THAT ACTIVE IMAGE IS ALSO CONSIDERED IN BRINGTOFRONT
 
-            setTappedCount(1);
+            setTapCount(1);
             bringToFront(item.id, item.type);
 
-        } else if (tapCount == 1) { // now item is in foreground and user wishes to activate
+        } else if (tapCount == 1) { // now item is in foreground and user wishes to activate it
 
-            setTappedCount(2);
+            setTapCount(2);
             const { locationX, locationY } = event.nativeEvent;
             setTapCoordinates({x: locationX, y: locationY}); // whereever the user tapped, assign the toolbox to show up here IF IMAGE
             setActiveItemCtx(item);
@@ -192,7 +177,7 @@ const MutableItem = ({ item }: Props) => {
             setTapCoordinates({x: 0, y: 0});
             setActiveItemCtx(undefined);
             setFrontItem(undefined);
-            setTappedCount(0);
+            setTapCount(0);
         }
     }
 
@@ -202,13 +187,10 @@ const MutableItem = ({ item }: Props) => {
                 style={[styles.itemContainer, { 
                     width: item.width, 
                     height: item.height, 
-                    top: item.top, 
-                    left: item.left, 
                     zIndex: item.zIndex }, 
                     animatedStyle]}
-                    // {...panHandlers} // Apply PanResponder only when the image is not active
                 >
-                {/* Close icon / remove item */}
+                {/* trash icon to remove item from editor icon */}
                 {activeItemCtx && activeItemCtx.id == item.id && // if there is an active image currently and the current item's id matches the activeItem's id
                 <View >
                     <View style={[styles.trash, {left: - 15 + item.width, bottom: item.height * -1 - 10}]}>

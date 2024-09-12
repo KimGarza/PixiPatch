@@ -25,6 +25,12 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
     require('../../assets/images/backgrounds/backgroundpink.png'),
     require('../../assets/images/backgrounds/backgroundsage.png'),
     require('../../assets/images/backgrounds/backgroundwhite.png'),
+    require('../../assets/images/backgrounds/sketchpad.png'),
+    require('../../assets/images/backgrounds/mintchocolatechip.png'),
+    require('../../assets/images/backgrounds/pinkcamp.png'),
+    require('../../assets/images/backgrounds/pinkcurtains.png'),
+    require('../../assets/images/backgrounds/ocean.png'),
+    require('../../assets/images/backgrounds/homefree.png'),
   ];
 
 

@@ -71,10 +71,10 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       id: id, zIndex: zIndex, type: 'image',
       imageInfo: item.imageInfo,
       ogImageInfo: item.ogImageInfo || item.imageInfo,
-      top: item.top, left: item.left,
+      translateY: item.translateY, translateX: item.translateX,
       width: item.width, height: item.height,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
     } as ImageItem;
 
     return newImageItem;
@@ -88,7 +88,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       id: id,
       zIndex: zIndex,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
     } as StickerItem;
   }
   
@@ -103,12 +103,12 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         width: 800,
         height: 800,
       },
-      top: item.top,
-      left: item.left,
+      translateX: item.translateX,
+      translateY: item.translateY,
       height: item.height,
       width: item.width,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: item.left, positionY: item.top}
+      pendingChanges: {scale: 1, rotation: 0, positionX: item.translateX, positionY: item.translateY}
     } as DrawingItem;
   }
 
@@ -194,8 +194,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
   
   const addPendingChanges = (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => {
-    console.log("add pending changes ", pendingChanges);
-
+console.log("pendingChanges in add pending changes", pendingChanges)
     const foundItem = items.find(item => item.id === id);
     if (foundItem) {
       setItems((prevItems) => prevItems.map((item) => item.id == id ? { 
@@ -225,40 +224,36 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const updatePending = () => {
 
     items.forEach((item) => {
-      console.log('updatePending current top and left ', item.top, item.left, "pending: ", item.pendingChanges.positionY, item.pendingChanges.positionX)
-      console.log("item type", item.type)
+      console.log("updatePending in add update changes", item.pendingChanges)
 
       setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
         ...prevItem,
         width: (item.width * item.pendingChanges.scale),
         height: (item.height * item.pendingChanges.scale),
-        top: item.pendingChanges.positionY,
-        left: item.pendingChanges.positionX,
+        translateY: item.pendingChanges.positionY,
+        translateX: item.pendingChanges.positionX,
         rotation: item.pendingChanges.rotation,
         pendingChanges: {
           scale: 1,
           rotation: 0,
-          positionX: item.left,
-          positionY: item.top}}
+          positionX: 0,
+          positionY: 0}}
         : item
       ));
 
-      console.log("item type", item.type)
       if (item.type == 'image') {
-
-        console.log("am i an image? current ", item.top, item.left, "and is it same as id? ")
         setImages((prevImages) => prevImages.map((image) => image.id == item.id ? { 
           ...image,
           width: (item.width * item.pendingChanges.scale),
           height: (item.height * item.pendingChanges.scale),
-          top: item.pendingChanges.positionY,
-          left: item.pendingChanges.positionX,
+          translateY: item.pendingChanges.positionY,
+          translateX: item.pendingChanges.positionX,
           rotation: item.pendingChanges.rotation,
           pendingChanges: {
             scale: 1,
             rotation: 0,
-            positionX: item.left,
-            positionY: item.top}}
+            positionX: 0,
+            positionY: 0}}
           : image
         ));
       }

@@ -2,6 +2,7 @@ export interface BaseItem {
     id: string; //?? need ot be here?
     type: string; // discriminate within the union
     zIndex: number; //?? need ot be here?
+    translateX: number; translateY: number;
     rotation: number;
     pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
@@ -11,7 +12,7 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     ogImageInfo: ImageInfo;
-    top: number; left: number;
+    translateX: number; translateY: number;
     width: number; height: number;
     rotation: number;
     pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
@@ -21,7 +22,7 @@ export interface BaseItem {
     type: 'sticker'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    top: number; left: number;
+    translateX: number; translateY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
@@ -31,7 +32,7 @@ export interface BaseItem {
     type: 'drawing'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    top: number; left: number;
+    translateX: number; translateY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};

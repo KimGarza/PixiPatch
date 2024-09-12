@@ -13,8 +13,8 @@ interface Item {
   }
 interface StickerData {
     sticker: ImageSourcePropType;
-    top: number;
-    left: number;
+    translateY: number;
+    translateX: number;
     item: Item;
 }
 
@@ -51,8 +51,8 @@ export const StickerProvider: React.FC<StickerProviderProps> = ({ children }) =>
     const updateStickerPosition = (index: number, newTop: number, newLeft: number) => {
         setStickers((prevStickers) => {
             const updatedStickers = [...prevStickers];
-            updatedStickers[index].top = newTop;
-            updatedStickers[index].left = newLeft;
+            updatedStickers[index].translateY = newTop;
+            updatedStickers[index].translateX = newLeft;
             return updatedStickers;
         });
     };
