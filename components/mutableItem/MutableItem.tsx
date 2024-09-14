@@ -6,6 +6,7 @@ import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem } from '@/customTypes/itemTypes';
 import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import { withTiming } from 'react-native-reanimated';
 interface Props {
     item: ImageItem | StickerItem | DrawingItem;
 }
@@ -63,6 +64,9 @@ const MutableItem = ({ item }: Props) => {
     let activeItemCast: ImageItem | StickerItem | DrawingItem | undefined = activeItemCtx;
     let frontItemCast: ImageItem | StickerItem | DrawingItem | undefined = frontItem;
     let itemCast: ImageItem | StickerItem | DrawingItem = item;
+
+    const tapCoordinatesX = useSharedValue(0);
+    const tapCoordinatesY = useSharedValue(0);
 
     // if there is a frontItem set, and it is not THIS current item, then reset the tapCounter so that it doesn't store the memory of how many even though another item has been brought to front
     useEffect(() => {
@@ -156,14 +160,13 @@ const MutableItem = ({ item }: Props) => {
         const toolBoxAnimated = useAnimatedStyle(() => {
             return {
                 transform: [
-                    { translateX: tapCoordinates.x },
-                    { translateY: tapCoordinates.y },
+                    { translateX: tapCoordinatesX.value - 30 },
+                    { translateY: tapCoordinatesY.value - 30 },
                     { rotateZ: `${-rotation.value}rad` },  // invert the rotation to prevent trashcan icon from rotating with image (like a counter balance)
                     { scale: 1 / scale.value }  // invert the scale
                 ],
             };
         });
-
     
     const handleOnTap = (evt: GestureResponderEvent) => {
         if (tapCount == 0 && frontItem == undefined) { // if this item is already in the foreground but user clicks it again, they want to activate it
@@ -173,15 +176,18 @@ const MutableItem = ({ item }: Props) => {
 
             setTapCount(1);
             bringToFront(item.id, item.type);
+            const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
+            tapCoordinatesX.value = locationX;
+            tapCoordinatesY.value = locationY;
 
         } else if (tapCount == 1) { // now item is in foreground and user wishes to activate it
 
             setTapCount(2);
 
             const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
-            console.log("location xy" , locationX, locationY)
-            
-            setTapCoordinates({x: locationX, y: locationY}); // whereever the user tapped, assign the toolbox to show up here IF IMAGE
+            tapCoordinatesX.value = locationX;
+            tapCoordinatesY.value = locationY;
+            setTapCoordinates({x: tapCoordinatesX.value, y: tapCoordinatesY.value}); // whereever the user tapped, assign the toolbox to show up here IF IMAGE
             setActiveItemCtx(item);
 
         } else if (tapCount == 2) { // the user is deactivating, or selecting it but not selecting another image // CONSIDER THIS TO OCCUR WHEN USER CLICKS OFF OF THE IAMGE ANYWHERE AS WELL?
@@ -229,7 +235,7 @@ const MutableItem = ({ item }: Props) => {
                 {/* little popup toolbox for editing options on a specific image only appears for images */}
                 {item.type == 'image' && activeItemCtx?.imageInfo.uri == item.imageInfo.uri ? (
                     item && tapCoordinates.x > 0 && tapCoordinates.y > 0 &&
-                    <Animated.View style={toolBoxAnimated}>
+                    <Animated.View style={[styles.toolbox, toolBoxAnimated]}>
                         <ViewModifyImageToolbox/>
                     </Animated.View>
                 ) : (<></>)}
@@ -264,5 +270,9 @@ const styles = StyleSheet.create({
     trash: {
         position: 'absolute',
         zIndex: 9999999999999999999999999999999,
+    },
+    toolbox: {
+        position: 'absolute',
+        zIndex: 9999999999999999999999,
     }
   });

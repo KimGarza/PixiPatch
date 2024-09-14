@@ -15,15 +15,15 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 // Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
 export default function ModifyImageScreen() {
 
-  const { image, activatedTool } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
+  const { image } = useLocalSearchParams(); // retrieve the params from accessing modifyImageScreen
 
   const router = useRouter();
-  // const { updateImageInfo, activeImageCtx, images } = useImageCxt();
   const {images} = useItemCtx();
 
   const [encodedUri, setEncodedUri] = useState<ImageSourcePropType>();
   const [imageItem, setImageItem] = useState<ImageItem>();
   const [imageDimensions, setImageDimensions] = useState<{imgWidth: number, imgHeight: number}>();
+  const [activeTool, setActiveTool] = useState<string>('');
 
   const [isCropping, setIsCropping] = useState<boolean>(false);
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
@@ -52,11 +52,7 @@ export default function ModifyImageScreen() {
 
   // activates whichever tool is the one which was selected or changed to
   useEffect(() => {
-
-    if (activatedTool == 'crop' && imageItem) {
-      setIsCropping(true);
-    } 
-  }, [ activatedTool, imageItem ])
+  }, [ activeTool ])
 
   // Evaluates current image aspect ratio from imageInfo, compares against the screen's, and scales to largest size with no cutting off.
   // Reason for using ImageInfo here when canvas uses imageItem is bc some image manipulations affect image at the pixel level.
