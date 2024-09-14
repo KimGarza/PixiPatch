@@ -2,11 +2,11 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 // context
-import { BackgroundCtx } from '@/components/background/BackgroundCtx';
+import { BackgroundCtx } from '@/features/background/BackgroundCtx';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 // editing tools and menus
-import StickerMenu from '@/tools/Stickers/StickerMenu';
-import BackgroundMenu from '@/components/background/BackgroundMenu';
+import StickerMenu from '@/features/Stickers/StickerMenu';
+import BackgroundMenu from '@/features/background/BackgroundMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
 import HomeButton from '@/components/utils/homeButton';
@@ -36,7 +36,7 @@ const EditorScreen = () => {
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
-        setStickerMenuToggle(!stickerMenuToggle);
+    setStickerMenuToggle(!stickerMenuToggle);
   };
 
   const handleToggleBackgroundMenuCallback = () => {

@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     padding: 10,
-    backgroundColor: '#f1d6cb',
+    backgroundColor: '#c3c5c2',
     borderRadius: 10,
   },
   bubble: {
-    backgroundColor: '#f1d6cb',
+    backgroundColor: '#e4d3d2',
     borderRadius: 10,
     borderColor: '#795999', borderWidth: 1, borderStyle: 'dashed',
     padding: 5,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 10,
     borderRightColor: 'transparent',
     borderTopWidth: 10,
-    borderTopColor: '#f1d6cb',
+    borderTopColor: '#c3c5c2',
   },
 });
 

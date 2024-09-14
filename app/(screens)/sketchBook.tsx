@@ -1,7 +1,7 @@
 import { StyleSheet, View, Image, TouchableOpacity, Text, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
-import DrawUtil from '@/tools/drawing/DrawUtil';
-import DrawMenu from '@/tools/drawing/drawMenu';
+import DrawUtil from '@/features/drawing/DrawUtil';
+import DrawMenu from '@/features/drawing/drawMenu';
 import HomeButton from '@/components/utils/homeButton';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 

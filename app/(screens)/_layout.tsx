@@ -4,9 +4,9 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from '../../hooks/useColorScheme'
-import { BackgroundProvider } from '@/components/background/BackgroundCtx';
-import { StickerProvider } from '@/tools/Stickers/StickersCtx';
-import { DrawProvider } from '@/tools/drawing/DrawCtx';
+import { BackgroundProvider } from '@/features/background/BackgroundCtx';
+import { StickerProvider } from '@/features/Stickers/StickersCtx';
+import { DrawProvider } from '@/features/drawing/DrawCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ItemProvider } from '@/hooks/contexts/useItemCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';

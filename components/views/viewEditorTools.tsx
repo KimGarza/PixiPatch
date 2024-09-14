@@ -1,8 +1,8 @@
 import { Fontisto, Ionicons, Octicons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
-import StickerTool from '../../tools/Stickers/StickerTool';
-import BackgroundTool from '../background/BackgroundTool';
+import StickerTool from '../../features/Stickers/StickerTool';
+import BackgroundTool from '../../features/background/BackgroundTool';
 import { useRouter } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 
