@@ -107,7 +107,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   }
 
   return (
-    <View style={styles.stickerTools}>
+    <View style={styles.container}>
       <View style={styles.menuLayout}>
 
         <View style={styles.close}>
@@ -132,7 +132,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 export default StickerMenu;
 
 const styles = StyleSheet.create({
-  stickerTools: {
+  container: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
