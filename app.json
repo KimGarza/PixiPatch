@@ -16,7 +16,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "ElementalEditor"
     },
     "android": {
       "adaptiveIcon": {
@@ -43,6 +44,7 @@
       "eas": {
         "projectId": "571a94c7-800c-4a36-ac13-d5e488e37797"
       }
-    }
+    },
+    "owner": "kgarza"
   }
 }

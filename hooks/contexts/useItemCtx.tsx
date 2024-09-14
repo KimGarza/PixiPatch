@@ -1,6 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
-import { useContext } from "react";
-import { Dispatch, SetStateAction } from "react";
+import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
 import { ImageItem, StickerItem, DrawingItem } from '@/customTypes/itemTypes';
 
 type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
@@ -84,9 +82,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       ...item,
       id: id,
       zIndex: zIndex,
-      translateY: item.translateY, translateX: item.translateX,
-      rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     } as StickerItem;
   }
   
@@ -95,18 +90,9 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     const zIndex = generateLargestZIndex();
 
     return {
-      id: id, zIndex: zIndex, type: 'drawing',
-      imageInfo: {
-        uri: item.imageInfo.uri,
-        width: 800,
-        height: 800,
-      },
-      translateX: item.translateX,
-      translateY: item.translateY,
-      height: item.height,
-      width: item.width,
-      rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
+      ...item,
+      id: id,
+      zIndex: zIndex,
     } as DrawingItem;
   }
 

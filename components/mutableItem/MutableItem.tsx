@@ -153,8 +153,19 @@ const MutableItem = ({ item }: Props) => {
             };
         });
 
+        const toolBoxAnimated = useAnimatedStyle(() => {
+            return {
+                transform: [
+                    { translateX: tapCoordinates.x },
+                    { translateY: tapCoordinates.y },
+                    { rotateZ: `${-rotation.value}rad` },  // invert the rotation to prevent trashcan icon from rotating with image (like a counter balance)
+                    { scale: 1 / scale.value }  // invert the scale
+                ],
+            };
+        });
+
     
-    const handleOnTap = (event: GestureResponderEvent) => {
+    const handleOnTap = (evt: GestureResponderEvent) => {
         if (tapCount == 0 && frontItem == undefined) { // if this item is already in the foreground but user clicks it again, they want to activate it
             setActiveItemCtx(item);
         }
@@ -166,7 +177,10 @@ const MutableItem = ({ item }: Props) => {
         } else if (tapCount == 1) { // now item is in foreground and user wishes to activate it
 
             setTapCount(2);
-            const { locationX, locationY } = event.nativeEvent;
+
+            const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
+            console.log("location xy" , locationX, locationY)
+            
             setTapCoordinates({x: locationX, y: locationY}); // whereever the user tapped, assign the toolbox to show up here IF IMAGE
             setActiveItemCtx(item);
 
@@ -213,9 +227,12 @@ const MutableItem = ({ item }: Props) => {
                 </TouchableOpacity>
 
                 {/* little popup toolbox for editing options on a specific image only appears for images */}
-                {/* {item.type == 'image' && activeItemCtx && activeItemCtx.imageInfo.uri == item.imageInfo.uri ? (
-                    item && tapCoordinates.x > 0 && tapCoordinates.y > 0 && <ViewModifyImageToolbox/>
-                ) : (<></>)} */}
+                {item.type == 'image' && activeItemCtx?.imageInfo.uri == item.imageInfo.uri ? (
+                    item && tapCoordinates.x > 0 && tapCoordinates.y > 0 &&
+                    <Animated.View style={toolBoxAnimated}>
+                        <ViewModifyImageToolbox/>
+                    </Animated.View>
+                ) : (<></>)}
             </Animated.View>
         </GestureDetector>
     );
@@ -246,6 +263,6 @@ const styles = StyleSheet.create({
     },
     trash: {
         position: 'absolute',
-        zIndex: 9,
+        zIndex: 9999999999999999999999999999999,
     }
   });
