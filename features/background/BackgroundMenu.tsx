@@ -12,7 +12,6 @@ const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
-let sizing = {top: '', height: height - canvasHeight - headerHeight}
 
 interface BackgroundMenuProps {
   menuToggle: () => void;
