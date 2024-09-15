@@ -231,8 +231,8 @@ console.log("itemType", itemType)
         ...prevItem,
         width: (item.width * item.pendingChanges.scale),
         height: (item.height * item.pendingChanges.scale),
-        translateY: item.pendingChanges.positionY,
-        translateX: item.pendingChanges.positionX,
+        translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
+        translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
         rotation: item.pendingChanges.rotation,
         pendingChanges: {
           scale: 1,
@@ -247,8 +247,8 @@ console.log("itemType", itemType)
           ...image,
           width: (item.width * item.pendingChanges.scale),
           height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY,
-          translateX: item.pendingChanges.positionX,
+          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
+          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
           rotation: item.pendingChanges.rotation,
           pendingChanges: {
             scale: 1,
@@ -262,8 +262,8 @@ console.log("itemType", itemType)
           ...sticker,
           width: (item.width * item.pendingChanges.scale),
           height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY,
-          translateX: item.pendingChanges.positionX,
+          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
+          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
           rotation: item.pendingChanges.rotation,
           pendingChanges: {
             scale: 1,
@@ -277,8 +277,8 @@ console.log("itemType", itemType)
           ...drawing,
           width: (item.width * item.pendingChanges.scale),
           height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY,
-          translateX: item.pendingChanges.positionX,
+          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
+          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
           rotation: item.pendingChanges.rotation,
           pendingChanges: {
             scale: 1,
