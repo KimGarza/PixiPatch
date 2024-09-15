@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, TouchableOpacity, ImageSourcePropType } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, ImageSourcePropType, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { StickerItem } from '@/customTypes/itemTypes';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { useState, useEffect } from 'react';
@@ -6,8 +6,12 @@ import * as FileSystem from 'expo-file-system';
 import { stickerAssets } from './stickerAssets';
 import { Asset } from 'expo-asset';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
-import { Fontisto } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import SwipeDownMenu from '@/components/utils/swipeMenuDown';
+import { useFonts } from 'expo-font';
 
+const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
@@ -22,8 +26,17 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
   const [viewStickers, setViewStickers] = useState<{id: string, source: ImageSourcePropType}[]>([]);
   const [selectedPack, setSelectedPack] = useState<string>('basic');
+  const [packNames, setPackNames] = useState<string[]>(Object.keys(stickerAssets));
   
   let stickers = stickerAssets[selectedPack];
+
+  const [fontsLoaded] = useFonts({
+    'ToThePoint': require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
 
   useEffect(() => {
     // convert the current tab of stickerAssets into an array of sticker objs
@@ -34,6 +47,10 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
     setViewStickers(stickerList);
 
   }, [selectedPack]) // anytime new sticker tab is selected
+
+  const handleChangeTab = (newPack: string) => {
+    setSelectedPack(newPack);
+  }
 
   const handleCloseMenu = () => {
     menuToggle();
@@ -107,24 +124,51 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.menuLayout}>
+    <View style={styles.moreControl}>
+    <SwipeDownMenu menuToggle={handleCloseMenu}>
+      <View style={styles.container}>
 
         <View style={styles.close}>
           <TouchableOpacity onPress={() => handleCloseMenu()}>
-          <Fontisto name={'close'} size={25}/>
+            <EvilIcons name={'close'} size={35} color="#a3968e"/>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.stickers}>
-            {viewStickers.map((sticker, index) => (
-            <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker.source)}>
-              <Image source={sticker.source} style={styles.sticker}/>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.titleTabs}>
+
+          <View style={styles.tabs}>
+              {packNames.map((name, index) => (
+              <TouchableOpacity key={index} onPress={() => handleChangeTab(name)}>
+                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: cinnamon, textAlign: 'center'}]}>{name}</Text>
+              </TouchableOpacity>
+                
+              ))}
+          </View>
+
+          <View style={styles.title}>
+            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: cinnamon, textAlign: 'center'}}>Stickers <AntDesign name="smileo" size={20} color={cinnamon}/></Text>
+          </View>
+
         </View>
-        
+
+        <ScrollView
+          horizontal={false}
+          contentContainerStyle={styles.scrollViewContent}
+          showsHorizontalScrollIndicator={false}
+          bounces={true}
+          style={styles.scrollView}
+        >
+          <View style={styles.stickers}>
+            {viewStickers.map((sticker, index) => (
+              <TouchableOpacity key={index} onPress={() => handleStickerSelect(sticker.source)}>
+                <Image source={sticker.source} style={styles.sticker}/>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+          
       </View>
+    </SwipeDownMenu>
     </View>
   );
 }
@@ -132,48 +176,66 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 export default StickerMenu;
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    position: 'relative',
+  moreControl: {
+    top: '-10%',
     width: width,
-    height: height - canvasHeight - headerHeight + 220, // THIS HARDCODED VALUE NEEDS FIXED
-    top: '-50%',
-    zIndex: 99999,
-    padding: 10,
-    gap: 10,
-    borderWidth: .5,
-    borderRadius: 15,
-    borderColor: 'black',
-    backgroundColor: '#fffaf8'
+    height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
+    backgroundColor: '#fffaf8',
   },
-  stickers: { // this already fits within bounds of bottomTooblar styles
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 35,
-    rowGap: 15,
-    width: '100%',
-    height: '100%',
-    zIndex: 9999,
-  },
-  menuLayout: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    padding: 15,
+  container: {
+    display: 'flex', flexDirection: 'row',
+    width: width,
+    height: '100%'
   },
   close: {
     position: 'absolute',
-    right: '-1%',
-    top: '-1%',
-    zIndex: 99999 
+    margin: 5,
+    right: 0, top: 0,
+    zIndex: 99999999,
+  },
+  titleTabs: {
+    position: 'absolute',
+    top: -90,
+    zIndex: 9,
+    width: '101%',
+  },
+  title: {
+    borderWidth: 1, borderBottomWidth: 0, 
+    backgroundColor: '#e2d9d4',
+    height: 50
+  },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 5,
+  },
+  tab: {
+    borderWidth: 1, borderBottomWidth: 0, borderColor: cinnamon,
+    borderTopRightRadius: 100,
+    padding: 10,
+    alignContent: 'center',
+    backgroundColor: '#d7c8bf',
+  },
+  scrollViewContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    zIndex: 9999,
+  },
+  stickers: { // this already fits within bounds of bottomTooblar styles
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    top: 20,
+    padding: 10,
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-start',
+    gap: 20,
+    width: '100%', height: '100%',
+    zIndex: 9999,
   },
   sticker: {
     height: 50,
-    width: 50
+    width: 50,
   }
 })

@@ -6,11 +6,13 @@ import GlobalDimensions from '@/components/dimensions/globalDimensions';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
+let sizing = {top: '', height: height - canvasHeight - headerHeight}
 
 interface BackgroundMenuProps {
   menuToggle: () => void;
@@ -18,8 +20,13 @@ interface BackgroundMenuProps {
 
 const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 
+  // background context for adding backgrounds based on user selection
+  const { setBackground } = useContext(BackgroundCtx); // updata context to have error hnandling
+
   const [viewBackgrounds, setViewBackgrounds] = useState<{id: string, source: ImageSourcePropType}[]>([]);
   const [selectedPack, setSelectedPack] = useState<string>('basic');
+  const [packNames, setPackNames] = useState<string[]>(Object.keys(backgroundAssets));
+
   let backgrounds = backgroundAssets[selectedPack];
 
   useEffect(() => {
@@ -40,13 +47,13 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-
-  // background context for adding backgrounds based on user selection
-  const { setBackground } = useContext(BackgroundCtx); // updata context to have error hnandling
-
   // on select/press background, convert Background to have a position (backgroundData) and add it to the backgrounds state array in backgroundCtx 
   const handleBackgroundSelect = (background: ImageSourcePropType) => {
     setBackground(background); // update old to new background or set initial one
+  }
+
+  const handleChangeTab = (newPack: string) => {
+    setSelectedPack(newPack);
   }
 
   const handleCloseMenu = () => {
@@ -63,8 +70,21 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
           </TouchableOpacity>
         </View>
         
-        <View style={styles.title}>
-          <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: cinnamon, textAlign: 'center'}}>Backgrounds</Text>
+        <View style={styles.titleTabs}>
+
+          <View style={styles.tabs}>
+              {packNames.map((name, index) => (
+              <TouchableOpacity key={index} onPress={() => handleChangeTab(name)}>
+                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: cinnamon, textAlign: 'center'}]}>{name}</Text>
+              </TouchableOpacity>
+                
+              ))}
+          </View>
+
+          <View style={styles.title}>
+            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: cinnamon, textAlign: 'center'}}>Backgrounds <Ionicons name="sparkles-outline" size={20} color={cinnamon}/></Text>
+          </View>
+
         </View>
       
         <ScrollView
@@ -101,15 +121,30 @@ const styles = StyleSheet.create({
     right: 0, top: 0,
     zIndex: 99999999,
   },
-  title: {
+  titleTabs: {
+    flexDirection: 'column',
     position: 'absolute',
-    top: -44,
+    top: -90,
     zIndex: 9,
-    width: width,
-    borderWidth: 1, borderBottomWidth: 0, borderTopColor: '#a3968e',
-    backgroundColor: '#d7c8bf',
+    width: '101%',
     padding: 2,
-    borderTopEndRadius: 15, borderTopStartRadius: 15
+  },
+  title: {
+    borderWidth: 1, borderBottomWidth: 0, 
+    backgroundColor: '#e2d9d4',
+    height: 50
+  },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 5,
+  },
+  tab: {
+    borderWidth: 1, borderBottomWidth: 0, borderColor: cinnamon,
+    borderTopRightRadius: 100,
+    padding: 10,
+    alignContent: 'center',
+    backgroundColor: '#d7c8bf',
   },
   scrollViewContent: {
     flexDirection: 'row',
