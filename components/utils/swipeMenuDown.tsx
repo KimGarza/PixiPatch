@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { View, Animated, PanResponder, StyleSheet } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import GlobalDimensions from '@/components/dimensions/globalDimensions';

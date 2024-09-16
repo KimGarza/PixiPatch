@@ -1,12 +1,14 @@
 // react & expo
 import { useContext, useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, ImageBackground, Image } from 'react-native';
+import { StyleSheet, View, ImageBackground, Image, Text} from 'react-native';
 // context
 import { BackgroundCtx } from '@/features/background/BackgroundCtx';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
+import { useTextCtx } from '@/features/Text/useTextCtx';
 // editing tools and menus
 import StickerMenu from '@/features/Stickers/StickerMenu';
 import BackgroundMenu from '@/features/background/BackgroundMenu';
+import TextMenu from '@/features/Text/textMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
 import HomeButton from '@/components/utils/homeButton';
@@ -15,6 +17,7 @@ import ViewEditorTools from '@/components/views/viewEditorTools';
 import ViewStickers from '@/components/views/viewStickers';
 import ViewImages from '@/components/views/viewImages';
 import ViewDrawings from '@/components/views/viewDrawings';
+import ViewActiveText from '@/features/Text/viewActiveText';
 // misc
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
@@ -24,15 +27,17 @@ const EditorScreen = () => {
   // contexts
   const { background } = useContext(BackgroundCtx);
   const { images, stickers, drawings } = useItemCtx();
+  const { activeText } = useTextCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
-  const [backgroundMenuToggle, setBackgroundMenuToggle] =
-    useState<boolean>(false);
-  const [drawMenuToggle, setDrawMenuToggle] = useState<boolean>(false);
+  const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
+  const [textMenuToggle, setTextMenuToggle] = useState<boolean>(false);
   // misc
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
-  useEffect(() => {}, [images, drawings, stickers]);
+  useEffect(() => {
+    console.log("active text? ", activeText)
+  }, [images, drawings, stickers, activeText]);
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
@@ -43,8 +48,14 @@ const EditorScreen = () => {
     setBackgroundMenuToggle(!backgroundMenuToggle);
   };
 
-  const handleToggleDrawMenuCallback = () => {
-    setDrawMenuToggle(!drawMenuToggle);
+  const handleToggleMenuCallback = (menuName: string) => {
+    if (menuName == 'text') {
+      setTextMenuToggle(!textMenuToggle);
+    } else if (menuName == 'background') {
+      setBackgroundMenuToggle(!backgroundMenuToggle);
+    } else if (menuName == 'sticker') {
+      setStickerMenuToggle(!stickerMenuToggle);
+    }
   };
 
   return (
@@ -72,6 +83,9 @@ const EditorScreen = () => {
 
             {/* Pictures */}
             <ViewImages images={images} />
+
+            <ViewActiveText/>
+
           </View>
         </ImageBackground>
       </View>
@@ -81,14 +95,17 @@ const EditorScreen = () => {
         <StickerMenu menuToggle={handleToggleStickerMenuCallback} />
       ) : backgroundMenuToggle ? (
         <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback} />
+      ) : textMenuToggle ? (
+        <TextMenu menuToggle={handleToggleMenuCallback} />
       ) : (
         // primary tools
         <View style={styles.primaryTools}>
           <ViewEditorTools
-            backgroundMenuToggle={handleToggleBackgroundMenuCallback}
-            drawMenuToggle={handleToggleDrawMenuCallback}
-            stickerMenuToggle={handleToggleStickerMenuCallback}
+            backgroundMenuToggle={handleToggleMenuCallback}
+            stickerMenuToggle={handleToggleMenuCallback}
+            textMenuToggle={handleToggleMenuCallback}
           />
+          
         </View>
       )}
     </View>

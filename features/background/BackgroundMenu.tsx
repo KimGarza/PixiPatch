@@ -1,3 +1,4 @@
+
 import { View, Image, StyleSheet, ImageSourcePropType, TouchableOpacity, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
 import { BackgroundCtx } from './BackgroundCtx';

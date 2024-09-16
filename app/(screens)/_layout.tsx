@@ -7,6 +7,7 @@ import { useColorScheme } from '../../hooks/useColorScheme'
 import { BackgroundProvider } from '@/features/background/BackgroundCtx';
 import { StickerProvider } from '@/features/Stickers/StickersCtx';
 import { DrawProvider } from '@/features/drawing/DrawCtx';
+import { TextProvider } from '@/features/Text/useTextCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ItemProvider } from '@/hooks/contexts/useItemCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';
@@ -39,6 +40,7 @@ export default function RootLayout() {
 
   return (
     <BackgroundProvider>
+    <TextProvider>
     <ItemProvider>
     <StickerProvider>
     <DrawProvider>
@@ -50,6 +52,7 @@ export default function RootLayout() {
     </DrawProvider>
     </StickerProvider>
     </ItemProvider>
+    </TextProvider>
     </BackgroundProvider>
   );
 }
