@@ -1,13 +1,9 @@
 import {
   View,
   StyleSheet,
-  ImageSourcePropType,
   TouchableOpacity,
   Text,
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  TextInput,
 } from 'react-native';
 import { useEffect, useState } from 'react';
 
@@ -19,8 +15,9 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Foundation from '@expo/vector-icons/Foundation';
 import AddText from './addText';
+import TextSubMenu from './textSubMenu';
 import { useTextCtx } from './useTextCtx';
-import SubMenu from './subMenu';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
@@ -33,13 +30,25 @@ interface TextMenuProps {
 
 // text box, size, color, style, font, effect?, placement
 const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
-    
+  const [activeTextExists, setActiveTextExists] = useState<boolean>(false);
+
+  const { activeText } = useTextCtx();
+
+  useEffect(() => {
+    // checks if user has typed text and has not completed it, if not there is no text selected, then they cannot edit
+    console.log('active text', activeText);
+    if (activeText.text != '') {
+        setActiveTextExists(true);
+        setSubMenu('font'); // default submenu to fill in extra space rendered for purposes of text editing
+    } else {
+        setActiveTextExists(false);
+    }
+  }, [activeText]);
+
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [subMenu, setSubMenu] = useState<string>('');
 
-  useEffect(() => {
-    console.log("isTyping", isTyping, " and submenu ", subMenu)
-}, [isTyping, subMenu])
+  useEffect(() => {}, [isTyping, subMenu]);
 
   const [fontsLoaded] = useFonts({
     ToThePoint: require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
@@ -55,7 +64,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
 
   return (
     // prettier-ignore
-    <View style={[isTyping && styles.moreControl]}>
+    <View style={[isTyping || activeTextExists ? styles.moreControl : null]}>
     {/* <View style={styles.moreControl}> */}
       <SwipeDownMenu menuToggle={handleCloseMenu}>
         <View style={styles.container}>
@@ -87,47 +96,42 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
             {/* Submenus */}
             {!isTyping && subMenu != '' && 
             <View style={styles.subMenu}>
-                <SubMenu name={subMenu}/>
+                <TextSubMenu name={subMenu}/>
             </View>}
 
-          <View style={[isTyping ? styles.optionsText : styles.options]}>
-          <View style={styles.textOptionBlock}>
-            <Text style={{ textAlign: 'center' }}>type</Text>
-            <TouchableOpacity
-              onPress={() => {setIsTyping(true)}}
-              style={styles.option}
-            >
-              <MaterialCommunityIcons name="form-textbox" size={40} color={cinnamon}/>
-            </TouchableOpacity>
-          </View>
+            {/* Stylize */}
+          <View style={[isTyping || activeTextExists ? styles.optionsExpanded : styles.options]}>
 
           <View style={styles.textOptionBlock}>
-            <Text style={{ textAlign: 'center' }}>font</Text>
-            <TouchableOpacity onPress={() => {setSubMenu('font')}} style={styles.option}>
-              <FontAwesome name="font" size={35} color={cinnamon} />
-            </TouchableOpacity>
+            <Text style={{ textAlign: 'center', marginBottom: 5 }}>type</Text>
+                <TouchableOpacity
+                onPress={() => {setIsTyping(true)}}
+                style={styles.option}
+                >
+                <MaterialCommunityIcons name="form-textbox" size={40} color={cinnamon}/>
+                </TouchableOpacity>
           </View>
 
-          <View style={styles.textOptionBlock}>
-            <Text style={{ textAlign: 'center' }}>size</Text>
-            <TouchableOpacity onPress={() => {setSubMenu('size')}} style={styles.option}>
-              <FontAwesome name="text-height" size={35} color={cinnamon} />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.textOptionBlock}>
+                <Text style={{ textAlign: 'center', marginBottom: 5 }}>font</Text>
+                <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('font')} : undefined} style={styles.option}>
+                <FontAwesome name="font" size={35} color={cinnamon} />
+                </TouchableOpacity>
+            </View>
 
-          <View style={styles.textOptionBlock}>
-            <Text style={{ textAlign: 'center' }}>color</Text>
-            <TouchableOpacity onPress={() => {setSubMenu('color')}} style={styles.option}>
-              <Foundation name="text-color" size={40} color={cinnamon} />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.textOptionBlock}>
+                <Text style={{ textAlign: 'center', marginBottom: 5 }}>color</Text>
+                <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('color')} : undefined} style={styles.option}>
+                <Foundation name="text-color" size={40} color={cinnamon} />
+                </TouchableOpacity>
+            </View>
 
-          <View style={styles.textOptionBlock}>
-            <Text style={{ textAlign: 'center' }}>style</Text>
-            <TouchableOpacity onPress={() => {setSubMenu('style')}} style={styles.option}>
-              <FontAwesome name="italic" size={35} color={cinnamon} />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.textOptionBlock}>
+                <Text style={{ textAlign: 'center', marginBottom: 5 }}>highlight</Text>
+                <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('backgroundColor')} : undefined} style={styles.option}>
+                <FontAwesome5 name="highlighter" size={35} color={cinnamon} />
+                </TouchableOpacity>
+            </View>
 
         </View>
         </View>
@@ -184,7 +188,8 @@ const styles = StyleSheet.create({
     // gap: 20,
     // width: width,
   },
-  optionsText: {
+
+  optionsExpanded: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'flex-end',
@@ -221,9 +226,9 @@ const styles = StyleSheet.create({
   },
   subMenu: {
     position: 'absolute',
-    width: width, height: 80,
+    width: width,
+    height: 80,
     top: 45,
     alignItems: 'center',
-    borderWidth: 1, borderColor: 'green'
   },
 });

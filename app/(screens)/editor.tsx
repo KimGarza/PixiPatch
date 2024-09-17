@@ -17,7 +17,7 @@ import ViewEditorTools from '@/components/views/viewEditorTools';
 import ViewStickers from '@/components/views/viewStickers';
 import ViewImages from '@/components/views/viewImages';
 import ViewDrawings from '@/components/views/viewDrawings';
-import ViewActiveText from '@/features/Text/viewActiveText';
+import ViewText from '@/components/views/viewText';
 // misc
 import GlobalDimensions from '@/components/dimensions/globalDimensions';
 
@@ -27,7 +27,7 @@ const EditorScreen = () => {
   // contexts
   const { background } = useContext(BackgroundCtx);
   const { images, stickers, drawings } = useItemCtx();
-  const { activeText } = useTextCtx();
+  const { texts } = useTextCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
   const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
@@ -36,8 +36,7 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-    console.log("active text? ", activeText)
-  }, [images, drawings, stickers, activeText]);
+  }, [images, drawings, stickers, texts]);
 
   // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
   const handleToggleStickerMenuCallback = () => {
@@ -84,7 +83,7 @@ const EditorScreen = () => {
             {/* Pictures */}
             <ViewImages images={images} />
 
-            <ViewActiveText/>
+            <ViewText/>
 
           </View>
         </ImageBackground>

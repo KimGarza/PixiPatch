@@ -147,7 +147,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
   const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing') => {
     setItems((prevItems) => prevItems.filter(item => item.id !== id))
-console.log("itemType", itemType)
     if (itemType == 'image') {
       setImages(prevImages => prevImages.filter(image => image.id !== id))
     } else if (itemType == 'sticker') {

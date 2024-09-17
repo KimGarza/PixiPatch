@@ -16,7 +16,6 @@ import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem } from '@/customTypes/itemTypes';
 import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
-import { withTiming } from 'react-native-reanimated';
 interface Props {
   item: ImageItem | StickerItem | DrawingItem;
 }
@@ -79,12 +78,6 @@ const MutableItem = ({ item }: Props) => {
     });
   }, [transformState]);
 
-  // this value will update after switch statement checks which itemType and will be THAT item type
-  let activeItemCast: ImageItem | StickerItem | DrawingItem | undefined =
-    activeItemCtx;
-  let frontItemCast: ImageItem | StickerItem | DrawingItem | undefined =
-    frontItem;
-  let itemCast: ImageItem | StickerItem | DrawingItem = item;
 
   const tapCoordinatesX = useSharedValue(0);
   const tapCoordinatesY = useSharedValue(0);
@@ -98,36 +91,6 @@ const MutableItem = ({ item }: Props) => {
     }
   }, [activeItemCtx, frontItem]); // has to keep checking if frontItem has been set, and active image for updating styling
 
-  // sets the casted versions of item coming in and items in ctx as their respective item types
-  switch (item.type) {
-    case 'image':
-      itemCast = item as ImageItem;
-      if (frontItem) {
-        frontItemCast = frontItem as ImageItem;
-      }
-      if (activeItemCtx) {
-        activeItemCast = activeItemCtx as ImageItem;
-      }
-      break;
-    case 'sticker':
-      itemCast = item as StickerItem;
-      if (frontItem) {
-        frontItemCast = frontItem as StickerItem;
-      }
-      if (activeItemCtx) {
-        activeItemCast = activeItemCtx as StickerItem;
-      }
-      break;
-    case 'drawing':
-      itemCast = item as DrawingItem;
-      if (frontItem) {
-        frontItemCast = frontItem as DrawingItem;
-      }
-      if (activeItemCtx) {
-        activeItemCast = activeItemCtx as DrawingItem;
-      }
-      break;
-  }
 
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
@@ -290,7 +253,7 @@ const MutableItem = ({ item }: Props) => {
                 height: item.height,
                 zIndex: item.zIndex,
               },
-              activeItemCast?.imageInfo.uri == item.imageInfo.uri &&
+              activeItemCtx?.imageInfo.uri == item.imageInfo.uri &&
                 styles.itemSelected,
             ]} // checking the casted ImageItem which is active in ctx against the current image
           />
