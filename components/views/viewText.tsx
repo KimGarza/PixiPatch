@@ -1,8 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTextCtx } from '@/features/Text/useTextCtx';
+import MutableItem from '../mutableItem/MutableItem';
 import { useEffect } from 'react';
+import { TextItem } from '@/customTypes/itemTypes';
 
-const ViewText: React.FC = () => {
+interface Props {
+    textsFromCtx: TextItem[],
+}
+
+const ViewText: React.FC<Props> = ({ textsFromCtx }) => {
 
     const { activeText, texts, typing, setActiveText } = useTextCtx();
 
@@ -24,18 +30,15 @@ const ViewText: React.FC = () => {
             </Text>
 
             {/* user can tap on another existing text to change active text to that one */}
-            {texts.map((text, index) => (
-                <TouchableOpacity key={index} onPressIn={() => setActiveText(text)}>
-                    <Text style={[ styles.texts, {
-                        fontFamily: text.font,
-                        fontSize: 32,
-                        color: text.color,
-                        // backgroundColor: text.highlight,
-                    }]}>
-                        {text.text}
-                    </Text>
-                </TouchableOpacity>
+            <View>
+            {textsFromCtx.map((text, index) => (
+                <MutableItem
+                    key={index}
+                    item={text}
+                />
             ))}
+        </View>
+            
         </View>
     );
 }

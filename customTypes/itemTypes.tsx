@@ -37,8 +37,22 @@ export interface BaseItem {
     rotation: number;
     pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
   }
+
+  export interface TextItem extends BaseItem {
+    id: string,
+    type: 'text'; // discriminate
+    zIndex: number;
+    text: string,
+    font: string,
+    color: string,
+    highlight: string,
+    translateX: number; translateY: number;
+    width: number; height: number;
+    rotation: number;
+    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+}
   
-  export type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
+  export type Item = ImageItem | StickerItem | DrawingItem | TextItem; // Union Type Item is the union, an item can be any of these item types
   
   export type Point = {
     x: number;

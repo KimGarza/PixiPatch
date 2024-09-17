@@ -83,7 +83,7 @@ const EditorScreen = () => {
             {/* Pictures */}
             <ViewImages images={images} />
 
-            <ViewText/>
+            <ViewText textsFromCtx={texts}/>
 
           </View>
         </ImageBackground>

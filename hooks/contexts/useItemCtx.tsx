@@ -1,26 +1,27 @@
 import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
-import { ImageItem, StickerItem, DrawingItem } from '@/customTypes/itemTypes';
+import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/customTypes/itemTypes';
 
-type Item = ImageItem | StickerItem | DrawingItem; // Union Type Item is the union, an item can be any of these item types
+type Item = ImageItem | StickerItem | DrawingItem | TextItem; // Union Type Item is the union, an item can be any of these item types
 interface CreateItemProps {
-  itemType: 'image' | 'sticker' | 'drawing';
-  properties: ImageItem[] | StickerItem[] | DrawingItem[];
+  itemType: 'image' | 'sticker' | 'drawing' | 'text';
+  properties: ImageItem[] | StickerItem[] | DrawingItem[] | TextItem[];
 }
 
 interface ItemCtxType {
   createItems: ({itemType, properties}: CreateItemProps) => void;
-  deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing') => void;
+  deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing' | 'text') => void;
   bringToFront: (id: string, itemType: string) => void;
   addPendingChanges: (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => void;
   updatePending: () => void;
   frontItem: Item | undefined;
-  setFrontItem: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
+  setFrontItem: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | TextItem | undefined>>;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
   drawings: DrawingItem[];
-  activeItemCtx: ImageItem | StickerItem | DrawingItem | undefined;
-  setActiveItemCtx: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | undefined>>;
+  texts: TextItem[];
+  activeItemCtx: ImageItem | StickerItem | DrawingItem | TextItem | undefined;
+  setActiveItemCtx: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | TextItem | undefined>>;
 }
 
 const defaultValue: ItemCtxType = {
@@ -35,6 +36,7 @@ const defaultValue: ItemCtxType = {
   images: [],
   stickers: [],
   drawings: [],
+  texts: [],
   activeItemCtx: undefined,  
   setActiveItemCtx: () => {},
 };
@@ -52,11 +54,12 @@ export const useItemCtx = () => {
 
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
-  const [activeItemCtx, setActiveItemCtx] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
-  const [frontItem, setFrontItem] = useState<ImageItem | StickerItem | DrawingItem | undefined>(undefined);
+  const [activeItemCtx, setActiveItemCtx] = useState<ImageItem | StickerItem | DrawingItem | TextItem | undefined>(undefined);
+  const [frontItem, setFrontItem] = useState<ImageItem | StickerItem | DrawingItem | TextItem | undefined>(undefined);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [stickers, setStickers] = useState<StickerItem[]>([]);
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
+  const [texts, setTexts] = useState<TextItem[]>([]);
 
   const createImageItem = (item: ImageItem) => {
     const id = generateId();
@@ -94,6 +97,17 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       id: id,
       zIndex: zIndex,
     } as DrawingItem;
+  }
+
+  const createTextItem = (item: TextItem) => {
+    const id = generateId();
+    const zIndex = generateLargestZIndex();
+
+    return {
+      ...item,
+      id: id,
+      zIndex: zIndex,
+    } as TextItem;
   }
 
   const generateLargestZIndex = () => {
@@ -142,10 +156,20 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
           })
         }
         break;
+      case 'text': 
+        const textItems = properties as TextItem[];
+        if (textItems) {
+          textItems.forEach((item, index) => {
+            const newItem = createTextItem(item);
+            setTexts(prevTexts => [...prevTexts, newItem]);
+            setItems((prevItems) => [...prevItems, newItem]);
+          })
+        }
+        break;
     }
   }
 
-  const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing') => {
+  const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing' | 'text') => {
     setItems((prevItems) => prevItems.filter(item => item.id !== id))
     if (itemType == 'image') {
       setImages(prevImages => prevImages.filter(image => image.id !== id))
@@ -210,7 +234,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
           : sticker
         ));
       } else if (foundItem.type == 'drawing') {
-        setDrawings((prevDrawing) => prevDrawing.map((drawing) => drawing.id == id ? { 
+        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == id ? { 
           ...drawing,
           pendingChanges: {
             scale: pendingChanges.scale,
@@ -219,6 +243,16 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
             positionY: pendingChanges.positionY}}
           : drawing
         ));
+      } else if (foundItem.type == 'text') {
+          setTexts((prevTexts) => prevTexts.map((text) => text.id == id ? { 
+            ...text,
+            pendingChanges: {
+              scale: pendingChanges.scale,
+              rotation: pendingChanges.rotation,
+              positionX: pendingChanges.positionX,
+              positionY: pendingChanges.positionY}}
+            : text
+          ));
       }
     }
   }
@@ -286,6 +320,21 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
             positionY: 0}}
           : drawing
         ));
+      } else if (item.type == 'text') {
+        setDrawings((prevTexts) => prevTexts.map((text) => text.id == item.id ? { 
+          ...text,
+          width: (item.width * item.pendingChanges.scale),
+          height: (item.height * item.pendingChanges.scale),
+          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
+          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
+          rotation: item.pendingChanges.rotation,
+          pendingChanges: {
+            scale: 1,
+            rotation: 0,
+            positionX: 0,
+            positionY: 0}}
+          : text
+        ));
       }
     })
   }
@@ -305,6 +354,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         images,
         stickers,
         drawings,
+        texts,
         activeItemCtx,
         setActiveItemCtx
       }}

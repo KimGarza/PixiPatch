@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
+  Text,
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
@@ -13,11 +14,11 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
-import { DrawingItem, ImageItem, StickerItem } from '@/customTypes/itemTypes';
+import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/customTypes/itemTypes';
 import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 interface Props {
-  item: ImageItem | StickerItem | DrawingItem;
+  item: ImageItem | StickerItem | DrawingItem | TextItem;
 }
 
 const MutableItem = ({ item }: Props) => {
@@ -78,6 +79,7 @@ const MutableItem = ({ item }: Props) => {
     });
   }, [transformState]);
 
+  const textItemCast = item as TextItem;
 
   const tapCoordinatesX = useSharedValue(0);
   const tapCoordinatesY = useSharedValue(0);
@@ -240,28 +242,46 @@ const MutableItem = ({ item }: Props) => {
           )}
         {/* Tapping item */}
         <TouchableOpacity
-          onPress={handleOnTap}
-          activeOpacity={0.9}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          style={{ zIndex: item.zIndex }}
-        >
-          <Image
-            source={{ uri: item.imageInfo.uri }}
-            style={[
-              {
-                width: item.width,
-                height: item.height,
-                zIndex: item.zIndex,
-              },
-              activeItemCtx?.imageInfo.uri == item.imageInfo.uri &&
-                styles.itemSelected,
-            ]} // checking the casted ImageItem which is active in ctx against the current image
-          />
-        </TouchableOpacity>
+  onPress={handleOnTap}
+  activeOpacity={0.9}
+  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+  style={{ zIndex: item.zIndex }}
+>
+  {item.type != 'text' ? (
+    <Image
+      source={{ uri: item.imageInfo.uri }}
+      style={[
+        {
+          width: item.width,
+          height: item.height,
+          zIndex: item.zIndex,
+        },
+        activeItemCtx?.type != 'text' &&
+          activeItemCtx?.imageInfo.uri == item.imageInfo.uri &&
+          styles.itemSelected,
+      ]} // checking the casted ImageItem which is active in ctx against the current image
+    />
+  ) : (
+    <Text
+      style={[
+        styles.texts,
+        {
+          fontFamily: item.font,
+          fontSize: 32,
+          color: item.color,
+          // backgroundColor: text.highlight,
+        },
+      ]}
+    >
+      {/* Put the text content inside the Text component */}
+      {item.text} {/* Assuming item has a 'text' property */}
+    </Text>
+  )}
+</TouchableOpacity>
 
         {/* little popup toolbox for editing options on a specific image only appears for images */}
         {item.type == 'image' &&
-        activeItemCtx?.imageInfo.uri == item.imageInfo.uri ? (
+        activeItemCtx?.type != 'text' && activeItemCtx?.imageInfo.uri == item.imageInfo.uri ? (
           item &&
           tapCoordinates.x > 0 &&
           tapCoordinates.y > 0 && (
@@ -309,4 +329,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 9999999999999999999999,
   },
+  texts: {
+      zIndex: 9,
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      position: 'absolute'
+  }
 });

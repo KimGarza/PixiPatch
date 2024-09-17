@@ -1,11 +1,5 @@
 import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
-interface TextItem {
-    id: string,
-    text: string,
-    font: string,
-    color: string,
-    highlight: string,
-}
+import { TextItem } from "@/customTypes/itemTypes"
 interface TextCtxType {
     typing: string;
     setTyping: Dispatch<SetStateAction<string>>;
@@ -26,11 +20,16 @@ const defaultValue: TextCtxType = {
     setTyping: () => {},
     activeText: {
         id: '',
+        type: 'text',
+        zIndex: 2,
         text: '',
         font: '',
-        // size: 32,
         color: 'black',
-        highlight: ''
+        highlight: '',
+        translateX: 0, translateY: 0,
+        width: 100, height: 40,
+        rotation: 0,
+        pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
     },
     setActiveText: () => {},
     texts: [],
@@ -82,11 +81,16 @@ export const TextProvider: React.FC<TextCtxProps> = ({ children }) => {
     const saveActiveText = (typed: string) => {
         const newText: TextItem = {
             id: generateId(),
-            text: typed, // update the 'text' property with 'typing'
+            type: 'text',
+            zIndex: 2,
+            text: typed, // update the 'text' property with 'typing',
             font: activeText.font,
-            // size: activeText.size,
             color: activeText.color,
             highlight: activeText.highlight,
+            translateX: 0, translateY: 0,
+            width: 100, height: 40,
+            rotation: 0,
+            pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
         }
         setTexts((prevTexts) => [...prevTexts, newText]);
         setActiveText(newText);
