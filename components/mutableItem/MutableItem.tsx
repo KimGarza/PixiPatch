@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  GestureResponderEvent,
-} from 'react-native';
+import { View, Image, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  runOnJS,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/customTypes/itemTypes';
 import Feather from '@expo/vector-icons/Feather';
@@ -22,23 +11,14 @@ interface Props {
 }
 
 const MutableItem = ({ item }: Props) => {
-  const {
-    setActiveItemCtx,
-    activeItemCtx,
-    deleteItems,
-    addPendingChanges,
-    bringToFront,
-    frontItem,
-    setFrontItem,
-  } = useItemCtx();
-  const [tapCount, setTapCount] = useState<number>(0);
-  const [tapCoordinates, setTapCoordinates] = useState<{
-    x: number;
-    y: number;
-  }>({ x: 0, y: 0 });
+  // prettier-ignore
+  const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx();
 
-  // positionX, positionY, scale, rotation all related to how you can mutate an item, and all of which will be saved as pending changes, at which point upon useRouter screen change to another screen, it will take effect to execute those changes
-  // the allows the ctx of the item/image/sticker/drawing to retain the new translateY, translateX, rotation, height and width values without mutating the item while mutating in real time since it crashes.
+  const [tapCount, setTapCount] = useState(0);
+  const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
+  const tapCoordinatesX = useSharedValue(0);
+  const tapCoordinatesY = useSharedValue(0);
+
   const positionX = useSharedValue(item.translateX);
   const positionY = useSharedValue(item.translateY);
   const savedPositionX = useSharedValue(item.translateX);
@@ -47,21 +27,9 @@ const MutableItem = ({ item }: Props) => {
   const savedScale = useSharedValue(1);
   const rotation = useSharedValue(item.rotation);
   const savedRotation = useSharedValue(item.rotation);
-  // state value which saves each mutatable value (this is defaulted to the useRefs and set in the updateTransformState which occurs on end of the gestures using runOnJS(updateTransformState)() which prevents crashing)
-  const [transformState, setTransformState] = useState<{
-    positionX: number;
-    positionY: number;
-    rotation: number;
-    scale: number;
-  }>({
-    positionX: item.translateX,
-    positionY: item.translateY,
-    rotation: rotation.value,
-    scale: scale.value,
-  });
 
-  const updateTransformState = () => {
-    setTransformState({
+const updateTransformState = () => {
+    addPendingChanges(item.id, {
       positionX: positionX.value,
       positionY: positionY.value,
       rotation: rotation.value,
@@ -69,30 +37,13 @@ const MutableItem = ({ item }: Props) => {
     });
   };
 
-  // syncs the transform state with pending changes for this item in context when the state changes
+  // if there is a frontItem set, and it is not THIS current item,
+  // then reset the tapCounter so that it doesn't store the memory of tap counts since another item has been brought to front
   useEffect(() => {
-    addPendingChanges(item.id, {
-      positionX: transformState.positionX,
-      positionY: transformState.positionY,
-      rotation: transformState.rotation,
-      scale: transformState.scale,
-    });
-  }, [transformState]);
-
-  const textItemCast = item as TextItem;
-
-  const tapCoordinatesX = useSharedValue(0);
-  const tapCoordinatesY = useSharedValue(0);
-
-  // if there is a frontItem set, and it is not THIS current item, then reset the tapCounter so that it doesn't store the memory of how many even though another item has been brought to front
-  useEffect(() => {
-    if (frontItem != undefined) {
-      if (frontItem.id != item.id) {
+    if (frontItem != undefined && frontItem.id != item.id) {
         setTapCount(0);
-      }
     }
-  }, [activeItemCtx, frontItem]); // has to keep checking if frontItem has been set, and active image for updating styling
-
+  }, [activeItemCtx, frontItem]);
 
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
@@ -114,7 +65,8 @@ const MutableItem = ({ item }: Props) => {
       runOnJS(updateTransformState)();
     });
 
-    // rotation gesture includes altering rotation angle to snap at 90 increments when near 90 (could not use runOnJS or app would still crash)
+  // rotation gesture includes altering the actual rotation angle to snap at 90 increment
+  // when near 90 degrees within about 5 degrees (could not use runOnJS or app would still crash)
   const ROTATION_SNAP_THRESHOLD = Math.PI / 36;
   const SNAP_ANGLES = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2, 2 * Math.PI]; // 90, 180, 270, 360 in radians
 
@@ -133,75 +85,73 @@ const MutableItem = ({ item }: Props) => {
       runOnJS(updateTransformState)();
     });
 
-  const animatedStyle = useAnimatedStyle(() => {
-    // animates item based on gesure changes which effect useRef
-    return {
-      transform: [
-        { translateX: positionX.value },
-        { translateY: positionY.value },
-        { rotateZ: `${rotation.value}rad` },
-        { scale: scale.value },
-      ],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: positionX.value },
+      { translateY: positionY.value },
+      { rotateZ: `${rotation.value}rad` },
+      { scale: scale.value },
+    ],
+  }));
 
-  const trashIconAnimated = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { rotateZ: `${-rotation.value}rad` }, // invert the rotation to prevent trashcan icon from rotating with image (like a counter balance)
-        { scale: 1 / scale.value }, // invert the scale
-      ],
-    };
-  });
-
-  const toolBoxAnimated = useAnimatedStyle(() => {
+// item animatedStyle
+  const toolBoxAnimated = useAnimatedStyle(() => { // item animatedStyle
     return {
       transform: [
         { translateX: tapCoordinatesX.value - 30 },
         { translateY: tapCoordinatesY.value - 30 },
-        { rotateZ: `${-rotation.value}rad` }, // invert the rotation to prevent trashcan icon from rotating with image (like a counter balance)
-        { scale: 1 / scale.value }, // invert the scale
+        { rotateZ: `${-rotation.value}rad` },
+        { scale: 1 / scale.value },
       ],
     };
   });
 
+  const trashIconAnimated = useAnimatedStyle(() => { // trashcan animatedStyle
+    return {
+      transform: [
+        // inverting the rotation & scale to prevent trashcan icon from rotating with image (like a counter balance)
+        { rotateZ: `${-rotation.value}rad` }, 
+        { scale: 1 / scale.value },
+      ],
+    };
+  });
+
+  // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {
-    if (tapCount == 0 && frontItem == undefined) {
-      // if this item is already in the foreground but user clicks it again, they want to activate it
-      setActiveItemCtx(item);
+    
+    if (tapCount == 0 && frontItem == undefined) { // if this item is already in the front even if not in ctx, user clicks it, they want to activate it **state issues with this, may consider useRef?**
+
+      setActiveItemCtx(item); 
     }
-    if (tapCount == 0) {
-      // in ctx, frontItem is set to this item - which since useEffect array contains frontItemCtx, this item will now have highest zIndex // CHECK THAT ACTIVE IMAGE IS ALSO CONSIDERED IN BRINGTOFRONT
+    if (tapCount == 0) { // set to frontItem in ctx, (useEffect checks)
 
       setTapCount(1);
       bringToFront(item.id, item.type);
       const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
       tapCoordinatesX.value = locationX;
       tapCoordinatesY.value = locationY;
-    } else if (tapCount == 1) {
-      // now item is in foreground and user wishes to activate it
+
+    } else if (tapCount == 1) { // item is in foreground and user wishes to activate it
 
       setTapCount(2);
-
       const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
       tapCoordinatesX.value = locationX;
       tapCoordinatesY.value = locationY;
-      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value }); // whereever the user tapped, assign the toolbox to show up here IF IMAGE
+      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value }); // if image, activate editing pencil popup
       setActiveItemCtx(item);
-    } else if (tapCount == 2) {
-      // the user is deactivating, or selecting it but not selecting another image // CONSIDER THIS TO OCCUR WHEN USER CLICKS OFF OF THE IAMGE ANYWHERE AS WELL?
+
+    } else if (tapCount == 2) { // deactivate by tapping this activated image again **want to do this if user clicks outside of any image too **
 
       setTapCoordinates({ x: 0, y: 0 });
       setActiveItemCtx(undefined);
       setFrontItem(undefined);
       setTapCount(0);
+
     }
   };
 
   return (
-    <GestureDetector
-      gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}
-    >
+    <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}>
       <Animated.View
         style={[
           styles.itemContainer,
@@ -213,84 +163,37 @@ const MutableItem = ({ item }: Props) => {
           animatedStyle,
         ]}
       >
-        {/* trash icon to remove item from editor icon */}
+        {/* trash if this item is currently active */}
         {activeItemCtx &&
-          activeItemCtx.id == item.id && ( // if there is an active image currently and the current item's id matches the activeItem's id
+          activeItemCtx.id == item.id && (
             <View>
-              <View
-                style={[
-                  styles.trash,
-                  { left: -15 + item.width, bottom: item.height * -1 - 10 },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    deleteItems(item.id, item.type);
-                  }}
-                >
+              <View style={[styles.trash, { left: item.width - 15, bottom: -item.height - 10 }]}>
+                <TouchableOpacity onPress={() => deleteItems(item.id, item.type)}>
                   <Animated.View style={trashIconAnimated}>
-                    <Feather
-                      name={'trash'}
-                      size={30}
-                      color={'#ff0847'}
-                      style={styles.editingIcon}
-                    />
+                    <Feather name="trash" size={30} color="#ff0847" />
                   </Animated.View>
                 </TouchableOpacity>
               </View>
             </View>
           )}
-        {/* Tapping item */}
-        <TouchableOpacity
-  onPress={handleOnTap}
-  activeOpacity={0.9}
-  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-  style={{ zIndex: item.zIndex }}
->
-  {item.type != 'text' ? (
-    <Image
-      source={{ uri: item.imageInfo.uri }}
-      style={[
-        {
-          width: item.width,
-          height: item.height,
-          zIndex: item.zIndex,
-        },
-        activeItemCtx?.type != 'text' &&
-          activeItemCtx?.imageInfo.uri == item.imageInfo.uri &&
-          styles.itemSelected,
-      ]} // checking the casted ImageItem which is active in ctx against the current image
-    />
-  ) : (
-    <Text
-      style={[
-        styles.texts,
-        {
-          fontFamily: item.font,
-          fontSize: 32,
-          color: item.color,
-          // backgroundColor: text.highlight,
-        },
-      ]}
-    >
-      {/* Put the text content inside the Text component */}
-      {item.text} {/* Assuming item has a 'text' property */}
-    </Text>
-  )}
-</TouchableOpacity>
 
-        {/* little popup toolbox for editing options on a specific image only appears for images */}
-        {item.type == 'image' &&
-        activeItemCtx?.type != 'text' && activeItemCtx?.imageInfo.uri == item.imageInfo.uri ? (
-          item &&
-          tapCoordinates.x > 0 &&
-          tapCoordinates.y > 0 && (
-            <Animated.View style={[styles.toolbox, toolBoxAnimated]}>
-              <ViewModifyImageToolbox />
-            </Animated.View>
-          )
-        ) : (
-          <></>
+        {/* Tapping item */}
+        <TouchableOpacity onPress={handleOnTap} style={{ zIndex: item.zIndex }} activeOpacity={0.9}>
+          {item.type !== 'text' ? (
+            <Image source={{ uri: item.imageInfo.uri }} style={[{ width: item.width, height: item.height, zIndex: item.zIndex },
+              activeItemCtx?.id == item.id &&
+              styles.itemSelected
+            ]} />
+          ) : (
+            <Text style={[{ fontFamily: item.font, fontSize: 32, color: item.color }, styles.text]}>{item.text}</Text>
+          )}
+        </TouchableOpacity>
+
+        {/* pencil popup for editing options on a specific image only for images */}
+        {item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y && (
+          <Animated.View style={styles.toolbox}>
+            <ViewModifyImageToolbox />
+          </Animated.View>
         )}
       </Animated.View>
     </GestureDetector>
@@ -300,39 +203,24 @@ const MutableItem = ({ item }: Props) => {
 export default MutableItem;
 
 const styles = StyleSheet.create({
-  itemContainer: {
-    position: 'absolute',
-  },
-  closeContainer: {
-    position: 'absolute',
-    zIndex: 5,
-  },
-  editingIcon: {
-    backgroundColor: 'white',
-    borderRadius: 30,
-    overflow: 'hidden',
-  },
-  image: {
-    position: 'absolute',
-    flexDirection: 'column',
-  },
+  itemContainer: { position: 'absolute' },
   itemSelected: {
     borderWidth: 2,
     borderColor: '#ff0847',
     zIndex: 999,
   },
-  trash: {
+  trash: { 
     position: 'absolute',
-    zIndex: 9999999999999999999999999999999,
+    zIndex: 999,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    overflow: 'hidden',
   },
-  toolbox: {
-    position: 'absolute',
-    zIndex: 9999999999999999999999,
-  },
-  texts: {
-      zIndex: 9,
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      position: 'absolute'
-  }
+  toolbox: { position: 'absolute', zIndex: 999 },
+  text: {
+    zIndex: 9,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    position: 'absolute'
+}
 });
