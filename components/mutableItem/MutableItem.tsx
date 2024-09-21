@@ -57,6 +57,7 @@ const updateTransformState = () => {
     .onEnd(() => {
       savedPositionX.value = positionX.value;
       savedPositionY.value = positionY.value;
+      console.log("positions x", positionX.value, "y ", positionY.value)
       runOnJS(updateTransformState)(); // sync the new position with the state
     });
 
@@ -90,9 +91,6 @@ const updateTransformState = () => {
     });
 
     const animatedStyle = useAnimatedStyle(() => {
-      if (scale.value === undefined || positionX.value === undefined || positionY.value === undefined) {
-        console.error('Animated value is undefined');
-      }
       return {
         transform: [
           { translateX: positionX.value },

@@ -233,13 +233,33 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const updatePendingChanges = () => {
     
     const updatePending = <T extends Item>(item: T): T => {
+
+      // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured...
+      // if scaling occured, the item's corner will grow to meet a coordinate pair that is unequal to the panned track (pinching to scale although relocates the images corner doesn't trigger the pan)
+      // so we must calculate the offset of the variance of the original and new width/height, divide it by 2 (since scaling happens on both sides equally to make the new width/height) 
+      // and add or subtrack based on growing or shrinking to get a more accurate x and y translation
+      const newHeight = item.height * item.pendingChanges.scale;
+      const newWidth = item.width * item.pendingChanges.scale;
+      let grew = false;
+
+      let xOffset = 0; let yOffset = 0;
+
+      if (item.width > newWidth) { // the item shrank
+        xOffset = (item.width - newWidth) / 2;
+        yOffset = (item.height - newHeight) / 2;
+      } else { // grew
+        grew = true;
+        xOffset = (newWidth - item.width) / 2;
+        yOffset = (newHeight - item.height) / 2;
+      }
+
       return {
         ...item,
         height: item.height * item.pendingChanges.scale,
         width: item.width * item.pendingChanges.scale,
         rotation: item.pendingChanges.rotation,
-        translateX: item.pendingChanges.positionX,
-        translateY: item.pendingChanges.positionY,
+        translateX: grew ? item.pendingChanges.positionX - xOffset : item.pendingChanges.positionX + xOffset,
+        translateY: grew ? item.pendingChanges.positionY - yOffset : item.pendingChanges.positionY + yOffset,
         pendingChanges: {
           scale: 1,
           rotation: item.pendingChanges.rotation,
