@@ -5,15 +5,15 @@ import { useEffect } from 'react';
 import { TextItem } from '@/customTypes/itemTypes';
 
 interface Props {
-    textsFromCtx: TextItem[],
+    texts: TextItem[],
 }
 
-const ViewText: React.FC<Props> = ({ textsFromCtx }) => {
+const ViewText: React.FC<Props> = ({ texts}) => {
 
-    const { activeText, texts, typing, setActiveText } = useTextCtx();
+    const { activeText, textsCtx, typing, setActiveText } = useTextCtx();
 
     useEffect(() => {
-    }, [texts, activeText]);
+    }, [textsCtx, activeText]);
 
     return (
         <View style={styles.allText}>
@@ -30,7 +30,7 @@ const ViewText: React.FC<Props> = ({ textsFromCtx }) => {
 
             {/* user can tap on another existing text to change active text to that one */}
             <View>
-            {textsFromCtx.map((text, index) => (
+            {texts.map((text, index) => (
                 <MutableItem
                     key={index}
                     item={text}

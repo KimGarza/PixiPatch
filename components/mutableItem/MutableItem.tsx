@@ -12,8 +12,6 @@ interface Props {
 
 const MutableItem = ({ item }: Props) => {
 
-  console.log("item miussing?", item)
-
   // prettier-ignore
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx();
 
@@ -32,7 +30,6 @@ const MutableItem = ({ item }: Props) => {
   const savedRotation = useSharedValue(item?.rotation ?? 0);
 
 const updateTransformState = () => {
-  
     addPendingChanges(item.id, {
       positionX: positionX.value,
       positionY: positionY.value,
@@ -184,7 +181,7 @@ const updateTransformState = () => {
               styles.itemSelected
             ]} />
           ) : (
-            <Text style={[{ fontFamily: item.font, fontSize: 32, color: item.color }, styles.text]}>{item.text}</Text>
+            <Text style={[{ borderWidth: 1, fontFamily: item.font, width: item.width, height: item.height, fontSize: 42, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
           )}
         </TouchableOpacity>
 

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/customTypes/itemTypes';
+import { useTextCtx } from '@/features/Text/useTextCtx';
 
 type Item = ImageItem | StickerItem | DrawingItem | TextItem;
 interface CreateItemProps {
@@ -77,6 +78,45 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
   const [texts, setTexts] = useState<TextItem[]>([]);
 
+  const { textsCtx } = useTextCtx();
+
+  // upon changes to the texts array within TextCtx (which is for handling styling) main ctx will monitor and update accordingly
+  useEffect(() => {
+    textUpdate(textsCtx);
+  }, [textsCtx]);
+
+  // built to monitor and update ItemCtx's text array from the TextCtx array which is meant for storing and managing text on the design front, here is just where it gets udpated to
+  const textUpdate = (textsCtx: TextItem[]) => {
+    textsCtx.map((textCtx) => { // map through TextCtx texts for matching text within text array here in itemCtx lol
+      const foundMatching = texts.find((text) => text.id == textCtx.id);
+      if (foundMatching) { // aka the iterated text from TextCtx exsists within this ctx
+        setItems((prevItems) => 
+          prevItems.map((item) => item.id == foundMatching.id ?
+          {
+            ...item,
+              text: textCtx.text,
+              font: textCtx.font,
+              color: textCtx.color,
+              highlight: textCtx.highlight,
+          } : item
+        ))
+        setTexts((prevTexts) => 
+          prevTexts.map((text) => text.id == foundMatching.id ?
+          {
+            ...text,
+              text: textCtx.text,
+              font: textCtx.font,
+              color: textCtx.color,
+              highlight: textCtx.highlight,
+          } : text
+        ))
+      } else {
+        setItems((prevItems) => [...prevItems, textCtx])
+        setTexts((prevTexts) => [...prevTexts, textCtx])
+      }
+    })
+  }
+
   const createItem = (item: Item) => ({
     ...item,
     id: generateId(),
@@ -149,9 +189,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
   // Add Pending Changes
   const addPendingChanges = (id: string, inPendingChanges: { positionX: number, positionY: number, rotation: number, scale: number }) => {
-    
+
     const addPending = <T extends Item>(item: T): T => {
-      
       return {
         ...item,
         pendingChanges: {

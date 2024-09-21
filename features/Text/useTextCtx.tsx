@@ -8,8 +8,8 @@ interface TextCtxType {
     setTyping: Dispatch<SetStateAction<string>>;
     activeText: TextItem;
     setActiveText: Dispatch<SetStateAction<TextItem>>;
-    texts: TextItem[];
-    setTexts: Dispatch<SetStateAction<TextItem[]>>;
+    textsCtx: TextItem[];
+    setTextsCtx: Dispatch<SetStateAction<TextItem[]>>;
     updateActiveText: (id: string) => void;
     saveActiveText: (typed: string) => void;
     updateFont: (newFont: string) => void;
@@ -30,15 +30,15 @@ const defaultValue: TextCtxType = {
         font: '',
         color: 'black',
         highlight: '',
-        translateX: x, translateY: x,
-        width: 100, height: 40,
+        translateX: 20, translateY: 20,
+        width: 100, height: 100,
         rotation: 0,
         pendingChanges: {rotation: 0, positionX: x, positionY: x, scale: 1},
 
     },
     setActiveText: () => {},
-    texts: [],
-    setTexts: () => {},
+    textsCtx: [],
+    setTextsCtx: () => {},
     updateActiveText: (id: string) => {},
     saveActiveText: (typed: string) => {},
     updateFont: () => {},
@@ -65,10 +65,10 @@ interface TextCtxProps {
 export const TextProvider: React.FC<TextCtxProps> = ({ children }) => {
     const [typing, setTyping] = useState<string>('');
     const [activeText, setActiveText] = useState<TextItem>(defaultValue.activeText);
-    const [texts, setTexts] = useState<TextItem[]>([]);
+    const [textsCtx, setTextsCtx] = useState<TextItem[]>([]);
 
     useEffect(() => {
-      }, [activeText, texts]);
+      }, [activeText, textsCtx]);
 
     const generateId = () => Math.random().toString(36).slice(2, 11);
 
@@ -81,19 +81,19 @@ export const TextProvider: React.FC<TextCtxProps> = ({ children }) => {
           color: activeText.color,
           highlight: activeText.highlight
         };
-        setTexts((prevTexts) => [...prevTexts, newText]);
+        setTextsCtx((prevTextsCtx) => [...prevTextsCtx, newText]);
         setActiveText(newText);
         setTyping('');
       };
 
     const updateActiveText = (id: string) => {
-        const foundText = texts.find(text => text.id === id);
+        const foundText = textsCtx.find(text => text.id === id);
         if (foundText) setActiveText(foundText);
     };
 
     const updateItem = (field: Partial<TextItem>) => {
-        setTexts((prevTexts) =>
-            prevTexts.map((prevText) => (prevText.id === activeText.id ? { ...prevText, ...field } : prevText))
+        setTextsCtx((prevTextsCtx) =>
+            prevTextsCtx.map((prevText) => (prevText.id === activeText.id ? { ...prevText, ...field } : prevText))
         );
     };
 
@@ -109,8 +109,8 @@ export const TextProvider: React.FC<TextCtxProps> = ({ children }) => {
                 setTyping,
                 activeText,
                 setActiveText,
-                texts,
-                setTexts,
+                textsCtx,
+                setTextsCtx,
                 updateActiveText,
                 saveActiveText,
                 updateFont,

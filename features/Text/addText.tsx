@@ -1,12 +1,15 @@
 import React, { Dispatch, SetStateAction, useEffect, useState, useRef} from 'react';
 import { TextInput, StyleSheet, View, Keyboard } from 'react-native';
 import { useTextCtx } from './useTextCtx';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 
 interface Props {
   setIsTyping: Dispatch<SetStateAction<boolean>>;
 }
 
 const AddText: React.FC<Props> = ({ setIsTyping }: Props) => {
+
+  const { createItems } = useItemCtx();
   const { setTyping, typing, saveActiveText } = useTextCtx();
   const [keyboardVisible, setKeyBoardVisible] = React.useState<boolean>(false);
   let currentText = useRef<string>(typing);

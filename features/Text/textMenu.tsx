@@ -18,6 +18,7 @@ import AddText from './addText';
 import TextSubMenu from './textSubMenu';
 import { useTextCtx } from './useTextCtx';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 
 const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
@@ -33,6 +34,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
   const [activeTextExists, setActiveTextExists] = useState<boolean>(false);
 
   const { activeText } = useTextCtx();
+  const { createItems } = useItemCtx();
 
   useEffect(() => {
     // checks if user has typed text and has not completed it, if not there is no text selected, then they cannot edit

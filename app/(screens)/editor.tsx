@@ -26,8 +26,8 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 const EditorScreen = () => {
   // contexts
   const { background } = useContext(BackgroundCtx);
-  const { images, stickers, drawings } = useItemCtx();
-  const { texts } = useTextCtx();
+  const { images, stickers, drawings, texts, items } = useItemCtx();
+  const { textsCtx } = useTextCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
   const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
@@ -83,7 +83,7 @@ const EditorScreen = () => {
             {/* Pictures */}
             <ViewImages images={images} />
 
-            <ViewText textsFromCtx={texts}/>
+            <ViewText texts={texts}/>
 
           </View>
         </ImageBackground>
