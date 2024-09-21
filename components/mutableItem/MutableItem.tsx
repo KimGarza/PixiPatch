@@ -11,6 +11,9 @@ interface Props {
 }
 
 const MutableItem = ({ item }: Props) => {
+
+  console.log("item miussing?", item)
+
   // prettier-ignore
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx();
 
@@ -19,23 +22,24 @@ const MutableItem = ({ item }: Props) => {
   const tapCoordinatesX = useSharedValue(0);
   const tapCoordinatesY = useSharedValue(0);
 
-  const positionX = useSharedValue(item.translateX);
-  const positionY = useSharedValue(item.translateY);
-  const savedPositionX = useSharedValue(item.translateX);
-  const savedPositionY = useSharedValue(item.translateY);
+  const positionX = useSharedValue(item?.translateX ?? 0);
+  const positionY = useSharedValue(item?.translateY ?? 0);
+  const savedPositionX = useSharedValue(item?.translateX ?? 0);
+  const savedPositionY = useSharedValue(item?.translateY ?? 0);
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
-  const rotation = useSharedValue(item.rotation);
-  const savedRotation = useSharedValue(item.rotation);
+  const rotation = useSharedValue(item?.rotation ?? 0);
+  const savedRotation = useSharedValue(item?.rotation ?? 0);
 
 const updateTransformState = () => {
+  
     addPendingChanges(item.id, {
       positionX: positionX.value,
       positionY: positionY.value,
       rotation: rotation.value,
       scale: scale.value,
     });
-  };
+  }
 
   // if there is a frontItem set, and it is not THIS current item,
   // then reset the tapCounter so that it doesn't store the memory of tap counts since another item has been brought to front
@@ -44,6 +48,9 @@ const updateTransformState = () => {
         setTapCount(0);
     }
   }, [activeItemCtx, frontItem]);
+
+  useEffect(() => {
+  }, [item]);
 
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
@@ -85,14 +92,19 @@ const updateTransformState = () => {
       runOnJS(updateTransformState)();
     });
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: positionX.value },
-      { translateY: positionY.value },
-      { rotateZ: `${rotation.value}rad` },
-      { scale: scale.value },
-    ],
-  }));
+    const animatedStyle = useAnimatedStyle(() => {
+      if (scale.value === undefined || positionX.value === undefined || positionY.value === undefined) {
+        console.error('Animated value is undefined');
+      }
+      return {
+        transform: [
+          { translateX: positionX.value },
+          { translateY: positionY.value },
+          { rotateZ: `${rotation.value}rad` },
+          { scale: scale.value },
+        ],
+      };
+    });
 
 // item animatedStyle
   const toolBoxAnimated = useAnimatedStyle(() => { // item animatedStyle
@@ -163,19 +175,6 @@ const updateTransformState = () => {
           animatedStyle,
         ]}
       >
-        {/* trash if this item is currently active */}
-        {activeItemCtx &&
-          activeItemCtx.id == item.id && (
-            <View>
-              <View style={[styles.trash, { left: item.width - 15, bottom: -item.height - 10 }]}>
-                <TouchableOpacity onPress={() => deleteItems(item.id, item.type)}>
-                  <Animated.View style={trashIconAnimated}>
-                    <Feather name="trash" size={30} color="#ff0847" />
-                  </Animated.View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
 
         {/* Tapping item */}
         <TouchableOpacity onPress={handleOnTap} style={{ zIndex: item.zIndex }} activeOpacity={0.9}>
@@ -190,11 +189,11 @@ const updateTransformState = () => {
         </TouchableOpacity>
 
         {/* pencil popup for editing options on a specific image only for images */}
-        {item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y && (
-          <Animated.View style={styles.toolbox}>
+        {(item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) ? (
+          <Animated.View style={[styles.toolbox, toolBoxAnimated]}>
             <ViewModifyImageToolbox />
           </Animated.View>
-        )}
+        ) : (<></>)}
       </Animated.View>
     </GestureDetector>
   );

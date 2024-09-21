@@ -40,16 +40,17 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
       console.log("error ", error)
     }
 
+    const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+    const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+
     const imageItem: ImageItem = { // returns image regardless of if wxh adjustment fails
-      id: '',
-      type: 'image',
-      zIndex: 2,
+      id: '', type: 'image', zIndex: 2,
       imageInfo: image,
-      ogImageInfo: { ...image },
-      translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
-      translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+      // ogImageInfo: { ...image },
+      translateX: x,
+      translateY: y,
       rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0},
+      pendingChanges: {rotation: 0, positionX: x, positionY: y, scale: 1},
       width: newWidth,
       height: newHeight,
     }

@@ -4,18 +4,18 @@ export interface BaseItem {
     zIndex: number; //?? need ot be here?
     translateX: number; translateY: number;
     rotation: number;
-    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+    pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
   export interface ImageItem extends BaseItem {
     id: string;
     type: 'image'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    ogImageInfo: ImageInfo;
+    // ogImageInfo: ImageInfo;
     translateX: number; translateY: number;
     width: number; height: number;
     rotation: number;
-    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+    pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
   export interface StickerItem extends BaseItem {
     id: string;
@@ -25,7 +25,7 @@ export interface BaseItem {
     translateX: number; translateY: number;
     height: number, width: number;
     rotation: number;
-    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+    pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
   export interface DrawingItem extends BaseItem {
     id: string;
@@ -35,7 +35,7 @@ export interface BaseItem {
     translateX: number; translateY: number;
     height: number, width: number;
     rotation: number;
-    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+    pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
 
   export interface TextItem extends BaseItem {
@@ -49,7 +49,7 @@ export interface BaseItem {
     translateX: number; translateY: number;
     width: number; height: number;
     rotation: number;
-    pendingChanges: {scale: number, rotation: number, positionX: number, positionY: number};
+    pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
 }
   
   export type Item = ImageItem | StickerItem | DrawingItem | TextItem; // Union Type Item is the union, an item can be any of these item types

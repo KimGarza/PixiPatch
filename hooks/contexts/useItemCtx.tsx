@@ -1,34 +1,41 @@
 import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
 import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/customTypes/itemTypes';
 
-type Item = ImageItem | StickerItem | DrawingItem | TextItem; // Union Type Item is the union, an item can be any of these item types
+type Item = ImageItem | StickerItem | DrawingItem | TextItem;
 interface CreateItemProps {
   itemType: 'image' | 'sticker' | 'drawing' | 'text';
-  properties: ImageItem[] | StickerItem[] | DrawingItem[] | TextItem[];
+  properties: Item[];
+}
+
+interface PendingChangesType {
+  positionX: number;
+  positionY: number;
+  rotation: number;
+  scale: number;
 }
 
 interface ItemCtxType {
-  createItems: ({itemType, properties}: CreateItemProps) => void;
-  deleteItems: (id: string, itemType: 'image' | 'sticker' | 'drawing' | 'text') => void;
+  createItems: ({ itemType, properties }: CreateItemProps) => void;
+  deleteItems: (id: string, itemType: string) => void;
   bringToFront: (id: string, itemType: string) => void;
-  addPendingChanges: (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => void;
-  updatePending: () => void;
+  addPendingChanges: (id: string, pendingChanges: PendingChangesType) => void;
+  updatePendingChanges: () => void;
   frontItem: Item | undefined;
-  setFrontItem: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | TextItem | undefined>>;
+  setFrontItem: Dispatch<SetStateAction<Item | undefined>>;
   items: Item[];
   images: ImageItem[];
   stickers: StickerItem[];
   drawings: DrawingItem[];
   texts: TextItem[];
-  activeItemCtx: ImageItem | StickerItem | DrawingItem | TextItem | undefined;
-  setActiveItemCtx: Dispatch<SetStateAction<ImageItem | StickerItem | DrawingItem | TextItem | undefined>>;
+  activeItemCtx: Item | undefined;
+  setActiveItemCtx: Dispatch<SetStateAction<Item | undefined>>;
 }
 
 const defaultValue: ItemCtxType = {
   createItems: () => {},
   deleteItems: () => {},
   bringToFront: () => {},
-  updatePending: () => {},
+  updatePendingChanges: () => {},
   addPendingChanges: () => {},
   frontItem: undefined,
   setFrontItem: () => {},
@@ -42,15 +49,24 @@ const defaultValue: ItemCtxType = {
 };
 
 export const ItemCtx = createContext<ItemCtxType>(defaultValue);
-
 export const useItemCtx = () => {
   const context = useContext(ItemCtx);
-
-  if (context === undefined) {
-    throw new Error("useImageCxt must be used within an ImageProvider");
-  }
+  if (!context) throw new Error("useItemCtx must be used within ItemProvider");
   return context;
 };
+
+const generateId = () => Math.random().toString(36).slice(2, 11);
+
+const generateLargestZIndex = (items: Item[]) =>
+  items.length ? Math.max(...items.map((item) => item.zIndex)) + 1 : 2;
+
+// helper function // loops over items array finds with given id and activates any state, activates any funtion, all generic type
+const mapItems = <T extends Item>(
+  items: T[],
+  setItems: Dispatch<SetStateAction<T[]>>,
+  id: string,
+  updateFn: (item: T) => T
+) => setItems((prevItems) => prevItems.map((item) => (item.id === id ? updateFn(item) : item)));
 
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);
@@ -61,282 +77,144 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
   const [texts, setTexts] = useState<TextItem[]>([]);
 
-  const createImageItem = (item: ImageItem) => {
-    const id = generateId();
-    const zIndex = generateLargestZIndex();
+  const createItem = (item: Item) => ({
+    ...item,
+    id: generateId(),
+    zIndex: generateLargestZIndex(items),
+  });
 
-    const newImageItem = {
-      id: id, zIndex: zIndex, type: 'image',
-      imageInfo: item.imageInfo,
-      ogImageInfo: item.ogImageInfo || item.imageInfo,
-      translateY: item.translateY, translateX: item.translateX,
-      width: item.width, height: item.height,
-      rotation: 0,
-      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
-    } as ImageItem;
-
-    return newImageItem;
-  }
-
-  const createStickerItem = (item: StickerItem) => {
-    const id = generateId();
-    const zIndex = generateLargestZIndex();
-    return {
-      ...item,
-      id: id,
-      zIndex: zIndex,
-    } as StickerItem;
-  }
-  
-  const createDrawingItem = (item: DrawingItem) => {
-    const id = generateId();
-    const zIndex = generateLargestZIndex();
-
-    return {
-      ...item,
-      id: id,
-      zIndex: zIndex,
-    } as DrawingItem;
-  }
-
-  const createTextItem = (item: TextItem) => {
-    const id = generateId();
-    const zIndex = generateLargestZIndex();
-
-    return {
-      ...item,
-      id: id,
-      zIndex: zIndex,
-    } as TextItem;
-  }
-
-  const generateLargestZIndex = () => {
-    if (items.length > 0) {
-      const largestZIndex = items.reduce((highest, current) =>
-        current.zIndex > highest.zIndex ? current : highest
-      );
-      return largestZIndex.zIndex + 1; // add 1 to the largest zIndex so that the current item will now have the largest ZIndex
-    };
-    return 2;
-  }
-
-  const generateId = () => {
-    return Math.random().toString(36).slice(2, 11);
-  }
-
+  // Create Items
   const createItems = ({ itemType, properties }: CreateItemProps) => {
+    const addItem = (newItem: Item) => {
+      setItems((prev) => [...prev, newItem]);
+      switch (itemType) {
+        case 'image':
+          setImages((prev) => [...prev, newItem as ImageItem]);
+          break;
+        case 'sticker':
+          setStickers((prev) => [...prev, newItem as StickerItem]);
+          break;
+        case 'drawing':
+          setDrawings((prev) => [...prev, newItem as DrawingItem]);
+          break;
+        case 'text':
+          setTexts((prev) => [...prev, newItem as TextItem]);
+          break;
+      }
+    };
+
+    properties.forEach((item) => addItem(createItem(item)));
+  };
+
+  // Delete Items
+  const deleteItems = (id: string, itemType: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
     switch (itemType) {
       case 'image':
-        const imageItems = properties as ImageItem[]
-        if (imageItems) {
-          imageItems.forEach((item, index) => {
-            const newItem = createImageItem(item);
-            setImages(prevImages => [...prevImages, newItem]);
-            setItems((prevItems) => [...prevItems, newItem]);
-          })
-        }
+        setImages((prev) => prev.filter((image) => image.id !== id));
         break;
-      case 'sticker': 
-        const stickerItems = properties as StickerItem[]
-        if (stickerItems) {
-          stickerItems.forEach((item, index) => {
-            const newItem = createStickerItem(item);
-            setStickers(prevStickers => [...prevStickers, newItem]);
-            setItems((prevItems) => [...prevItems, newItem]);
-          })
-        }
+      case 'sticker':
+        setStickers((prev) => prev.filter((sticker) => sticker.id !== id));
         break;
-      case 'drawing': 
-        const drawingItems = properties as DrawingItem[];
-        if (drawingItems) {
-          drawingItems.forEach((item, index) => {
-            const newItem = createDrawingItem(item);
-            setDrawings(prevDrawings => [...prevDrawings, newItem]);
-            setItems((prevItems) => [...prevItems, newItem]);
-          })
-        }
+      case 'drawing':
+        setDrawings((prev) => prev.filter((drawing) => drawing.id !== id));
         break;
-      case 'text': 
-        const textItems = properties as TextItem[];
-        if (textItems) {
-          textItems.forEach((item, index) => {
-            const newItem = createTextItem(item);
-            setTexts(prevTexts => [...prevTexts, newItem]);
-            setItems((prevItems) => [...prevItems, newItem]);
-          })
-        }
+      case 'text':
+        setTexts((prev) => prev.filter((text) => text.id !== id));
         break;
     }
-  }
+  };
 
-  const deleteItems = (id: string, itemType: 'image' | 'sticker' | 'drawing' | 'text') => {
-    setItems((prevItems) => prevItems.filter(item => item.id !== id))
-    if (itemType == 'image') {
-      setImages(prevImages => prevImages.filter(image => image.id !== id))
-    } else if (itemType == 'sticker') {
-      setStickers(prevStickers => prevStickers.filter(sticker => sticker.id !== id))
-    } else if (itemType == 'drawing') {
-      setDrawings(prevDrawings => prevDrawings.filter(drawing => drawing.id !== id))
-    }
-  }
-
+  // Bring to front
   const bringToFront = (id: string, itemType: string) => {
+    const largestZIndex = generateLargestZIndex(items);
 
-    const largestZIndex = generateLargestZIndex();
+    const bringItemToFront = (item: Item) => ({
+      ...item,
+      zIndex: largestZIndex,
+    });
 
-    const foundItem = items.find(item => item.id === id);
-    if (foundItem) {
-      setItems((prevItems) => prevItems.map((item) => item.id == id ? { ...item, zIndex: largestZIndex } : item));
-      setFrontItem(foundItem);
-      setActiveItemCtx(undefined);
-  
-      if (itemType == 'image') {
-        setImages((preImages) => preImages.map((image) => image.id == id ? { ...image, zIndex: largestZIndex } : image));
-      } else if (itemType == 'sticker') {
-        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == id ? { ...sticker, zIndex: largestZIndex } : sticker));
-      } else if (itemType == 'drawing') {
-        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == id ? { ...drawing, zIndex: largestZIndex } : drawing));
-      }
+    setItems((prevItems) => prevItems.map((item) => (item.id === id ? bringItemToFront(item) : item)));
+
+    if (itemType === 'image') {
+      setImages((prevImages) => prevImages.map((image) => (image.id === id ? bringItemToFront(image) as ImageItem : image)));
+    } else if (itemType === 'sticker') {
+      setStickers((prevStickers) => prevStickers.map((sticker) => (sticker.id === id ? bringItemToFront(sticker) as StickerItem : sticker)));
+    } else if (itemType === 'drawing') {
+      setDrawings((prevDrawings) => prevDrawings.map((drawing) => (drawing.id === id ? bringItemToFront(drawing) as DrawingItem : drawing)));
+    } else if (itemType === 'text') {
+      setTexts((prevTexts) => prevTexts.map((text) => (text.id === id ? bringItemToFront(text) as TextItem : text)));
     }
-  }
+  };
   
-  const addPendingChanges = (id: string, pendingChanges: {positionX: number, positionY: number, rotation: number, scale: number}) => {
-
-    const foundItem = items.find(item => item.id === id);
-    if (foundItem) {
-      setItems((prevItems) => prevItems.map((item) => item.id == id ? { 
+  // Add Pending Changes
+  const addPendingChanges = (id: string, inPendingChanges: { positionX: number, positionY: number, rotation: number, scale: number }) => {
+    
+    const addPending = <T extends Item>(item: T): T => {
+      
+      return {
         ...item,
         pendingChanges: {
-          scale: pendingChanges.scale,
-          rotation: pendingChanges.rotation,
-          positionX: pendingChanges.positionX,
-          positionY: pendingChanges.positionY}}
-        : item
-      ));
-      if (foundItem.type == 'image') {
-        setImages((prevImages) => prevImages.map((image) => image.id == id ? { 
-          ...image,
-          pendingChanges: {
-            scale: pendingChanges.scale,
-            rotation: pendingChanges.rotation,
-            positionX: pendingChanges.positionX,
-            positionY: pendingChanges.positionY}}
-          : image
-        ));
-      } else if (foundItem.type == 'sticker') {
-        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == id ? { 
-          ...sticker,
-          pendingChanges: {
-            scale: pendingChanges.scale,
-            rotation: pendingChanges.rotation,
-            positionX: pendingChanges.positionX,
-            positionY: pendingChanges.positionY}}
-          : sticker
-        ));
-      } else if (foundItem.type == 'drawing') {
-        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == id ? { 
-          ...drawing,
-          pendingChanges: {
-            scale: pendingChanges.scale,
-            rotation: pendingChanges.rotation,
-            positionX: pendingChanges.positionX,
-            positionY: pendingChanges.positionY}}
-          : drawing
-        ));
-      } else if (foundItem.type == 'text') {
-          setTexts((prevTexts) => prevTexts.map((text) => text.id == id ? { 
-            ...text,
-            pendingChanges: {
-              scale: pendingChanges.scale,
-              rotation: pendingChanges.rotation,
-              positionX: pendingChanges.positionX,
-              positionY: pendingChanges.positionY}}
-            : text
-          ));
+          scale: inPendingChanges.scale,
+          rotation: inPendingChanges.rotation,
+          positionX: inPendingChanges.positionX,
+          positionY: inPendingChanges.positionY,
+        },
+      };
+    };
+
+    // Generic function to find and replace the item in the array
+    const findAndAdd = <T extends Item>(prevItems: T[]): T[] => {
+      return prevItems.map((item) => (item.id === id ? addPending(item) : item));
+    };
+
+    setItems((prevItems) => findAndAdd(prevItems));
+
+    const foundItem = items.find((item) => (item.id == id));
+    if (foundItem) {
+      switch (foundItem.type) {
+        case 'image':
+          setImages((prevImages) => findAndAdd(prevImages as ImageItem[]));
+          break;
+        case 'sticker':
+          setStickers((prevStickers) => findAndAdd(prevStickers as StickerItem[]));
+          break;
+        case 'drawing':
+          setDrawings((prevDrawings) => findAndAdd(prevDrawings as DrawingItem[]));
+          break;
+        case 'text':
+          setTexts((prevTexts) => findAndAdd(prevTexts as TextItem[]));
+          break;
       }
     }
   }
-  
-  const updatePending = () => {
 
-    items.forEach((item) => {
-      setItems((prevItems) => prevItems.map((prevItem) => item.id == prevItem.id ? { 
-        ...prevItem,
-        width: (item.width * item.pendingChanges.scale),
-        height: (item.height * item.pendingChanges.scale),
-        translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
-        translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
+
+  // Update Pending Changes
+  const updatePendingChanges = () => {
+    
+    const updatePending = <T extends Item>(item: T): T => {
+      return {
+        ...item,
+        height: item.height * item.pendingChanges.scale,
+        width: item.width * item.pendingChanges.scale,
         rotation: item.pendingChanges.rotation,
+        translateX: item.pendingChanges.positionX,
+        translateY: item.pendingChanges.positionY,
         pendingChanges: {
           scale: 1,
-          rotation: 0,
-          positionX: 0,
-          positionY: 0}}
-        : item
-      ));
+          rotation: item.pendingChanges.rotation,
+          positionX: item.pendingChanges.positionX,
+          positionY: item.pendingChanges.positionY,
+        },
+      };
+    };
 
-      if (item.type == 'image') {
-        setImages((prevImages) => prevImages.map((image) => image.id == item.id ? { 
-          ...image,
-          width: (item.width * item.pendingChanges.scale),
-          height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
-          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
-          rotation: item.pendingChanges.rotation,
-          pendingChanges: {
-            scale: 1,
-            rotation: 0,
-            positionX: 0,
-            positionY: 0}}
-          : image
-        ));
-      } if (item.type == 'sticker') {
-        setStickers((prevStickers) => prevStickers.map((sticker) => sticker.id == item.id ? { 
-          ...sticker,
-          width: (item.width * item.pendingChanges.scale),
-          height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
-          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
-          rotation: item.pendingChanges.rotation,
-          pendingChanges: {
-            scale: 1,
-            rotation: 0,
-            positionX: 0,
-            positionY: 0}}
-          : sticker
-        ));
-      } else if (item.type == 'drawing') {
-        setDrawings((prevDrawings) => prevDrawings.map((drawing) => drawing.id == item.id ? { 
-          ...drawing,
-          width: (item.width * item.pendingChanges.scale),
-          height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
-          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
-          rotation: item.pendingChanges.rotation,
-          pendingChanges: {
-            scale: 1,
-            rotation: 0,
-            positionX: 0,
-            positionY: 0}}
-          : drawing
-        ));
-      } else if (item.type == 'text') {
-        setDrawings((prevTexts) => prevTexts.map((text) => text.id == item.id ? { 
-          ...text,
-          width: (item.width * item.pendingChanges.scale),
-          height: (item.height * item.pendingChanges.scale),
-          translateY: item.pendingChanges.positionY != 0 ? item.pendingChanges.positionY : item.translateY,
-          translateX: item.pendingChanges.positionX != 0 ? item.pendingChanges.positionX : item.translateX,
-          rotation: item.pendingChanges.rotation,
-          pendingChanges: {
-            scale: 1,
-            rotation: 0,
-            positionX: 0,
-            positionY: 0}}
-          : text
-        ));
-      }
-    })
+    setItems((prevItems) => prevItems.map((item) => updatePending(item)));
+    setImages((prevImages) => prevImages.map((item) => updatePending(item)));
+    setStickers((prevStickers) => prevStickers.map((item) => updatePending(item)));
+    setDrawings((prevDrawings) => prevDrawings.map((item) => updatePending(item)));
+    setTexts((prevTexts) => prevTexts.map((item) => updatePending(item)));
   }
 
 
@@ -347,7 +225,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         deleteItems,
         bringToFront,
         addPendingChanges,
-        updatePending,
+        updatePendingChanges,
         frontItem,
         setFrontItem,
         items,

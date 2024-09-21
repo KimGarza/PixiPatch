@@ -9,7 +9,6 @@ const DrawMenu = () => {
   const { setActiveSize, setActiveColor } = useDrawCtx();
 
   const onSelectColor = ({ hex }: { hex: string }) => {
-    console.log("active color", hex)
     // do something with the selected color.
     setActiveColor(hex);
   };

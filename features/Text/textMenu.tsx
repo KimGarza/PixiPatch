@@ -36,7 +36,6 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
 
   useEffect(() => {
     // checks if user has typed text and has not completed it, if not there is no text selected, then they cannot edit
-    console.log('active text', activeText);
     if (activeText.text != '') {
         setActiveTextExists(true);
         setSubMenu('font'); // default submenu to fill in extra space rendered for purposes of text editing

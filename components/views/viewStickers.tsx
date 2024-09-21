@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ViewStickers: React.FC<Props> = ({stickers}) => {
-
+try {
     return (
         <View>
             {stickers.map((sticker, index) => (
@@ -17,6 +17,10 @@ const ViewStickers: React.FC<Props> = ({stickers}) => {
             ))}
         </View>
     );
+} catch (error) {
+    console.log("Failed to return stickers from viewStickers", error);
+}
+   
 }
 
 export default ViewStickers;

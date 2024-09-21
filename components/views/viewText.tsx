@@ -13,7 +13,6 @@ const ViewText: React.FC<Props> = ({ textsFromCtx }) => {
     const { activeText, texts, typing, setActiveText } = useTextCtx();
 
     useEffect(() => {
-        console.log("activeText", activeText);
     }, [texts, activeText]);
 
     return (

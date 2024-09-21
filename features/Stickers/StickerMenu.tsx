@@ -107,7 +107,11 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
   // take uri of the sticker and convert to StickerItem
   const convertToStickerItem = (newUri: string) => {
-    const converted: StickerItem = {
+
+    const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+    const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+
+    const converted: StickerItem = { // returns image regardless of if wxh adjustment fails
       id: '', type: 'sticker', zIndex: 2,
       imageInfo: {
         uri: newUri,
@@ -115,11 +119,12 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
         height: 1000,
       },
       height: 80, width: 80,
-      translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
-      translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
-      rotation: 0, 
-      pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
+      translateX: x,
+      translateY: y,
+      rotation: 0,
+      pendingChanges: {rotation: 0, positionX: x, positionY: y, scale: 1},
     }
+
     return converted;
   }
 

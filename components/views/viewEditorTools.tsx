@@ -6,6 +6,8 @@ import StickerTool from '../../features/Stickers/StickerTool';
 import BackgroundTool from '../../features/background/BackgroundTool';
 import { useRouter } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 
 interface ViewEditorToolsProps {
     backgroundMenuToggle: (menuName: string) => void,
@@ -16,6 +18,10 @@ interface ViewEditorToolsProps {
 const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, stickerMenuToggle, textMenuToggle}) => {
 
     const router = useRouter();
+    const { updatePendingChanges } = useItemCtx();
+
+    const [disabled, setDisabled] = useState(false);
+
     // callback to be handled as prop value upon using the stickerTool comp
     // maybe replace the tool content with one of these tools  isntead of menu callbacks?
 
@@ -28,6 +34,19 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
             stickerMenuToggle(menuName);
         }
     }
+
+    const goToSketchbook = () => {
+        if (disabled) return; // prevent doubleclicks
+    
+        setDisabled(true);
+    
+        updatePendingChanges();
+        router.push('/(screens)/sketchBook');
+    
+        setTimeout(() => {
+          setDisabled(false); // Re-enable the button after 500ms (adjust as needed)
+        }, 500);
+      }
 
     return (
     <StyledIconContainer dimensions={40}> 
@@ -50,7 +69,7 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
             <MaterialCommunityIcons name='format-text' size={30}/>
         </StickerTool>
 
-        <TouchableOpacity onPress={() => {router.push('/(screens)/sketchBook')}}>
+        <TouchableOpacity onPress={goToSketchbook}>
             <SimpleLineIcons name='pencil' size={30}/>
         </TouchableOpacity>
 

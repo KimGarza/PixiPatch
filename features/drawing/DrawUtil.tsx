@@ -19,7 +19,7 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
 
     const router = useRouter();
     const { drawingPaths, activeSize, activeColor } = useDrawCtx();
-    const { createItems } = useItemCtx();
+    const { createItems, updatePendingChanges } = useItemCtx();
 
     const [activePath, setActivePath] = useState<PathData>({ points: [], strokeWidth: 3, strokeColor: 'black'});
 
@@ -36,20 +36,25 @@ const DrawUtil: React.FC<Props> = ({ isDone }) => {
             const newUri = await SaveDrawing(viewRef);
     
             if (newUri) {
+
+                const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+                const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+            
                 const drawingItem: DrawingItem[] = [
                     {
                         id: '', type: 'drawing', zIndex: 2,
                         imageInfo: {uri: newUri, height: 1000, width: 1000},
-                        translateX: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
-                        translateY: Math.floor(Math.random() * (width * 0.5)) + (width * 0.25),
+                        translateX: x,
+                        translateY: y,
                         height: 150, width: 150,
                         rotation: 0,
-                        pendingChanges: {scale: 1, rotation: 0, positionX: 0, positionY: 0}
+                        pendingChanges: {rotation: 0, positionX: x, positionY: y, scale: 1},
                     }
                  ]
                  createItems({ itemType: 'drawing', properties: drawingItem });
          
                  router.push('/(screens)/editor');
+                 updatePendingChanges()
             }
         } catch (error) {
             console.log('Failed to save drawing ', error)

@@ -1,16 +1,27 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { useItemCtx } from "@/hooks/contexts/useItemCtx";
 
 const HomeButton = () => {
+
+  const [disabled, setDisabled] = useState(false);
     
   const router = useRouter();
-  const { updatePending } = useItemCtx();
+  const { updatePendingChanges } = useItemCtx();
 
   const goHome = () => {
-    updatePending();
+    if (disabled) return; // prevent doubleclicks
+
+    setDisabled(true);
+
+    updatePendingChanges();
     router.push('/(screens)');
+
+    setTimeout(() => {
+      setDisabled(false); // Re-enable the button after 500ms (adjust as needed)
+    }, 500);
   }
 
   return(
