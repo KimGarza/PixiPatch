@@ -228,13 +228,11 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     }
   }
 
-
   // Update Pending Changes
   const updatePendingChanges = () => {
     
     const updatePending = <T extends Item>(item: T): T => {
-
-      // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured...
+      // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured... :,(
       // if scaling occured, the item's corner will grow to meet a coordinate pair that is unequal to the panned track (pinching to scale although relocates the images corner doesn't trigger the pan)
       // so we must calculate the offset of the variance of the original and new width/height, divide it by 2 (since scaling happens on both sides equally to make the new width/height) 
       // and add or subtrack based on growing or shrinking to get a more accurate x and y translation

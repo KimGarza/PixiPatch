@@ -6,10 +6,13 @@ import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/customTypes/itemTypes';
 import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { SimultaneousGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition';
 interface Props {
   item: ImageItem | StickerItem | DrawingItem | TextItem;
 }
 
+// prettier-ignore
 const MutableItem = ({ item }: Props) => {
 
   // prettier-ignore
@@ -49,6 +52,40 @@ const updateTransformState = () => {
   useEffect(() => {
   }, [item]);
 
+  // **check for efficicey**
+  const handleOnTap = (evt: GestureResponderEvent) => {
+  
+    if (tapCount == 0 && frontItem == undefined) { // if this item is already in the front even if not in ctx, user clicks it, they want to activate it **state issues with this, may consider useRef?**
+
+      setActiveItemCtx(item); 
+    }
+    if (tapCount == 0) { // set to frontItem in ctx, (useEffect checks)
+
+      setTapCount(1);
+      bringToFront(item.id, item.type);
+      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
+      tapCoordinatesX.value = locationX;
+      tapCoordinatesY.value = locationY;
+
+    } else if (tapCount == 1) { // item is in foreground and user wishes to activate it
+
+      setTapCount(2);
+      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
+      tapCoordinatesX.value = locationX;
+      tapCoordinatesY.value = locationY;
+      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value }); // if image, activate editing pencil popup
+      setActiveItemCtx(item);
+
+    } else if (tapCount == 2) { // deactivate by tapping this activated image again **want to do this if user clicks outside of any image too **
+
+      setTapCoordinates({ x: 0, y: 0 });
+      setActiveItemCtx(undefined);
+      setFrontItem(undefined);
+      setTapCount(0);
+
+    }
+  };
+
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
       positionX.value = event.translationX + savedPositionX.value;
@@ -57,7 +94,6 @@ const updateTransformState = () => {
     .onEnd(() => {
       savedPositionX.value = positionX.value;
       savedPositionY.value = positionY.value;
-      console.log("positions x", positionX.value, "y ", positionY.value)
       runOnJS(updateTransformState)(); // sync the new position with the state
     });
 
@@ -90,18 +126,38 @@ const updateTransformState = () => {
       runOnJS(updateTransformState)();
     });
 
-    const animatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [
-          { translateX: positionX.value },
-          { translateY: positionY.value },
-          { rotateZ: `${rotation.value}rad` },
-          { scale: scale.value },
-        ],
-      };
+  // Gesture for the hand sparkles icon to rotate and scale the image without panning
+  const handSparklesDragGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      // Adjust the scaling so that dragging upward increases size and dragging downward decreases size
+      const scaleChange = 1 - (event.translationY * 0.008); // Subtract instead of add to invert behavior
+      scale.value = savedScale.value * scaleChange;
+
+      // Adjust rotation based on translationX
+      const rotationChange = event.translationX * 0.008; // Adjust sensitivity for rotation as needed
+      rotation.value = savedRotation.value + rotationChange;
+      for (let snapAngle of SNAP_ANGLES) {
+        if (Math.abs(rotation.value - snapAngle) < ROTATION_SNAP_THRESHOLD) {
+          rotation.value = snapAngle;
+          break;
+        }
+      }
+    })
+    .onStart(() => {
+      savedScale.value = scale.value;
+      savedRotation.value = rotation.value;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+      savedRotation.value = rotation.value;
+      runOnJS(updateTransformState)();
     });
 
-// item animatedStyle
+  // Combine pinch and rotate for the image itself
+  const combinedGesture = Gesture.Simultaneous(pinchGesture, rotationGesture);
+  const gesture = Gesture.Exclusive(panGesture, combinedGesture);
+
+  // item animatedStyle
   const toolBoxAnimated = useAnimatedStyle(() => { // item animatedStyle
     return {
       transform: [
@@ -123,39 +179,17 @@ const updateTransformState = () => {
     };
   });
 
-  // **check for efficicey**
-  const handleOnTap = (evt: GestureResponderEvent) => {
-    
-    if (tapCount == 0 && frontItem == undefined) { // if this item is already in the front even if not in ctx, user clicks it, they want to activate it **state issues with this, may consider useRef?**
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: positionX.value },
+        { translateY: positionY.value },
+        { rotateZ: `${rotation.value}rad` },
+        { scale: scale.value },
+      ],
+    };
+  });
 
-      setActiveItemCtx(item); 
-    }
-    if (tapCount == 0) { // set to frontItem in ctx, (useEffect checks)
-
-      setTapCount(1);
-      bringToFront(item.id, item.type);
-      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
-      tapCoordinatesX.value = locationX;
-      tapCoordinatesY.value = locationY;
-
-    } else if (tapCount == 1) { // item is in foreground and user wishes to activate it
-
-      setTapCount(2);
-      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
-      tapCoordinatesX.value = locationX;
-      tapCoordinatesY.value = locationY;
-      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value }); // if image, activate editing pencil popup
-      setActiveItemCtx(item);
-
-    } else if (tapCount == 2) { // deactivate by tapping this activated image again **want to do this if user clicks outside of any image too **
-
-      setTapCoordinates({ x: 0, y: 0 });
-      setActiveItemCtx(undefined);
-      setFrontItem(undefined);
-      setTapCount(0);
-
-    }
-  };
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}>
@@ -173,6 +207,18 @@ const updateTransformState = () => {
 
         {/* Tapping item */}
         <TouchableOpacity onPress={handleOnTap} style={{ zIndex: item.zIndex }} activeOpacity={0.9}>
+        
+        {activeItemCtx?.id == item.id ? (
+          <View>
+          <GestureDetector gesture={handSparklesDragGesture}>
+            <View style={[styles.trash, { left: -15 + item.width, top: -15 }]}>
+                <Animated.View style={trashIconAnimated}>
+                  <FontAwesome5 name={'hand-sparkles'} size={30} color={'#ff0847'} style={styles.editingIcon}/>
+                </Animated.View>
+            </View>
+          </GestureDetector>
+        </View>) : (<></>)}
+
           {item.type !== 'text' ? (
             <Image source={{ uri: item.imageInfo.uri }} style={[{ width: item.width, height: item.height, zIndex: item.zIndex },
               activeItemCtx?.id == item.id &&
@@ -203,12 +249,15 @@ const styles = StyleSheet.create({
     borderColor: '#ff0847',
     zIndex: 999,
   },
-  trash: { 
-    position: 'absolute',
-    zIndex: 999,
+  editingIcon: {
     backgroundColor: 'white',
     borderRadius: 30,
     overflow: 'hidden',
+
+  },
+  trash: {
+    position: 'absolute',
+    zIndex: 9999999999999999999999999999999,
   },
   toolbox: { position: 'absolute', zIndex: 999 },
   text: {
