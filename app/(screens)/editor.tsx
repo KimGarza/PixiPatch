@@ -26,7 +26,7 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 const EditorScreen = () => {
   // contexts
   const { background } = useContext(BackgroundCtx);
-  const { images, stickers, drawings, texts, items } = useItemCtx();
+  const { images, stickers, drawings, texts, activeItemCtx } = useItemCtx();
   const { textsCtx } = useTextCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
@@ -74,6 +74,7 @@ const EditorScreen = () => {
       <View style={styles.canvasContainer} ref={viewRef} collapsable={false}>
         <ImageBackground source={background} style={styles.imageBackground}>
           <View style={styles.canvas}>
+
             {/* Stickers */}
             <ViewStickers stickers={stickers} />
 

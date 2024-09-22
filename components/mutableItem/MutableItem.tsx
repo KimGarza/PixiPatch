@@ -4,10 +4,9 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useItemCtx } from '@/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/customTypes/itemTypes';
-import Feather from '@expo/vector-icons/Feather';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { SimultaneousGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition';
+import Trashcan from '../trashcan';
 interface Props {
   item: ImageItem | StickerItem | DrawingItem | TextItem;
 }
@@ -18,6 +17,12 @@ const MutableItem = ({ item }: Props) => {
   // prettier-ignore
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx();
 
+  const [isTrashable, setIsTrashable] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log("istrashable", isTrashable);
+  }, [isTrashable])
+  
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
   const tapCoordinatesX = useSharedValue(0);
@@ -86,6 +91,7 @@ const updateTransformState = () => {
     }
   };
 
+  // trash stuff
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
       positionX.value = event.translationX + savedPositionX.value;
@@ -189,7 +195,6 @@ const updateTransformState = () => {
       ],
     };
   });
-
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}>
