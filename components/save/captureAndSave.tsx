@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 // captures view element (user's work within canvas) as image
 const CaptureAndSave = async (viewRef: RefObject<View>, width: number, height: number, draft: boolean): Promise<void> => { // view is at current
 
+
   try {
     if (viewRef != null) {
       // capture the view

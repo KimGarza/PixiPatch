@@ -3,13 +3,18 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useState, useRef, RefObject } from "react";
 import { Fontisto } from '@expo/vector-icons';
 import CaptureAndSave from "./captureAndSave";
+import { useItemCtx } from "@/hooks/contexts/useItemCtx";
 
 interface SaveWorkButtonProps {
   viewRef: RefObject<View> | null, // ref attached to the View element canvasContainer in EditorContent (has user's work)
 }
+interface saveType {
+  type: 'standard' | 'hd' | 'draft';
+}
 
 const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
 
+  const { setActiveItemCtx } = useItemCtx();
   const [menuVisible, setMenuVisible] = useState(false);
   const animationValue = useRef(new Animated.Value(0)).current; // ??
 
@@ -23,43 +28,25 @@ const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
   };
 
   // captures view element (user's work within canvas) as an image using react-native-view-shot and using expo media library to save
-  const saveStandard = async () => {
-    try {
-      const width = 980; // technical conversion is 978.75
-      const height = 1740;
+  const save = async (saveType: saveType) => {
+    // standard
+    let width = 980; // technical conversion is 978.75
+    let height = 1740;
 
+    if (saveType.type == 'hd') {
+      width = 1307;
+      height = 2320;
+    }
+
+    try {
       // sending in the viewRef (captured view element by useRef sent from elemental editor of the canvas) sending to a comp that uses it to capture, and save it
       if (viewRef != undefined && viewRef && viewRef != null) {
+        setActiveItemCtx(undefined); // disables the active image outline when the canvas is captured
         await CaptureAndSave(viewRef, width, height, false);
+        menuToggle();
       }
     } catch (error) {
       console.log("Error within trying to activate CaptureAndSave in saveWorkButton.tsx: ", error);
-    }
-  }
-
-  const saveHD = async () => {    
-    try {
-      const width = 1307;
-      const height = 2320;
-
-      if (viewRef != undefined && viewRef && viewRef != null) {
-        await CaptureAndSave(viewRef, width, height, false);
-      }
-    } catch (error) {
-      console.log("Error within trying to activate CaptureAndSave in saveButtonAndMenu.tsx: ", error);
-    }
-  }
-
-  const saveDraft = async () => {    
-    try {
-      const width = 980;
-      const height = 1740;
-
-      if (viewRef != undefined && viewRef && viewRef != null) {
-        await CaptureAndSave(viewRef, width, height, true);
-      }
-    } catch (error) {
-      console.log("Error within trying to activate CaptureAndSave in saveButtonAndMenu.tsx: ", error);
     }
   }
 
@@ -78,15 +65,15 @@ const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
        </TouchableOpacity>
        {menuVisible && <Animated.View style={[styles.menu, { height: menuHeight }]}>
 
-        <TouchableOpacity onPress={saveStandard}>
+        <TouchableOpacity onPress={() => {save({type: 'standard'})}}>
             <Text style={styles.saveOption}>Save Standard</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={saveHD}>
+        <TouchableOpacity onPress={() => {save({type: 'hd'})}}>
             <Text style={styles.saveOption}>Save HD</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={saveDraft}>
+        <TouchableOpacity onPress={() => {save({type: 'standard'})}}>
             <Text style={styles.saveOption}>Save Draft</Text>
         </TouchableOpacity>
 

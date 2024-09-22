@@ -130,11 +130,11 @@ const updateTransformState = () => {
   const handSparklesDragGesture = Gesture.Pan()
     .onUpdate((event) => {
       // Adjust the scaling so that dragging upward increases size and dragging downward decreases size
-      const scaleChange = 1 - (event.translationY * 0.008); // Subtract instead of add to invert behavior
+      const scaleChange = 1 - (event.translationY * 0.005); // Subtract instead of add to invert behavior
       scale.value = savedScale.value * scaleChange;
 
       // Adjust rotation based on translationX
-      const rotationChange = event.translationX * 0.008; // Adjust sensitivity for rotation as needed
+      const rotationChange = event.translationX * 0.006; // Adjust sensitivity for rotation as needed
       rotation.value = savedRotation.value + rotationChange;
       for (let snapAngle of SNAP_ANGLES) {
         if (Math.abs(rotation.value - snapAngle) < ROTATION_SNAP_THRESHOLD) {
