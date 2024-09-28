@@ -2,24 +2,24 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image, Text} from 'react-native';
 // context
-import { BackgroundCtx } from '@/features/background/BackgroundCtx';
-import { useItemCtx } from '@/hooks/contexts/useItemCtx';
-import { useTextCtx } from '@/features/Text/useTextCtx';
+import { BackgroundCtx } from '@/src/features/background/BackgroundCtx';
+import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
+import { useTextCtx } from '@/src/features/Text/useTextCtx';
 // editing tools and menus
-import StickerMenu from '@/features/Stickers/StickerMenu';
-import BackgroundMenu from '@/features/background/BackgroundMenu';
-import TextMenu from '@/features/Text/textMenu';
+import StickerMenu from '@/src/features/Stickers/StickerMenu';
+import BackgroundMenu from '@/src/features/background/BackgroundMenu';
+import TextMenu from '@/src/features/Text/textMenu';
 // import FilterMenu from './Filters/FilterMenu';
-import SaveButtonAndMenu from '@/components/save/saveButtonAndMenu';
-import HomeButton from '@/components/utils/homeButton';
+import SaveButtonAndMenu from '@/src/components/save/saveButtonAndMenu';
+import HomeButton from '@/src/components/utils/homeButton';
 // views
-import ViewEditorTools from '@/components/views/viewEditorTools';
-import ViewStickers from '@/components/views/viewStickers';
-import ViewImages from '@/components/views/viewImages';
-import ViewDrawings from '@/components/views/viewDrawings';
-import ViewText from '@/components/views/viewText';
+import ViewEditorTools from '@/src/components/views/viewEditorTools';
+import ViewStickers from '@/src/components/views/viewStickers';
+import ViewImages from '@/src/components/views/viewImages';
+import ViewDrawings from '@/src/components/views/viewDrawings';
+import ViewText from '@/src/components/views/viewText';
 // misc
-import GlobalDimensions from '@/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -63,7 +63,7 @@ const EditorScreen = () => {
       <View style={styles.headerNav}>
         <Image
           style={styles.headerImg}
-          source={require('../../assets/images/ElementalEditorBanner.png')}
+          source={require('../../src/assets/images/ElementalEditorBanner.png')}
         />
         <HomeButton />
         {/* viewRef is ref of canvas container 'View' element. Passing into SaveWorkButton bc this contains the user's beautiful creation that will be saved! */}

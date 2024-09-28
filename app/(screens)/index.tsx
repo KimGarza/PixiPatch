@@ -6,8 +6,8 @@ import { Fontisto } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import LoginSignUpButton from '@/components/loginAndSignup/loginSignUpButton';
-import GlobalDimensions from '@/components/dimensions/globalDimensions';
+import LoginSignUpButton from '@/src/components/loginAndSignup/loginSignUpButton';
+import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 const { width, headerHeight } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
@@ -20,7 +20,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const [fontsLoaded] = useFonts({
-    'ToThePoint': require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+    'ToThePoint': require('../../src/assets/fonts/ToThePointRegular-n9y4.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -33,7 +33,7 @@ export default function HomeScreen() {
       <View style={styles.headerNav}>
         <Image
           style={styles.headerImg}
-          source={require('../../assets/images/ElementalEditorBanner.png')}
+          source={require('../../src/assets/images/ElementalEditorBanner.png')}
         />
       </View>
 
@@ -52,7 +52,7 @@ export default function HomeScreen() {
             <TouchableOpacity onPress={() => router.push('/(screens)/editor')}>
               <Fontisto name='photograph' size={150} style={styles.photographIcon}/>
               {/* <Image
-              source={require('../../assets/images/arrow.png')}
+              source={require('../../src/assets/images/arrow.png')}
               /> */}
             </TouchableOpacity>
             

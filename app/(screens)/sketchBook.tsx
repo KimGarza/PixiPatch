@@ -1,9 +1,9 @@
-import { StyleSheet, View, Image, TouchableOpacity, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { useEffect, useState } from 'react';
-import DrawUtil from '@/features/drawing/DrawUtil';
-import DrawMenu from '@/features/drawing/drawMenu';
-import HomeButton from '@/components/utils/homeButton';
-import GlobalDimensions from '@/components/dimensions/globalDimensions';
+import DrawUtil from '@/src/features/drawing/DrawUtil';
+import DrawMenu from '@/src/features/drawing/drawMenu';
+import HomeButton from '@/src/components/utils/homeButton';
+import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -21,7 +21,7 @@ return (
     <View style={styles.headerNav}>
       <Image
         style={styles.headerImg}
-        source={require('../../assets/images/ElementalEditorBanner.png')}
+        source={require('../../src/assets/images/ElementalEditorBanner.png')}
       />
       <HomeButton/>
     </View>

@@ -3,13 +3,13 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from '../../hooks/useColorScheme'
-import { BackgroundProvider } from '@/features/background/BackgroundCtx';
-import { StickerProvider } from '@/features/Stickers/StickersCtx';
-import { DrawProvider } from '@/features/drawing/DrawCtx';
-import { TextProvider } from '@/features/Text/useTextCtx';
+import { useColorScheme } from '../../src/hooks/useColorScheme';
+import { BackgroundProvider } from '@/src/features/background/BackgroundCtx';
+import { StickerProvider } from '@/src/features/Stickers/StickersCtx';
+import { DrawProvider } from '@/src/features/drawing/DrawCtx';
+import { TextProvider } from '@/src/features/Text/useTextCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ItemProvider } from '@/hooks/contexts/useItemCtx';
+import { ItemProvider } from '@/src/hooks/contexts/useItemCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';
 // import stickerAssets from '@/loadApp/StickerPacks/stickerAssets';
 

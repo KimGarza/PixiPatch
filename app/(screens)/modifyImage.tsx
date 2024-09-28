@@ -1,14 +1,14 @@
 import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import GlobalDimensions from '@/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useEffect, useState } from 'react';
-import Crop from '@/components/modification/crop/crop';
+import Crop from '@/src/components/modification/crop/crop';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import CroppableImage from '@/components/modification/crop/croppableImage';
-import FilterableImage from '@/components/modification/Filters/filterableImage';
-import { useItemCtx } from '@/hooks/contexts/useItemCtx';
-import { ImageItem } from '@/customTypes/itemTypes';
+import CroppableImage from '@/src/components/modification/crop/croppableImage';
+import FilterableImage from '@/src/components/modification/Filters/filterableImage';
+import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
+import { ImageItem } from '@/src/customTypes/itemTypes';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -80,7 +80,7 @@ return (
     <View style={styles.headerNav}>
       <Image
           style={styles.headerImg}
-          source={require('../../assets/images/ElementalEditorBanner.png')}
+          source={require('../../src/assets/images/ElementalEditorBanner.png')}
       />
       <TouchableOpacity onPress={() => router.push('/(screens)')} style={styles.back}>
         <Ionicons name={'arrow-back'} size={35}/>

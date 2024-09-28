@@ -1,4 +1,4 @@
-package com.anonymous.elemental_editor
+package com.anonymous.pixi_patch
 
 import android.app.Application
 import android.content.res.Configuration

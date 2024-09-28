@@ -1,29 +1,29 @@
 {
   "expo": {
-    "name": "elemental_editor",
+    "name": "Pixi Patch",
     "entryPoint": "_layout.tsx",
-    "slug": "elemental_editor",
+    "slug": "pixi-patch",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "myapp",
+    "scheme": "pixipatch",
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
-      "assets/stickerPacks/**/*"
+      "src/assets/stickerPacks/**/*"
     ],
     "splash": {
-      "image": "./assets/images/tempSplash.png",
+      "image": "./src/assets/images/tempSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ElementalEditor"
+      "bundleIdentifier": "xyz.pixipatch"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.elemental_editor"
+      "package": "xyz.pixipatch"
     },
     "web": {
       "bundler": "metro",
