@@ -25,6 +25,9 @@ firebase-adminsdk.json
 *.cert
 *.der
 secrets/*
+*.json
+
+pixi-patch*
 .gcloudignore
 # macOS
 .DS_Store
