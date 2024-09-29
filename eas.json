@@ -1,46 +1,64 @@
 {
+  "cli": {
+    "version": ">= 0.37.0"
+  },
   "build": {
     "development": {
-      "developmentClient": true,
       "distribution": "internal",
       "android": {
         "buildType": "apk"
       },
       "ios": {
-        "buildConfiguration": "Debug"
-      }
-    },
-    "preview": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      },
-      "ios": {
-        "buildConfiguration": "Release"
+        "simulator": true
       }
     },
     "production": {
+      "distribution": "store",
       "android": {
-        "buildType": "app-bundle",
-        "gradleCommand": ":app:bundleRelease"
+        "buildType": "app-bundle"
       },
       "ios": {
-        "buildConfiguration": "Release",
-        "autoIncrement": "buildNumber"
-      },
-      "env": {
-        "API_KEY": "secret-value"
+        "simulator": false
+      }
+    },
+    "ios-simulator": {
+      "name": "iOS Simulator Build",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "ios-device": {
+      "name": "iOS Device Build",
+      "ios": {
+        "simulator": false
       }
     }
   },
   "submit": {
-    "production": {
+    "development": {
       "android": {
-        "serviceAccountKeyPath": "./path/to/your-key.json"
+        "serviceAccountKeyPath": "service-account-key.json",
+        "track": "development",
+        "androidPackage": "xyz.pixipatch.test"
       },
       "ios": {
-        "appleId": "kimgarza222@gmail.com",
-        "ascAppId": "1234567890"
+        "appleId": "your-apple-id@example.com",
+        "ascAppId": "your-app-store-connect-prod-app-id", 
+        "appleTeamId": "your-apple-team-id",
+        "appIdentifier": "com.yourapp.bundleid.prod" 
+      }
+    },
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "service-account-key.json",
+        "track": "production",
+        "androidPackage": "xyz.pixipatch.test"
+      },
+      "ios": {
+        "appleId": "your-apple-id@example.com",
+        "ascAppId": "your-app-store-connect-prod-app-id", 
+        "appleTeamId": "your-apple-team-id",
+        "appIdentifier": "com.yourapp.bundleid.prod" 
       }
     }
   }

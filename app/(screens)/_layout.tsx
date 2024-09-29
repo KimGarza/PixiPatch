@@ -13,6 +13,7 @@ import { ItemProvider } from '@/src/hooks/contexts/useItemCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';
 // import stickerAssets from '@/loadApp/StickerPacks/stickerAssets';
 
+require('dotenv').config({ path: './dotenv/.env' }); // tells dotenv to look for .env inside this dir
 // prevents the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
