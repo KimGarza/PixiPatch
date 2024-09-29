@@ -20,45 +20,29 @@
       "ios": {
         "simulator": false
       }
-    },
-    "ios-simulator": {
-      "name": "iOS Simulator Build",
-      "ios": {
-        "simulator": true
-      }
-    },
-    "ios-device": {
-      "name": "iOS Device Build",
-      "ios": {
-        "simulator": false
-      }
     }
   },
   "submit": {
     "development": {
       "android": {
         "serviceAccountKeyPath": "service-account-key.json",
-        "track": "development",
-        "androidPackage": "xyz.pixipatch.test"
+        "track": "internal"
       },
       "ios": {
         "appleId": "your-apple-id@example.com",
-        "ascAppId": "your-app-store-connect-prod-app-id", 
-        "appleTeamId": "your-apple-team-id",
-        "appIdentifier": "com.yourapp.bundleid.prod" 
+        "ascAppId": "your-app-store-connect-prod-app-id",
+        "appleTeamId": "your-apple-team-id"
       }
     },
     "production": {
       "android": {
         "serviceAccountKeyPath": "service-account-key.json",
-        "track": "production",
-        "androidPackage": "xyz.pixipatch.test"
+        "track": "production"
       },
       "ios": {
         "appleId": "your-apple-id@example.com",
-        "ascAppId": "your-app-store-connect-prod-app-id", 
-        "appleTeamId": "your-apple-team-id",
-        "appIdentifier": "com.yourapp.bundleid.prod" 
+        "ascAppId": "your-app-store-connect-prod-app-id",
+        "appleTeamId": "your-apple-team-id"
       }
     }
   }
