@@ -29,7 +29,7 @@ jobs:
 
       - name: EAS Build
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             eas build --platform android --profile production --non-interactive
@@ -40,7 +40,7 @@ jobs:
       - name: EAS Submit (after successful build)
         if: success() # Ensure this runs only after a successful build
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             eas submit --platform android --profile production --non-interactive
