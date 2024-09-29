@@ -1,0 +1,48 @@
+name: Build and Deploy Expo App
+
+on:
+  push:
+    branches:
+      - main # prod
+      - dev # dev
+
+jobs:
+  build:
+    name: Build Expo App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Node
+        uses: actions/set-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli eas-cli
+
+      - name: EAS Build
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            eas build --platform android --profile production --non-interactive
+          else
+            eas build --platform android --profile development --non-interactive
+          fi
+
+      - name: EAS Submit (after successful build)
+        if: success() # Ensure this runs only after a successful build
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            eas submit --platform android --profile production --non-interactive
+          else
+            eas submit --platform android --profile development --non-interactive
+          fi
