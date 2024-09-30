@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # prod
-      - dev # dev
+      - dev # dev test
 
 jobs:
   build:
@@ -16,9 +16,10 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Setup Node
-        uses: actions/set-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: '20.12.1'
+          check-latest: false
 
       - name: Install dependencies
         run: npm install
@@ -28,7 +29,7 @@ jobs:
 
       - name: EAS Build
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             eas build --platform android --profile production --non-interactive
@@ -39,7 +40,7 @@ jobs:
       - name: EAS Submit (after successful build)
         if: success() # Ensure this runs only after a successful build
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             eas submit --platform android --profile production --non-interactive
