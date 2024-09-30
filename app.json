@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pixi Patch",
     "entryPoint": "_layout.tsx",
-    "slug": "pixi-patch",
+    "slug": "elemental_editor",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "pixipatch",

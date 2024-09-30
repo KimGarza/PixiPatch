@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # prod
-      - dev # dev test
+      - dev # dev
 
 jobs:
   build:
