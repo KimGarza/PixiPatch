@@ -1,4 +1,4 @@
-package com.anonymous.elemental_editor
+package com.anonymous.pixi_patch
 
 import android.os.Build
 import android.os.Bundle
