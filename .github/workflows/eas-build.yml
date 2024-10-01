@@ -27,11 +27,10 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
-      - name: Create Google Service Account Key file
-        env:
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          echo "$GOOGLE_SERVICE_ACCOUNT_KEY" > google-service-account-key.json
+      - name: Access Google Service Account Key from Secret Manager
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - name: EAS Build
         env:
