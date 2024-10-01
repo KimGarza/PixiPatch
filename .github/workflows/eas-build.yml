@@ -27,12 +27,22 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
-      - name: EAS Build and Auto Submit
+      - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas build --platform android --profile production --auto-submit --non-interactive
+            eas build --platform android --profile production --non-interactive
           else
-            eas build --platform android --profile development --auto-submit --non-interactive
+            eas build --platform android --profile development --non-interactive
+          fi
+      
+      - name: EAS Submit
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            eas submit --platform android --profile production --non-interactive
+          else
+            eas submit --platform android --profile development --non-interactive
           fi
