@@ -19,8 +19,6 @@ SplashScreen.preventAutoHideAsync();
 
 // render comp to check auth and rener user auth, purchases in global ctx 
 // let stickerPacks: string[] = ['basic'];
-
-// acts as root component, theme management, provider wrapper!
 export default function RootLayout() {
 
   SplashScreen.hideAsync();
