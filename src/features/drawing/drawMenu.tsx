@@ -110,22 +110,4 @@ const styles = StyleSheet.create({
     right: 0,
     top: '5%'
   },
-  close: {
-    position: 'absolute',
-    right: '-1%',
-    top: '-1%',
-    zIndex: 99999 
-  },
-  done: {
-    position: 'absolute',
-    flexDirection: 'row',
-    right: 20,
-    top: -50,
-    alignItems: 'center',
-    gap: 1
-  },
-  sticker: {
-    height: 50,
-    width: 50
-  }
 })

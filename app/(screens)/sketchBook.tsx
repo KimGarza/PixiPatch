@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import DrawUtil from '@/src/features/drawing/DrawUtil';
 import DrawMenu from '@/src/features/drawing/drawMenu';
 import HomeButton from '@/src/components/utils/homeButton';
+import { useDrawCtx } from '@/src/features/drawing/DrawCtx';
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -10,9 +11,16 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 const SketchBookScreen = () => { 
 
   const [isDone, setIsDone] = useState<boolean>(false);
+  const [isCleared, setIsCleared] = useState<boolean>(false);
+  const [clear, setClear] = useState<boolean>(false);
+  const { clearCanvas, drawingPaths } = useDrawCtx();
+
+  const clearCanv = () => {
+    clearCanvas();
+  }
 
   useEffect(() => {
-  }, [isDone])
+  }, [isDone, clear, drawingPaths ])
 
 return (
   <View style={styles.screenContainer}>
@@ -30,13 +38,18 @@ return (
     <View style={styles.canvasContainer} collapsable={false} >
 
       <View style={styles.canvas} >
-          <DrawUtil isDone={isDone}/>
+          <DrawUtil isDone={isDone} isCleared={isCleared}/>
       </View>
 
       <TouchableOpacity onPress={() => {setIsDone(!isDone)}} style={styles.done}>
         <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Done</Text>
         {/* <SimpleLineIcons name='pencil' size={40} style={{top: -5}}/> */}
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => {setIsCleared(!isCleared)}} style={styles.clear}>
+        <Text style={{width: 70, height: 35, borderWidth: .8, borderRadius: 14, textAlign: 'center', textAlignVertical: 'center', fontSize: 20}}>Clear</Text>
+      </TouchableOpacity>
+
     </View>
 
     {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
@@ -84,6 +97,13 @@ const styles = StyleSheet.create({
   done: {
     position: 'absolute',
     bottom: 0, right: 0,
+    margin: 10,
+    zIndex: 9999999, // exactly this many 9s lel
+    justifyContent: 'flex-start',
+  },
+  clear: {
+    position: 'absolute',
+    bottom: 0, left: 0,
     margin: 10,
     zIndex: 9999999, // exactly this many 9s lel
     justifyContent: 'flex-start',

@@ -9,6 +9,7 @@ interface DrawCtxType {
     setActiveColor: Dispatch<SetStateAction<string>>;
     activeSize: number;
     activeColor: string;
+    clearCanvas: () => void;
 }
 
 const defaultValue: DrawCtxType = {
@@ -17,7 +18,8 @@ const defaultValue: DrawCtxType = {
     setActiveSize: () => {},
     setActiveColor: () => {},
     activeSize: 3,
-    activeColor: 'black'
+    activeColor: 'black',
+    clearCanvas: () => {}
 }
 
 export const DrawCtx = createContext<DrawCtxType>(defaultValue);
@@ -39,7 +41,14 @@ export const DrawProvider: React.FC<DrawCtxProps> = ({ children }) => {
 
     const [drawingPaths, setDrawingPaths] = useState<PathData[]>([]);
     const [activeSize, setActiveSize] = useState<number>(3);
-    const [activeColor, setActiveColor] = useState<string>('black');
+    const [activeColor, setActiveColor] = useState<string>('red');
+
+    const clearCanvas = () => {
+        console.log("triggered?")
+        setDrawingPaths([]);
+        setActiveSize(3);
+        setActiveColor('red');
+    }
     
     useEffect(() => {
     }, [drawingPaths])
@@ -51,7 +60,8 @@ export const DrawProvider: React.FC<DrawCtxProps> = ({ children }) => {
             setActiveSize,
             setActiveColor,
             activeSize,
-            activeColor
+            activeColor,
+            clearCanvas
           }}
         >
             {children}
