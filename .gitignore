@@ -25,6 +25,7 @@ firebase-adminsdk.json
 *.cert
 *.der
 secrets/*
+google-service-account-key.json
 
 pixi-patch*
 .gcloudignore
