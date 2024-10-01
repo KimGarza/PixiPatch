@@ -38,9 +38,9 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas build --platform android --profile production --non-interactive --key google-service-account-key.json
+            eas build --platform android --profile production --non-interactive
           else
-            eas build --platform android --profile development --non-interactive --key google-service-account-key.json
+            eas build --platform android --profile development --non-interactive
           fi
 
       - name: EAS Submit (after successful build)
