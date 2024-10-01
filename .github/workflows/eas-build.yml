@@ -26,23 +26,33 @@ jobs:
 
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
+      
+      # Install jq
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
       - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            # Build for production profile on main branch
             eas build --platform android --profile production --non-interactive
+            BUILD_URL=$(eas build:list --status finished --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
           else
+            # Build for development profile on dev branch
             eas build --platform android --profile development --non-interactive
+            BUILD_URL=$(eas build:list --status finished --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
           fi
-      
+        # Make the BUILD_URL available to later steps
+        shell: bash
+
       - name: EAS Submit
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas submit --platform android --profile production --non-interactive
+            eas submit --platform android --url $BUILD_URL --profile production --non-interactive
           else
-            eas submit --platform android --profile development --non-interactive
+            eas submit --platform android --url $BUILD_URL --profile development --non-interactive
           fi
