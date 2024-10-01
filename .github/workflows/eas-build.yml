@@ -32,7 +32,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas build --platform android --profile production --auto-submit --non-interactive --type string
+            eas build --platform android --profile production --auto-submit --non-interactive
           else
-            eas build --platform android --profile development --auto-submit --non-interactive --type string
+            eas build --platform android --profile development --auto-submit --non-interactive
           fi
