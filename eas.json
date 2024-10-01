@@ -7,8 +7,8 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "credentialsSource": "remote",
-        "releaseChannel": "dev"
+        "autoSubmit": true,
+        "credentialsSource": "remote"
       },
       "ios": {
         "simulator": true
