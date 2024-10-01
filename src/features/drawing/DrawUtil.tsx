@@ -26,6 +26,7 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
 
     const viewRef = useRef(null);
     
+    
     useEffect(() => {
         if (isDone && viewRef && viewRef != null) {
             handleSaveDrawing();
@@ -36,7 +37,7 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
         }
     }, [isDone, isCleared])
 
-    
+
     const handleSaveDrawing = async () => {
         try {
             if (drawingPaths.length > 0) {
