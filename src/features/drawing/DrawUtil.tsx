@@ -36,6 +36,7 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
         }
     }, [isDone, isCleared])
 
+    
     const handleSaveDrawing = async () => {
         try {
             if (drawingPaths.length > 0) {
