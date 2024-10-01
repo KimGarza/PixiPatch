@@ -32,6 +32,11 @@
         "appleId": "your-apple-id@example.com",
         "ascAppId": "your-app-store-connect-prod-app-id",
         "appleTeamId": "your-apple-team-id"
+      },
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "COGNITO_USER_POOL_ID": "east-1_rs4p5eN8T",
+        "COGNITO_APP_CLIENT_ID": "us-east-1"
       }
     },
     "production": {
@@ -43,6 +48,11 @@
         "appleId": "your-apple-id@example.com",
         "ascAppId": "your-app-store-connect-prod-app-id",
         "appleTeamId": "your-apple-team-id"
+      },
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "COGNITO_USER_POOL_ID": "east-1_rs4p5eN8T",
+        "COGNITO_APP_CLIENT_ID": "us-east-1"
       }
     }
   }
