@@ -27,14 +27,19 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
+      - name: Create Google Service Account Key file
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: echo "Google Service Account Key file has been created."
+
       - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas build --platform android --profile production --non-interactive
+            eas build --platform android --profile production --non-interactive --key google-service-account-key.json
           else
-            eas build --platform android --profile development --non-interactive
+            eas build --platform android --profile development --non-interactive --key google-service-account-key.json
           fi
 
       - name: EAS Submit (after successful build)
@@ -43,7 +48,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas submit --platform android --latest --profile production --non-interactive
+            eas submit --platform android --latest --profile production --non-interactive --key google-service-account-key.json
           else
-            eas submit --platform android --latest --profile development --non-interactive
+            eas submit --platform android --latest --profile development --non-interactive --key google-service-account-key.json
           fi
