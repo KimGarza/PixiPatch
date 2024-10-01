@@ -25,7 +25,6 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
     const [activePath, setActivePath] = useState<PathData>({ points: [], strokeWidth: 3, strokeColor: 'black'});
 
     const viewRef = useRef(null);
-
     
     useEffect(() => {
         if (isDone && viewRef && viewRef != null) {
