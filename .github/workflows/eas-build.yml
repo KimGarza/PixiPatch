@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build Expo App
+    name: Build and Submit Expo App
     runs-on: ubuntu-latest
 
     steps:
@@ -27,28 +27,12 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
-      - name: Access Google Service Account Key from Secret Manager
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-
-      - name: EAS Build
+      - name: EAS Build and Auto Submit
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas build --platform android --profile production --non-interactive
+            eas build --platform android --profile production --auto-submit --non-interactive
           else
-            eas build --platform android --profile development --non-interactive
-          fi
-
-      - name: EAS Submit (after successful build)
-        if: success() # Ensure this runs only after a successful build
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas submit --platform android --latest --profile production --non-interactive
-          else
-            eas submit --platform android --latest --profile development --non-interactive
+            eas build --platform android --profile development --auto-submit --non-interactive
           fi
