@@ -7,7 +7,6 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "autoSubmit": true,
         "credentialsSource": "remote"
       },
       "ios": {
