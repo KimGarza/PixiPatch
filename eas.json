@@ -6,7 +6,9 @@
     "development": {
       "distribution": "internal",
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "credentialsSource": "remote",
+        "releaseChannel": "dev"
       },
       "ios": {
         "simulator": true
