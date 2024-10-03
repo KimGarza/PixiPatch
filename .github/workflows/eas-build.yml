@@ -37,11 +37,11 @@ jobs:
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             # Build for production profile on main branch
-            eas build --platform android --profile production --non-interactive
+            eas build --platform android --profile production --non-interactive --wait
             BUILD_URL=$(eas build:list --status finished --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
           else
             # Build for development profile on dev branch
-            eas build --platform android --profile development --non-interactive
+            eas build --platform android --profile development --non-interactive --wait
             BUILD_URL=$(eas build:list --status finished --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
           fi
         # Make the BUILD_URL available to later steps

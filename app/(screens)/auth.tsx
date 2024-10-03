@@ -32,11 +32,10 @@ export default function AuthScreen() {
       responseType: ResponseType.Code,
       redirectUri: AWS_COGNITO_CONFIG.redirectUri,
       usePKCE: true, // Enable Proof Key for Code Exchange (PKCE)
-      state: 'N7A69NWUJc'
+      state: 'N7A69NWUJc' // CHANGE
     },
     discoveryDocument
   );
-  console.log(request?.state)
 
   useEffect(() => {
     // exchangeTokenReq is empty obj passed into exchangeCodeAsync (expo auth session func) to populate it with the result using the discovery doc
