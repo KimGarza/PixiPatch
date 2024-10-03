@@ -44,4 +44,5 @@ jobs:
           eas submit --platform android \
           --latest \
           --profile development \
-          --non-interactive
+          --non-interactive \
+          --key "$GOOGLE_SERVICE_ACCOUNT_KEY"
