@@ -39,6 +39,7 @@ jobs:
       
       - name: Submit to Google Play Store
         env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           EXPO_GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         run: |
           eas submit --platform android \
