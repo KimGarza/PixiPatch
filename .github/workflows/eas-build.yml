@@ -46,4 +46,3 @@ jobs:
           --latest \
           --profile development \
           --non-interactive \
-          --key "$GOOGLE_SERVICE_ACCOUNT_KEY"
