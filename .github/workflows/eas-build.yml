@@ -27,42 +27,22 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
       
-      # Install jq
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
       - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          set -e
-          echo "Starting EAS Build..."
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            PROFILE="production"
+            eas build --platform android --profile production --non-interactive
           else
-            PROFILE="development"
+            eas build --platform android --profile development --non-interactive
           fi
-          echo "Building with profile: $PROFILE"
-          BUILD_OUTPUT=$(eas build --platform android --profile $PROFILE --non-interactive --wait)
-          echo "Build completed. Build output:"
-          echo "$BUILD_OUTPUT"
-          BUILD_URL=$(echo "$BUILD_OUTPUT" | jq -r '.artifacts.buildUrl')
-          echo "Build URL: $BUILD_URL"
-          if [ -z "$BUILD_URL" ] || [ "$BUILD_URL" = "null" ]; then
-            echo "Error: Failed to retrieve build URL."
-            exit 1
-          fi
-          echo "BUILD_URL=$BUILD_URL" >> $GITHUB_ENV
-        shell: bash
-
+      
       - name: EAS Submit
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          BUILD_URL: ${{ env.BUILD_URL }}
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            eas submit --platform android --url "$BUILD_URL" --profile production --non-interactive
+            eas submit --platform android --latest --profile production --non-interactive
           else
-            eas submit --platform android --url "$BUILD_URL" --profile development --non-interactive
+            eas submit --platform android --latest --profile development --non-interactive
           fi
-        shell: bash
