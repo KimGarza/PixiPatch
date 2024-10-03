@@ -55,7 +55,8 @@
     "react-native-webview": "13.8.6",
     "react-navigation": "^5.0.0",
     "reanimated-color-picker": "^3.0.4",
-    "expo-auth-session": "~5.5.2"
+    "expo-auth-session": "~5.5.2",
+    "expo-updates": "~0.25.25"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

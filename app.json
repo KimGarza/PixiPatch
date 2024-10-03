@@ -6,6 +6,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "pixipatch",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
       "src/assets/stickerPacks/**/*"
@@ -17,13 +22,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "xyz.pixipatch"
+      "bundleIdentifier": "xyz.pixipatch",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "package": "xyz.pixipatch"
+      "package": "xyz.pixipatch",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +54,9 @@
         "projectId": "571a94c7-800c-4a36-ac13-d5e488e37797"
       }
     },
-    "owner": "kgarza"
+    "owner": "kgarza",
+    "updates": {
+      "url": "https://u.expo.dev/571a94c7-800c-4a36-ac13-d5e488e37797"
+    }
   }
 }

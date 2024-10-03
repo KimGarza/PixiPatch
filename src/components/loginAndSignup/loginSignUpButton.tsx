@@ -6,7 +6,7 @@ const LoginSignUpButton = () => {
     const router = useRouter();
 
     return (
-        <TouchableOpacity onPress={() => router.push('/(screens)/login')}>
+        <TouchableOpacity onPress={() => router.push('/(screens)/auth')}>
             <Text style={{fontFamily: 'ToThePoint', fontSize: 38, color: '#581800'}}>Login      |       Sign Up</Text>
         </TouchableOpacity>
     );
