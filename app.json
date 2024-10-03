@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "Pixi Patch",
-    "entryPoint": "_layout.tsx",
     "slug": "elemental_editor",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +15,7 @@
       "src/assets/stickerPacks/**/*"
     ],
     "splash": {
-      "image": "./src/assets/images/tempSplash.png",
+      "image": "./src/assets/images/tempSplash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

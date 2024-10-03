@@ -25,7 +25,6 @@ firebase-adminsdk.json
 *.der
 secrets/*
 google-service-account-key.json
-
 pixi-patch*
 .gcloudignore
 # macOS
