@@ -36,7 +36,8 @@
   "submit": {
     "development": {
       "android": {
-        "track": "internal"
+        "track": "internal",
+        "serviceAccountKeyPath": "secrets/pixipatch-google-svc-acc-key.json"
       },
       "ios": {
         "appleId": "your-apple-id@example.com",
@@ -46,7 +47,8 @@
     },
     "production": {
       "android": {
-        "track": "production"
+        "track": "production",
+        "serviceAccountKeyPath": "secrets/pixipatch-google-svc-acc-key.json"
       },
       "ios": {
         "appleId": "your-apple-id@example.com",

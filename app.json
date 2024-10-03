@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Pixi Patch",
-    "slug": "elemental_editor",
+    "slug": "pixi-patch",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "pixipatch",
+    "scheme": "pixi-patch",
     "platforms": [
       "ios",
       "android",
@@ -50,12 +50,12 @@
         "origin": false
       },
       "eas": {
-        "projectId": "571a94c7-800c-4a36-ac13-d5e488e37797"
+        "projectId": "b6f6153c-8c1c-4708-aa73-b660d5309a5c"
       }
     },
-    "owner": "kgarza",
+    "owner": "kimgarza",
     "updates": {
-      "url": "https://u.expo.dev/571a94c7-800c-4a36-ac13-d5e488e37797"
+      "url": "https://u.expo.dev/b6f6153c-8c1c-4708-aa73-b660d5309a5c"
     }
   }
 }

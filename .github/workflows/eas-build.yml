@@ -27,6 +27,15 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
       
+      - name: Create Google Service Account Key file
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: |
+          mkdir -p secrets
+          printf '%s' "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > secrets/pixipatch-google-svc-acc-key.json
+          echo "$GOOGLE_SERVICE_ACCOUNT_KEY" > pixipatch-google-svc-acc-key.json
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" | base64 --decode > secrets/pixipatch-google-svc-acc-key.json
+
       - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -36,13 +45,14 @@ jobs:
           else
             eas build --platform android --profile development --non-interactive
           fi
-      
-      - name: Submit to Google Play Store
+
+      - name: EAS Submit (after successful build)
+        if: success()
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EXPO_GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         run: |
-          eas submit --platform android \
-          --latest \
-          --profile development \
-          --non-interactive \
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            eas submit --platform android --latest --profile production --non-interactive
+          else
+            eas submit --platform android --latest --profile development --non-interactive
+          fi
