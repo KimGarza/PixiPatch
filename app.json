@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pixi Patch",
     "slug": "pixi-patch",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "scheme": "pixi-patch",
     "platforms": [
@@ -31,7 +31,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "xyz.pixipatch",
-      "runtimeVersion": "1.0.0"
+      "runtimeVersion": "1.0.1"
     },
     "web": {
       "bundler": "metro",
