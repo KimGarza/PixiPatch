@@ -51,7 +51,7 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
                     const drawingItem: DrawingItem[] = [
                         {
                             id: '', type: 'drawing', zIndex: 2,
-                            imageInfo: {uri: newUri, height: 1000, width: 1000},
+                            imageInfo: {uri: newUri, height: 1920, width: 1920},
                             translateX: x,
                             translateY: y,
                             height: 150, width: 150,

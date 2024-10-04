@@ -2,13 +2,13 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image, Text} from 'react-native';
 // context
-import { BackgroundCtx } from '@/src/features/background/BackgroundCtx';
+import { useBackgroundCtx } from '@/src/components/features/background/BackgroundCtx';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
-import { useTextCtx } from '@/src/features/Text/useTextCtx';
+import { useTextCtx } from '@/src/components/features/Text/useTextCtx';
 // editing tools and menus
-import StickerMenu from '@/src/features/Stickers/StickerMenu';
-import BackgroundMenu from '@/src/features/background/BackgroundMenu';
-import TextMenu from '@/src/features/Text/textMenu';
+import StickerMenu from '@/src/components/features/Stickers/StickerMenu';
+import BackgroundMenu from '@/src/components/features/background/BackgroundMenu';
+import TextMenu from '@/src/components/features/Text/textMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/src/components/save/saveButtonAndMenu';
 import HomeButton from '@/src/components/utils/homeButton';
@@ -25,7 +25,7 @@ const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
 const EditorScreen = () => {
   // contexts
-  const { background } = useContext(BackgroundCtx);
+  const { background } = useContext(useBackgroundCtx);
   const { images, stickers, drawings, texts, activeItemCtx } = useItemCtx();
   const { textsCtx } = useTextCtx();
   // menus

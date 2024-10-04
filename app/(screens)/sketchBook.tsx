@@ -1,9 +1,9 @@
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { useEffect, useState } from 'react';
-import DrawUtil from '@/src/features/drawing/DrawUtil';
-import DrawMenu from '@/src/features/drawing/drawMenu';
+import DrawUtil from '@/src/components/features/drawing/DrawUtil';
+import DrawMenu from '@/src/components/features/drawing/drawMenu';
 import HomeButton from '@/src/components/utils/homeButton';
-import { useDrawCtx } from '@/src/features/drawing/DrawCtx';
+import { useDrawCtx } from '@/src/components/features/drawing/DrawCtx';
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },  
   canvasContainer: {
-    height: canvasHeight * .7,
+    height: width,
     width: width,
   },
   canvas: {

@@ -52,7 +52,7 @@ export const TextCtx = createContext<TextCtxType>(defaultValue);
 export const useTextCtx = () => {
     const context = useContext(TextCtx);
     if (context === undefined) {
-        throw new Error("useImageCxt must be used within an ImageProvider");
+        throw new Error("useTextCtx must be used within an TextProvider");
     }
     return context;
 };

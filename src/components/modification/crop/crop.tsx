@@ -1,5 +1,5 @@
 import * as ImageManipulator from 'expo-image-manipulator';
-import { ImageItem, ImageInfo } from '@/customTypes/itemTypes';
+import { ImageItem, ImageInfo } from '@/src/customTypes/itemTypes';
 
 const Crop = async (imageItem: ImageItem, updateImageInfo: (originalImage: ImageInfo, cachedImage: ImageInfo) => void) => {
 

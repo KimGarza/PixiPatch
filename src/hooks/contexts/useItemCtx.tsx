@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/src/customTypes/itemTypes';
-import { useTextCtx } from '@/src/features/Text/useTextCtx';
+import { useTextCtx } from '@/src/components/features/Text/useTextCtx';
 
 type Item = ImageItem | StickerItem | DrawingItem | TextItem;
 interface CreateItemProps {
@@ -60,14 +60,6 @@ const generateId = () => Math.random().toString(36).slice(2, 11);
 
 const generateLargestZIndex = (items: Item[]) =>
   items.length ? Math.max(...items.map((item) => item.zIndex)) + 1 : 2;
-
-// helper function // loops over items array finds with given id and activates any state, activates any funtion, all generic type
-const mapItems = <T extends Item>(
-  items: T[],
-  setItems: Dispatch<SetStateAction<T[]>>,
-  id: string,
-  updateFn: (item: T) => T
-) => setItems((prevItems) => prevItems.map((item) => (item.id === id ? updateFn(item) : item)));
 
 export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   const [items, setItems] = useState<Item[]>([]);

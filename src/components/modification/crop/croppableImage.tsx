@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, ImageSourcePropType, View, LayoutChangeEvent } from 'react-native';
 import CropInterface from './cropInterface';
-import { ImageItem } from '@/customTypes/itemTypes';
+import { ImageItem } from '@/src/customTypes/itemTypes';
 
 interface Props {
     image: ImageItem;

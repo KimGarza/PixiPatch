@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import MutableItem from "../mutableItem/MutableItem";
-import { DrawingItem } from '@/customTypes/itemTypes';
+import { DrawingItem } from "@/src/customTypes/itemTypes";
 
   interface Props {
     drawings: DrawingItem[],

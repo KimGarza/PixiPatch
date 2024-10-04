@@ -51,7 +51,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
   useEffect(() => {}, [isTyping, subMenu]);
 
   const [fontsLoaded] = useFonts({
-    ToThePoint: require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+    ToThePoint: require('../../../assets/fonts/ToThePointRegular-n9y4.ttf'),
   });
 
   if (!fontsLoaded) {

@@ -1,7 +1,7 @@
 
 import { View, Image, StyleSheet, ImageSourcePropType, TouchableOpacity, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
-import { BackgroundCtx } from './BackgroundCtx';
+import { useBackgroundCtx } from './BackgroundCtx';
 import { backgroundAssets } from './backgroundAssets';
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
@@ -21,7 +21,7 @@ interface BackgroundMenuProps {
 const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
 
   // background context for adding backgrounds based on user selection
-  const { setBackground } = useContext(BackgroundCtx); // updata context to have error hnandling
+  const { setBackground } = useContext(useBackgroundCtx); // updata context to have error hnandling
 
   const [viewBackgrounds, setViewBackgrounds] = useState<{id: string, source: ImageSourcePropType}[]>([]);
   const [selectedPack, setSelectedPack] = useState<string>('basic');
@@ -40,14 +40,14 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
   }, [selectedPack]) // anytime new tab is selected
 
   const [fontsLoaded] = useFonts({
-    'ToThePoint': require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+    'ToThePoint': require('../../../assets/fonts/ToThePointRegular-n9y4.ttf'),
   });
 
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  // on select/press background, convert Background to have a position (backgroundData) and add it to the backgrounds state array in backgroundCtx 
+  // on select/press background, convert Background to have a position (backgroundData) and add it to the backgrounds state array in useBackgroundCtx 
   const handleBackgroundSelect = (background: ImageSourcePropType) => {
     setBackground(background); // update old to new background or set initial one
   }

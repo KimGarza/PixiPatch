@@ -4,10 +4,9 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from '../../src/hooks/useColorScheme';
-import { BackgroundProvider } from '@/src/features/background/BackgroundCtx';
-import { StickerProvider } from '@/src/features/Stickers/StickersCtx';
-import { DrawProvider } from '@/src/features/drawing/DrawCtx';
-import { TextProvider } from '@/src/features/Text/useTextCtx';
+import { BackgroundProvider } from '@/src/components/features/background/BackgroundCtx';
+import { DrawProvider } from '@/src/components/features/drawing/DrawCtx';
+import { TextProvider } from '@/src/components/features/Text/useTextCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ItemProvider } from '@/src/hooks/contexts/useItemCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';
@@ -40,7 +39,6 @@ export default function RootLayout() {
     <BackgroundProvider>
     <TextProvider>
     <ItemProvider>
-    <StickerProvider>
     <DrawProvider>
     <GestureHandlerRootView>
     <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme}>
@@ -48,7 +46,6 @@ export default function RootLayout() {
     </ThemeProvider>
     </GestureHandlerRootView>
     </DrawProvider>
-    </StickerProvider>
     </ItemProvider>
     </TextProvider>
     </BackgroundProvider>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, ImageSourcePropType, View, LayoutChangeEvent } from 'react-native';
-import { ImageItem } from '@/customTypes/itemTypes';
+import { ImageItem } from '@/src/customTypes/itemTypes';
 
 interface Props {
     image: ImageItem;

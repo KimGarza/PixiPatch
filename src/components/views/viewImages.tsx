@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import MutableItem from "../mutableItem/MutableItem";
-import { ImageItem } from '@/customTypes/itemTypes';
+import { ImageItem } from '@/src/customTypes/itemTypes';
 
   interface ViewImagesProps {
     images: ImageItem[],

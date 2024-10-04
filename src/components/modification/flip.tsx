@@ -1,5 +1,5 @@
 import * as ImageManipulator from 'expo-image-manipulator'; // part of expo sdk
-import { ImageItem } from '@/customTypes/itemTypes';
+import { ImageItem } from '@/src/customTypes/itemTypes';
 
 // flipping is done at pixel level, reverses pixels. Rearranges the pixels to create a mirrored version of image.
 const Flip = async (imageItem: ImageItem, updateImageInfo: (original: ImageItem, cached: ImageItem) => void) => {

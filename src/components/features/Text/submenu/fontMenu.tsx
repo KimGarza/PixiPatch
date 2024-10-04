@@ -13,21 +13,21 @@ import {
     const { updateFont } = useTextCtx();
   
     const [fontsLoaded] = useFonts({
-      Aktura: require('../../../assets/fonts/Aktura-Regular.otf'),
-      'Arsenal-Italic': require('../../../assets/fonts/Arsenal-Italic.ttf'),
-      'Arsenal-Regular': require('../../../assets/fonts/Arsenal-Regular.ttf'),
-      BadScript: require('../../../assets/fonts/BadScript-Regular.ttf'),
-      DummyDaze: require('../../../assets/fonts/DummyDaze.ttf'),
-      RockSalt: require('../../../assets/fonts/RockSalt-Regular.ttf'),
-      SahirYesta: require('../../../assets/fonts/SahirYesta.otf'),
-      skeleboom: require('../../../assets/fonts/skeleboom.ttf'),
-      SpaceMono: require('../../../assets/fonts/SpaceMono-Regular.ttf'),
-      SpicyRice: require('../../../assets/fonts/SpicyRice-Regular.ttf'),
-      'Tangerine-Bold': require('../../../assets/fonts/Tangerine-Bold.ttf'),
-      'Tangerine-Regular': require('../../../assets/fonts/Tangerine-Regular.ttf'),
-      Thegrakle: require('../../../assets/fonts/Thegralke.ttf'),
-      ToThePoint: require('../../../assets/fonts/ToThePointRegular-n9y4.ttf'),
-      UncialAntiqua: require('../../../assets/fonts/UncialAntiqua-Regular.ttf'),
+      Aktura: require('../../../../assets/fonts/Aktura-Regular.otf'),
+      'Arsenal-Italic': require('../../../../assets/fonts/Arsenal-Italic.ttf'),
+      'Arsenal-Regular': require('../../../../assets/fonts/Arsenal-Regular.ttf'),
+      BadScript: require('../../../../assets/fonts/BadScript-Regular.ttf'),
+      DummyDaze: require('../../../../assets/fonts/DummyDaze.ttf'),
+      RockSalt: require('../../../../assets/fonts/RockSalt-Regular.ttf'),
+      SahirYesta: require('../../../../assets/fonts/SahirYesta.otf'),
+      skeleboom: require('../../../../assets/fonts/skeleboom.ttf'),
+      SpaceMono: require('../../../../assets/fonts/SpaceMono-Regular.ttf'),
+      SpicyRice: require('../../../../assets/fonts/SpicyRice-Regular.ttf'),
+      'Tangerine-Bold': require('../../../../assets/fonts/Tangerine-Bold.ttf'),
+      'Tangerine-Regular': require('../../../../assets/fonts/Tangerine-Regular.ttf'),
+      Thegrakle: require('../../../../assets/fonts/Thegralke.ttf'),
+      ToThePoint: require('../../../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+      UncialAntiqua: require('../../../../assets/fonts/UncialAntiqua-Regular.ttf'),
     });
   
     if (!fontsLoaded) {

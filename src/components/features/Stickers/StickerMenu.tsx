@@ -31,7 +31,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   let stickers = stickerAssets[selectedPack];
 
   const [fontsLoaded] = useFonts({
-    'ToThePoint': require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
+    'ToThePoint': require('../../../assets/fonts/ToThePointRegular-n9y4.ttf'),
   });
 
   if (!fontsLoaded) {

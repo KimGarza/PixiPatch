@@ -1,6 +1,6 @@
 import { View} from 'react-native';
 import MutableItem from '../mutableItem/MutableItem';
-import { StickerItem } from '@/customTypes/itemTypes';
+import { StickerItem } from '@/src/customTypes/itemTypes';
 interface Props {
     stickers: StickerItem[];
 }

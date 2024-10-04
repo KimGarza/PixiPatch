@@ -44,7 +44,6 @@ export const DrawProvider: React.FC<DrawCtxProps> = ({ children }) => {
     const [activeColor, setActiveColor] = useState<string>('red');
 
     const clearCanvas = () => {
-        console.log("triggered?")
         setDrawingPaths([]);
         setActiveSize(3);
         setActiveColor('red');

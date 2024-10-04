@@ -6,6 +6,7 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes/itemTypes';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import useHandSparklesDragGesture from './useHandSparklesDragGesture';
 // import Trashcan from '../trashcan';
 // import useCustomGestures from './useCustomGestures';
 interface Props {
@@ -46,14 +47,6 @@ const updateTransformState = () => {
       scale: scale.value,
     });
   }
-
-  // combining all gestures into custom gesture hook to shorten length of component
-  // const { panGesture, pinchGesture, rotationGesture, handSparklesDragGesture } = useCustomGestures(
-  //   scale.value,
-  //   rotation.value,
-  //   positionX.value,
-  //   positionY.value,
-  // updateTransformState);
 
   // if there is a frontItem set, and it is not THIS current item,
   // then reset the tapCounter so that it doesn't store the memory of tap counts since another item has been brought to front
@@ -144,11 +137,11 @@ const updateTransformState = () => {
   const handSparklesDragGesture = Gesture.Pan()
     .onUpdate((event) => {
       // Adjust the scaling so that dragging upward increases size and dragging downward decreases size
-      const scaleChange = 1 - (event.translationY * 0.005); // Subtract instead of add to invert behavior
+      const scaleChange = 1 - (event.translationY * 0.007); // Subtract instead of add to invert behavior
       scale.value = savedScale.value * scaleChange;
 
       // Adjust rotation based on translationX
-      const rotationChange = event.translationX * 0.006; // Adjust sensitivity for rotation as needed
+      const rotationChange = event.translationX * 0.007; // Adjust sensitivity for rotation as needed
       rotation.value = savedRotation.value + rotationChange;
       for (let snapAngle of SNAP_ANGLES) {
         if (Math.abs(rotation.value - snapAngle) < ROTATION_SNAP_THRESHOLD) {
