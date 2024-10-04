@@ -6,9 +6,6 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes/itemTypes';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import useHandSparklesDragGesture from './useHandSparklesDragGesture';
-// import Trashcan from '../trashcan';
-// import useCustomGestures from './useCustomGestures';
 interface Props {
   item: ImageItem | StickerItem | DrawingItem | TextItem;
 }
@@ -16,15 +13,8 @@ interface Props {
 // prettier-ignore
 const MutableItem = ({ item }: Props) => {
 
-  // prettier-ignore
-  const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, deleteItems, bringToFront, frontItem } = useItemCtx();
+  const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
 
-  // const [isTrashable, setIsTrashable] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   console.log("istrashable", isTrashable);
-  // }, [isTrashable])
-  
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
   const tapCoordinatesX = useSharedValue(0);
@@ -217,9 +207,9 @@ const updateTransformState = () => {
         {activeItemCtx?.id == item.id ? (
           <View>
           <GestureDetector gesture={handSparklesDragGesture}>
-            <View style={[styles.trash, { left: -15 + item.width, top: -15 }]}>
+            <View style={[styles.hand, { left: -15 + item.width, top: -15 }]}>
                 <Animated.View style={trashIconAnimated}>
-                  <FontAwesome5 name={'hand-sparkles'} size={30} color={'#ff0847'} style={styles.editingIcon}/>
+                  <FontAwesome5 name={'hand-sparkles'} size={30} color={'#ff1038'} style={styles.editingIcon}/>
                 </Animated.View>
             </View>
           </GestureDetector>
@@ -252,16 +242,15 @@ const styles = StyleSheet.create({
   itemContainer: { position: 'absolute' },
   itemSelected: {
     borderWidth: 2,
-    borderColor: '#ff0847',
+    borderColor: '#ff1038',
     zIndex: 999,
   },
   editingIcon: {
     backgroundColor: 'white',
     borderRadius: 30,
     overflow: 'hidden',
-
   },
-  trash: {
+  hand: {
     position: 'absolute',
     zIndex: 9999999999999999999999999999999,
   },

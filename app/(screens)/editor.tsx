@@ -20,6 +20,8 @@ import ViewDrawings from '@/src/components/views/viewDrawings';
 import ViewText from '@/src/components/views/viewText';
 // misc
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import TrashButton from '@/src/components/utils/trashButton';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -27,7 +29,6 @@ const EditorScreen = () => {
   // contexts
   const { background } = useContext(useBackgroundCtx);
   const { images, stickers, drawings, texts, activeItemCtx } = useItemCtx();
-  const { textsCtx } = useTextCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
   const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
@@ -74,6 +75,11 @@ const EditorScreen = () => {
       <View style={styles.canvasContainer} ref={viewRef} collapsable={false}>
         <ImageBackground source={background} style={styles.imageBackground}>
           <View style={styles.canvas}>
+
+            {activeItemCtx && 
+            <View style={styles.trashIcon}>
+              <TrashButton/>
+            </View>}
 
             {/* Stickers */}
             <ViewStickers stickers={stickers} />
@@ -149,5 +155,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderTopWidth: 0.6,
     borderColor: 'black',
+  },
+  trashIcon: {
+    position: 'absolute', // Important for zIndex to take effect
+    right: 10,
+    top: 10,
+    zIndex: 999999999999,  // High zIndex value
+    elevation: 10,
   },
 });

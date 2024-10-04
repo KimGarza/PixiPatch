@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 
@@ -9,6 +9,9 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import LoginSignUpButton from '@/src/components/loginAndSignup/loginSignUpButton';
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
+import { SupportMeModal } from '@/src/components/Modals/supportMeModal';
+import { useState } from 'react';
+
 const { width, headerHeight } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
 const canvasHeight = width / aspectRatio;
@@ -16,6 +19,10 @@ const canvasHeight = width / aspectRatio;
 const cinnamon = '#581800';
 
 export default function HomeScreen() {
+
+  const [viewSupportModal, setViewSupportModal] = useState<boolean>(false);
+  const [viewExploreModal, setViewExploreModal] = useState<boolean>(false);
+  const [viewAboutModal, setViewAboutModal] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -45,35 +52,43 @@ export default function HomeScreen() {
 
         <View style={styles.appContent}>
 
+          {/* ------------- */}
           {/* Start creating! */}
           <View style={styles.startBlock} >
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>EDIT, COLLAGE... DO IT ALL!</Text>
 
             <TouchableOpacity onPress={() => router.push('/(screens)/editor')}>
               <Fontisto name='photograph' size={150} style={styles.photographIcon}/>
-              {/* <Image
-              source={require('../../src/assets/images/arrow.png')}
-              /> */}
             </TouchableOpacity>
             
             <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>START CREATING!</Text>
-
 
             <TouchableOpacity onPress={() => router.push('/(screens)/editor')} style={styles.drafts}>
               <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
               <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
             </TouchableOpacity>
-          {/* ------------- */}
-
-
           </View>
           {/* ------------- */}
           
           <View style={styles.links}>
-            <Text style={styles.link}>Suport Me XOXO</Text>
-            <Text style={styles.link}>Subsribe for more features!</Text>
-            <Text style={styles.link}>About</Text>
+            <Pressable onPress={() => {setViewSupportModal(true)}}>
+              <Text style={styles.link}>Suport Me XOXO</Text>
+            </Pressable>
+
+            <Pressable onPress={() => {setViewExploreModal(true)}}>
+              <Text style={styles.link}>Explore Features !</Text>
+            </Pressable>
+
+            <Pressable onPress={() => {setViewAboutModal(true)}}>
+              <Text style={styles.link}>About</Text>
+            </Pressable>
+
           </View>
+
+          <View style={styles.modal}>
+            {viewSupportModal && <SupportMeModal/>}
+          </View>
+
         </View>
       </View>
 
@@ -113,7 +128,7 @@ const styles = StyleSheet.create({
   },
   startBlock: {
     alignItems: 'center',
-    gap: 10,
+    gap: 15,
     padding: 10, paddingRight: 20, paddingLeft: 20
   },
   drafts: {
@@ -127,7 +142,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 15,
+    gap: 20,
   },
   link: {
     borderWidth: .8, borderColor: cinnamon, borderRadius: 8,
@@ -151,5 +166,11 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '90deg' }],
     transformOrigin: 'left center',
     zIndex: 9999999
+  },
+  modal: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
   }
 });

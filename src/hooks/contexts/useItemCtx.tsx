@@ -17,7 +17,7 @@ interface PendingChangesType {
 
 interface ItemCtxType {
   createItems: ({ itemType, properties }: CreateItemProps) => void;
-  deleteItems: (id: string, itemType: string) => void;
+  deleteItem: () => void;
   bringToFront: (id: string, itemType: string) => void;
   addPendingChanges: (id: string, pendingChanges: PendingChangesType) => void;
   updatePendingChanges: () => void;
@@ -34,7 +34,7 @@ interface ItemCtxType {
 
 const defaultValue: ItemCtxType = {
   createItems: () => {},
-  deleteItems: () => {},
+  deleteItem: () => {},
   bringToFront: () => {},
   updatePendingChanges: () => {},
   addPendingChanges: () => {},
@@ -139,20 +139,21 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   };
 
   // Delete Items
-  const deleteItems = (id: string, itemType: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    switch (itemType) {
+  const deleteItem = () => {
+    setItems((prev) => prev.filter((item) => activeItemCtx && (item.id !== activeItemCtx.id)));
+    setActiveItemCtx(undefined);
+    switch (activeItemCtx?.type) {
       case 'image':
-        setImages((prev) => prev.filter((image) => image.id !== id));
+        setImages((prev) => prev.filter((image) => image.id !== activeItemCtx.id));
         break;
       case 'sticker':
-        setStickers((prev) => prev.filter((sticker) => sticker.id !== id));
+        setStickers((prev) => prev.filter((sticker) => sticker.id !== activeItemCtx.id));
         break;
       case 'drawing':
-        setDrawings((prev) => prev.filter((drawing) => drawing.id !== id));
+        setDrawings((prev) => prev.filter((drawing) => drawing.id !== activeItemCtx.id));
         break;
       case 'text':
-        setTexts((prev) => prev.filter((text) => text.id !== id));
+        setTexts((prev) => prev.filter((text) => text.id !== activeItemCtx.id));
         break;
     }
   };
@@ -271,7 +272,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     <ItemCtx.Provider
       value={{
         createItems,
-        deleteItems,
+        deleteItem,
         bringToFront,
         addPendingChanges,
         updatePendingChanges,
