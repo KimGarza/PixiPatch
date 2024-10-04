@@ -28,10 +28,11 @@ const defaultValue: TextCtxType = {
         id: '', type: 'text', zIndex: 2,
         text: '',
         font: '',
+        size: 42,
         color: 'black',
         highlight: '',
         translateX: 20, translateY: 20,
-        width: 100, height: 100,
+        width: 200, height: 100,
         rotation: 0,
         pendingChanges: {rotation: 0, positionX: x, positionY: x, scale: 1},
 

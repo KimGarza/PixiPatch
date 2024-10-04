@@ -52,23 +52,9 @@ export default DrawMenu;
 const styles = StyleSheet.create({
   menuLayout: {
     flexShrink: 1, // <3
-    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
-
-    // display: 'flex',
-    // flexDirection: 'column',
-    // flexWrap: 'wrap',
-    // position: 'relative',
-    // width: width,
-    // height: '100%',
-    // zIndex: 99999,
-    // borderWidth: .5,
-    // borderRadius: 15,
-    // borderColor: 'black',
-    // backgroundColor: '#fffaf8'
   },
   sizeDots: { // this already fits within bounds of bottomTooblar styles
     display: 'flex', flexWrap: 'wrap', flexDirection: 'row',
-    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
     gap: 15,
     width: '100%',
     zIndex: 9999,
@@ -87,7 +73,6 @@ const styles = StyleSheet.create({
   },
   colorLayout: {
     display: 'flex',
-    // borderWidth: 2, borderColor: 'blue', borderRadius: 8,
     flexDirection: 'row',
     position: 'relative',
     width: '100%',

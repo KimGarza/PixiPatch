@@ -44,6 +44,7 @@ export interface BaseItem {
     zIndex: number;
     text: string,
     font: string,
+    size: number;
     color: string,
     highlight: string,
     translateX: number; translateY: number;

@@ -238,7 +238,7 @@ const updateTransformState = () => {
               styles.itemSelected
             ]} />
           ) : (
-            <Text style={[{ borderWidth: 1, fontFamily: item.font, width: item.width, height: item.height, fontSize: 42, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
+            <Text style={[{ fontFamily: item.font, width: item.width, height: item.height, fontSize: item.size, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
           )}
         </TouchableOpacity>
 
@@ -266,7 +266,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 30,
     overflow: 'hidden',
-
   },
   trash: {
     position: 'absolute',

@@ -10,7 +10,7 @@ interface Props {
 
 const ViewText: React.FC<Props> = ({ texts}) => {
 
-    const { activeText, textsCtx, typing, setActiveText } = useTextCtx();
+    const { activeText, textsCtx, typing } = useTextCtx();
 
     useEffect(() => {
     }, [textsCtx, activeText]);

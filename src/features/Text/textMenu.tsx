@@ -17,7 +17,6 @@ import AddText from './addText';
 import TextSubMenu from './textSubMenu';
 import { useTextCtx } from './useTextCtx';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 
 const cinnamon = '#581800';
 const { width, height, headerHeight } = GlobalDimensions();
@@ -28,29 +27,26 @@ interface TextMenuProps {
   menuToggle: (menuName: string) => void;
 }
 
-// text box, size, color, style, font, effect?, placement
+// Menu for adding and editing text (submenus will contian the menus specific for each feature)
 const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
   const [activeTextExists, setActiveTextExists] = useState<boolean>(false);
-
+  const [isTyping, setIsTyping] = useState<boolean>(false); // acts like a callback from the addText feature to know if user is typing
+  const [subMenu, setSubMenu] = useState<string>('');
   const { activeText } = useTextCtx();
-  const { createItems } = useItemCtx();
 
   useEffect(() => {
-    // checks if user has typed text and has not completed it, if not there is no text selected, then they cannot edit
+    // checks most recent typed text, if not there is no text selected, then they cannot edit
     if (activeText.text != '') {
         setActiveTextExists(true);
-        setSubMenu('font'); // default submenu to fill in extra space rendered for purposes of text editing
+        setSubMenu('font'); // default submenu to appear after text is typed
     } else {
         setActiveTextExists(false);
     }
   }, [activeText]);
 
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [subMenu, setSubMenu] = useState<string>('');
 
   useEffect(() => {}, [isTyping, subMenu]);
-
-  const [fontsLoaded] = useFonts({
+    const [fontsLoaded] = useFonts({
     ToThePoint: require('../../assets/fonts/ToThePointRegular-n9y4.ttf'),
   });
 
@@ -65,7 +61,6 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
   return (
     // prettier-ignore
     <View style={[isTyping || activeTextExists ? styles.moreControl : null]}>
-    {/* <View style={styles.moreControl}> */}
       <SwipeDownMenu menuToggle={handleCloseMenu}>
         <View style={styles.container}>
 
@@ -90,7 +85,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
             {/* Add Text */}
             {isTyping &&
             <View style={styles.input}>
-                <AddText setIsTyping={setIsTyping}/>
+                <AddText setIsTypingCallback={setIsTyping}/>
             </View>}
 
             {/* Submenus */}
@@ -143,7 +138,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
 export default TextMenu;
 
 const styles = StyleSheet.create({
-  moreControl: {
+  moreControl: { // if user is typing or has typed and needs options (need more space in menu bar)
     top: '-10%',
     width: width,
     height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
