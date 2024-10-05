@@ -11,9 +11,9 @@ const ViewImages: React.FC<ViewImagesProps> = ({images}) => {
 
     return (
         <View>
-            {images.map((image, index) => (
+            {images.map((image) => (
                 <MutableItem
-                    key={index}
+                    key={image.id}
                     item={image}
                 />
             ))}

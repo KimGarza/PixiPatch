@@ -1,10 +1,9 @@
 // react & expo
 import { useContext, useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, ImageBackground, Image, Text} from 'react-native';
+import { StyleSheet, View, ImageBackground, Image} from 'react-native';
 // context
 import { useBackgroundCtx } from '@/src/components/features/background/BackgroundCtx';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
-import { useTextCtx } from '@/src/components/features/Text/useTextCtx';
 // editing tools and menus
 import StickerMenu from '@/src/components/features/Stickers/StickerMenu';
 import BackgroundMenu from '@/src/components/features/background/BackgroundMenu';
@@ -20,7 +19,6 @@ import ViewDrawings from '@/src/components/views/viewDrawings';
 import ViewText from '@/src/components/views/viewText';
 // misc
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import TrashButton from '@/src/components/utils/trashButton';
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
