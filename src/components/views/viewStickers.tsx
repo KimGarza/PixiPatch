@@ -9,9 +9,9 @@ const ViewStickers: React.FC<Props> = ({stickers}) => {
 try {
     return (
         <View>
-            {stickers.map((sticker, index) => (
+            {stickers.map((sticker) => (
                 <MutableItem
-                    key={index}
+                    key={sticker.id}
                     item={sticker}
                 />
             ))}

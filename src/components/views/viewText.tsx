@@ -30,9 +30,9 @@ const ViewText: React.FC<Props> = ({ texts}) => {
 
             {/* user can tap on another existing text to change active text to that one */}
             <View>
-            {texts.map((text, index) => (
+            {texts.map((text) => (
                 <MutableItem
-                    key={index}
+                    key={text.id}
                     item={text}
                 />
             ))}

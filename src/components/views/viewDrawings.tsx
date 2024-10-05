@@ -10,9 +10,9 @@ const ViewDrawings: React.FC<Props> = ({ drawings }) => {
 
     return (
         <View>
-            {drawings.map((drawing, index) => (
+            {drawings.map((drawing) => (
                 <MutableItem
-                    key={index}
+                    key={drawing.id}
                     item={drawing}
                 />
             ))}
