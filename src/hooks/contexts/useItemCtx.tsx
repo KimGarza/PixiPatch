@@ -109,15 +109,19 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     })
   }
 
-  const createItem = (item: Item) => ({
-    ...item,
-    id: generateId(),
-    zIndex: generateLargestZIndex(items),
-  });
+  const createItem = (item: Item) => {
+    bringToFront(item.id); // this already creates largest zindex AND brings to front by default
+    return {
+      ...item,
+      id: generateId(),
+    }
+  }
 
   // Create Items
   const createItems = ({ itemType, properties }: CreateItemProps) => {
     const addItem = (newItem: Item) => {
+
+
       setItems((prev) => [...prev, newItem]);
       switch (itemType) {
         case 'image':
@@ -134,7 +138,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
           break;
       }
     };
-
     properties.forEach((item) => addItem(createItem(item)));
   };
 
@@ -159,7 +162,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   };
 
   // Bring to front
-  const bringToFront = (id: string, itemType: string) => {
+  const bringToFront = (id: string) => {
     const largestZIndex = generateLargestZIndex(items);
 
     const bringItemToFront = (item: Item) => ({
@@ -167,16 +170,21 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       zIndex: largestZIndex,
     });
 
+    const foundItem = items.find((item) => item.id === id);
+    setFrontItem(foundItem);
+    setActiveItemCtx(undefined); // if a new frontitem was just generated, nothing should be active
     setItems((prevItems) => prevItems.map((item) => (item.id === id ? bringItemToFront(item) : item)));
 
-    if (itemType === 'image') {
-      setImages((prevImages) => prevImages.map((image) => (image.id === id ? bringItemToFront(image) as ImageItem : image)));
-    } else if (itemType === 'sticker') {
-      setStickers((prevStickers) => prevStickers.map((sticker) => (sticker.id === id ? bringItemToFront(sticker) as StickerItem : sticker)));
-    } else if (itemType === 'drawing') {
-      setDrawings((prevDrawings) => prevDrawings.map((drawing) => (drawing.id === id ? bringItemToFront(drawing) as DrawingItem : drawing)));
-    } else if (itemType === 'text') {
-      setTexts((prevTexts) => prevTexts.map((text) => (text.id === id ? bringItemToFront(text) as TextItem : text)));
+    if (foundItem) {
+      if (foundItem.type === 'image') {
+        setImages((prevImages) => prevImages.map((image) => (image.id === id ? bringItemToFront(image) as ImageItem : image)));
+      } else if (foundItem.type === 'sticker') {
+        setStickers((prevStickers) => prevStickers.map((sticker) => (sticker.id === id ? bringItemToFront(sticker) as StickerItem : sticker)));
+      } else if (foundItem.type === 'drawing') {
+        setDrawings((prevDrawings) => prevDrawings.map((drawing) => (drawing.id === id ? bringItemToFront(drawing) as DrawingItem : drawing)));
+      } else if (foundItem.type === 'text') {
+        setTexts((prevTexts) => prevTexts.map((text) => (text.id === id ? bringItemToFront(text) as TextItem : text)));
+      }
     }
   };
   

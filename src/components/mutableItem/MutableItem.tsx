@@ -38,42 +38,37 @@ const updateTransformState = () => {
     });
   }
 
-  // if there is a frontItem set, and it is not THIS current item,
-  // then reset the tapCounter so that it doesn't store the memory of tap counts since another item has been brought to front
+  // check for updates to front and active items to rerender upon change
   useEffect(() => {
-    if (frontItem != undefined && frontItem.id != item.id) {
-        setTapCount(0);
+    if (frontItem?.id != item.id) { // the image is no longer active or in front so tap counter starts over
+      setTapCount(0);
     }
   }, [activeItemCtx, frontItem]);
-
-  useEffect(() => {
-  }, [item]);
 
   // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {
   
-    if (tapCount == 0 && frontItem == undefined) { // if this item is already in the front even if not in ctx, user clicks it, they want to activate it **state issues with this, may consider useRef?**
-
+    if (!activeItemCtx && item.id == frontItem?.id) { // if THIS item IS in the front and is NOT currently active...
       setActiveItemCtx(item); 
-    }
-    if (tapCount == 0) { // set to frontItem in ctx, (useEffect checks)
+    } else if (tapCount == 0) { // if THIS item is NOT in front and user tapped: they wish to bring to front...
 
       setTapCount(1);
       bringToFront(item.id, item.type);
-      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
+
+      // editing pencil popup location for images
+      const { locationX, locationY } = evt.nativeEvent; 
       tapCoordinatesX.value = locationX;
       tapCoordinatesY.value = locationY;
 
-    } else if (tapCount == 1) { // item is in foreground and user wishes to activate it
+    } else if (tapCount == 1) { // if THIS item was brought to front but not yet activated: user wishes to active...
 
       setTapCount(2);
-      const { locationX, locationY } = evt.nativeEvent; // get coordinates to track where on image user tapped for purposes of toolbox
-      tapCoordinatesX.value = locationX;
-      tapCoordinatesY.value = locationY;
-      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value }); // if image, activate editing pencil popup
       setActiveItemCtx(item);
 
-    } else if (tapCount == 2) { // deactivate by tapping this activated image again **want to do this if user clicks outside of any image too **
+      // editing pencil popup location for images
+      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value });
+
+    } else if (tapCount == 2) { // if THIS item is activated, user taps again: they wish to deactivate
 
       setTapCoordinates({ x: 0, y: 0 });
       setActiveItemCtx(undefined);
@@ -82,7 +77,6 @@ const updateTransformState = () => {
     }
   };
 
-  // trash stuff
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
       positionX.value = event.translationX + savedPositionX.value;
@@ -149,10 +143,6 @@ const updateTransformState = () => {
       savedRotation.value = rotation.value;
       runOnJS(updateTransformState)();
     });
-
-  // Combine pinch and rotate for the image itself
-  const combinedGesture = Gesture.Simultaneous(pinchGesture, rotationGesture);
-  const gesture = Gesture.Exclusive(panGesture, combinedGesture);
 
   // item animatedStyle
   const toolBoxAnimated = useAnimatedStyle(() => { // item animatedStyle
