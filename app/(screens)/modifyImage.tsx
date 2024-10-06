@@ -9,6 +9,9 @@ import CroppableImage from '@/src/components/modification/crop/croppableImage';
 import FilterableImage from '@/src/components/modification/Filters/filterableImage';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { ImageItem } from '@/src/customTypes/itemTypes';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -134,7 +137,7 @@ return (
 const styles = StyleSheet.create({
   screenContainer: {
     width: width,
-    backgroundColor: '#1d1c1a'
+    backgroundColor: colors.DarkCoffee
   },
   headerNav: {
     zIndex: 9999999,
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     height: canvasHeight * .15, width: '100%',
-    backgroundColor: '#bec6ba',
+    backgroundColor: colors.Sage,
   },
   primaryTools: {
     flexDirection: 'row',
@@ -194,6 +197,6 @@ const styles = StyleSheet.create({
     zIndex: 99999999999,
     padding: 15,
     borderTopWidth: .6, borderColor: 'black',
-    backgroundColor: '#bec6ba',
+    backgroundColor: colors.Sage,
   },
 });

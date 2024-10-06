@@ -2,7 +2,9 @@ import React, { useRef } from 'react';
 import { View, Animated, PanResponder, StyleSheet } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import GlobalDimensions from '../dimensions/globalDimensions';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
 
+const { colors } = GlobalTheme();
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   menu: {
     display: 'flex', flexDirection: 'column',
     // borderWidth: .5, borderRadius: 0, borderColor: 'black',
-    backgroundColor: '#fffaf8',
+    backgroundColor: colors.WhitePeach,
     top: -10,
     left: 0,
     right: 0,

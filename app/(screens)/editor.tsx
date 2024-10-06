@@ -20,6 +20,9 @@ import ViewText from '@/src/components/views/viewText';
 // misc
 import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 import TrashButton from '@/src/components/utils/trashButton';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
 
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     zIndex: 9999999,
     padding: 15,
     borderTopWidth: 0.6,
-    borderColor: 'black',
+    borderColor: colors.DarkRust,
   },
   trashIcon: {
     position: 'absolute', // Important for zIndex to take effect

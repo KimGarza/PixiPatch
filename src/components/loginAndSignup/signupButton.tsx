@@ -1,4 +1,7 @@
 import { TouchableOpacity, Text } from "react-native";
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 const LoginButton = () => {
 
@@ -7,7 +10,7 @@ const LoginButton = () => {
 
     return (
         <TouchableOpacity onPress={handleLogin}>
-            <Text style={{fontFamily: 'ToThePoint', fontSize: 38, color: '#581800'}}>Login      |       Sign Up</Text>
+            <Text style={{fontFamily: 'ToThePoint', fontSize: 38, color: colors.DarkRust}}>Login      |       Sign Up</Text>
         </TouchableOpacity>
     );
 }

@@ -3,7 +3,9 @@ import { useRouter } from "expo-router";
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import SpeechBubble from "../utils/speechBubble";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
+import GlobalTheme from "@/src/hooks/contexts/GlobalTheme";
 
+const { colors } = GlobalTheme();
 // Little popup toolbox for editing options on a specific image
 // some props drilling here, passing up tool name to activate elsewhere since it doesnt make good sense to activate viewModifyImage here
 export const viewModifyImageToolbox = () => {
@@ -29,6 +31,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
        alignSelf: 'center',
        alignContent: 'center',
-       borderWidth: 1, borderColor: '#cdb6da', borderRadius: 10,
+       borderWidth: 1, borderColor: colors.twilight, borderRadius: 10,
       },
 });

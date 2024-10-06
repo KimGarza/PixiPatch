@@ -8,8 +8,10 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/src/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
 
-const cinnamon = '#581800';
+const { colors } = GlobalTheme();
+
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
@@ -75,14 +77,14 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
           <View style={styles.tabs}>
               {packNames.map((name, index) => (
               <TouchableOpacity key={index} onPress={() => handleChangeTab(name)}>
-                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: cinnamon, textAlign: 'center'}]}>{name}</Text>
+                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: colors.DarkRust, textAlign: 'center'}]}>{name}</Text>
               </TouchableOpacity>
                 
               ))}
           </View>
 
           <View style={styles.title}>
-            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: cinnamon, textAlign: 'center'}}>Backgrounds <Ionicons name="sparkles-outline" size={20} color={cinnamon}/></Text>
+            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: colors.DarkRust, textAlign: 'center'}}>Backgrounds <Ionicons name="sparkles-outline" size={20} color={colors.DarkRust}/></Text>
           </View>
 
         </View>
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
   },
   title: {
     borderWidth: 1, borderBottomWidth: 0, 
-    backgroundColor: '#e2d9d4',
+    backgroundColor: colors.KindGrey,
     height: 50
   },
   tabs: {
@@ -140,11 +142,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   tab: {
-    borderWidth: 1, borderBottomWidth: 0, borderColor: cinnamon,
+    borderWidth: 1, borderBottomWidth: 0, borderColor: colors.DarkRust,
     borderTopRightRadius: 100,
     padding: 10,
     alignContent: 'center',
-    backgroundColor: '#d7c8bf',
+    backgroundColor: colors.KindGreyWarm,
   },
   scrollViewContent: {
     flexDirection: 'row',
@@ -168,6 +170,6 @@ const styles = StyleSheet.create({
   },
   background: {
     height: 45, width: 45,
-    borderRadius: 15, borderWidth: 2, borderColor: '#c9bdb9',
+    borderRadius: 15, borderWidth: 2, borderColor: colors.Mud,
   }
 })

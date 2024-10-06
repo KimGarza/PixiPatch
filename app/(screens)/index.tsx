@@ -11,12 +11,13 @@ import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
 
 import { SupportMeModal } from '@/src/components/Modals/supportMeModal';
 import { useState } from 'react';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 const { width, headerHeight } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
 const canvasHeight = width / aspectRatio;
-
-const cinnamon = '#581800';
 
 export default function HomeScreen() {
 
@@ -55,17 +56,17 @@ export default function HomeScreen() {
           {/* ------------- */}
           {/* Start creating! */}
           <View style={styles.startBlock} >
-            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>EDIT, COLLAGE... DO IT ALL!</Text>
+            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: colors.DarkRust }}>EDIT, COLLAGE... DO IT ALL!</Text>
 
             <TouchableOpacity onPress={() => router.push('/(screens)/editor')}>
               <Fontisto name='photograph' size={150} style={styles.photographIcon}/>
             </TouchableOpacity>
             
-            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: cinnamon }}>START CREATING!</Text>
+            <Text style={{ fontFamily: 'ToThePoint', fontSize: 28, color: colors.DarkRust }}>START CREATING!</Text>
 
             <TouchableOpacity onPress={() => router.push('/(screens)/editor')} style={styles.drafts}>
-              <Text style={{color: cinnamon, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
-              <FontAwesome5 name={'drafting-compass'} size={20} color={cinnamon}/>
+              <Text style={{color: colors.DarkRust, fontSize: 32, fontFamily: 'ToThePoint'}}>Drafts</Text>
+              <FontAwesome5 name={'drafting-compass'} size={20} color={colors.DarkRust}/>
             </TouchableOpacity>
           </View>
           {/* ------------- */}
@@ -93,8 +94,8 @@ export default function HomeScreen() {
       </View>
 
       <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
-        <Text style={{ fontFamily: 'ToThePoint', fontSize: 32, color: cinnamon }}>Ads from my supporters!</Text>
-        <FontAwesome6 name={'hand-holding-heart'} size={20} color={cinnamon}/>
+        <Text style={{ fontFamily: 'ToThePoint', fontSize: 32, color: colors.DarkRust }}>Ads from my supporters!</Text>
+        <FontAwesome6 name={'hand-holding-heart'} size={20} color={colors.DarkRust}/>
       </View> 
       <View style={styles.ads}>
       </View>
@@ -106,7 +107,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   screenContainer: {
     width: width,
-    backgroundColor: '#dfded8',
+    backgroundColor: colors.Musk,
     height: '100%',
     alignItems: 'center',
   },
@@ -145,20 +146,19 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   link: {
-    borderWidth: .8, borderColor: cinnamon, borderRadius: 8,
-    backgroundColor: '#e3dfda',
-    fontFamily: 'ToThePoint', fontSize: 32, color: cinnamon,
+    borderWidth: .8, borderColor: colors.DarkRust, borderRadius: 8,
+    fontFamily: 'ToThePoint', fontSize: 32, color: colors.DarkRust,
     padding: 5,
   },
-  ads: { // NEED TO CONDITIONALLY RENDER
-    borderTopWidth: .5, borderColor: '#581800',
+  ads: {
+    borderTopWidth: .5, borderColor: colors.DarkRust,
     width: '100%',
     zIndex: 9999999,
     padding: 10,
   },
   photographIcon: {
-    color: '#280b00',
-    backgroundColor: '#ffceb7', borderRadius: 100,
+    color: colors.DarkCoffee,
+    backgroundColor: colors.LightPeach, borderRadius: 100,
   },
   login: {
     position: 'absolute',

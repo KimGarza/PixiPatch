@@ -6,6 +6,9 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes/itemTypes';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 interface Props {
   item: ImageItem | StickerItem | DrawingItem | TextItem;
 }
@@ -199,7 +202,7 @@ const updateTransformState = () => {
           <GestureDetector gesture={handSparklesDragGesture}>
             <View style={[styles.hand, { left: -15 + item.width, top: -15 }]}>
                 <Animated.View style={trashIconAnimated}>
-                  <FontAwesome5 name={'hand-sparkles'} size={30} color={'#ff1038'} style={styles.editingIcon}/>
+                  <FontAwesome5 name={'hand-sparkles'} size={30} color={colors.FireyPink} style={styles.editingIcon}/>
                 </Animated.View>
             </View>
           </GestureDetector>
@@ -232,7 +235,7 @@ const styles = StyleSheet.create({
   itemContainer: { position: 'absolute' },
   itemSelected: {
     borderWidth: 2,
-    borderColor: '#ff1038',
+    borderColor: colors.FireyPink,
     zIndex: 999,
   },
   editingIcon: {

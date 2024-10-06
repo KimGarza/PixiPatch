@@ -18,8 +18,10 @@ import TextSubMenu from './textSubMenu';
 import { useTextCtx } from './useTextCtx';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
 
-const cinnamon = '#581800';
+const { colors } = GlobalTheme();
+
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10 / 16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
@@ -80,10 +82,10 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
               style={{
                 fontFamily: 'ToThePoint',
                 fontSize: 45,
-                color: cinnamon,
+                color: colors.DarkRust,
                 textAlign: 'center',
               }}>
-                Text{' '} <MaterialCommunityIcons name="typewriter" size={30} color={cinnamon}/>
+                Text{' '} <MaterialCommunityIcons name="typewriter" size={30} color={`${colors.DarkRust}`}/>
             </Text>
           </View>
             
@@ -108,28 +110,28 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
                 onPress={() => {setIsTyping(true)}}
                 style={styles.option}
                 >
-                <MaterialCommunityIcons name="form-textbox" size={40} color={cinnamon}/>
+                <MaterialCommunityIcons name="form-textbox" size={40} color={colors.DarkRust}/>
                 </TouchableOpacity>
           </View>
 
             <View style={styles.textOptionBlock}>
                 <Text style={{ textAlign: 'center', marginBottom: 5 }}>font</Text>
                 <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('font')} : undefined} style={styles.option}>
-                <FontAwesome name="font" size={35} color={cinnamon} />
+                <FontAwesome name="font" size={35} color={colors.DarkRust} />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.textOptionBlock}>
                 <Text style={{ textAlign: 'center', marginBottom: 5 }}>color</Text>
                 <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('color')} : undefined} style={styles.option}>
-                <Foundation name="text-color" size={40} color={cinnamon} />
+                <Foundation name="text-color" size={40} color={colors.DarkRust} />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.textOptionBlock}>
                 <Text style={{ textAlign: 'center', marginBottom: 5 }}>highlight</Text>
                 <TouchableOpacity onPress={activeTextExists ? () => {setSubMenu('backgroundColor')} : undefined} style={styles.option}>
-                <FontAwesome5 name="highlighter" size={35} color={cinnamon} />
+                <FontAwesome5 name="highlighter" size={35} color={colors.DarkRust} />
                 </TouchableOpacity>
             </View>
 
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
     top: '-10%',
     width: width,
     height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
-    backgroundColor: '#fffaf8',
+    backgroundColor: colors.WhitePeach,
   },
   container: {
     display: 'flex',
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
   title: {
     borderWidth: 1,
     borderBottomWidth: 0,
-    backgroundColor: '#e2d9d4',
+    backgroundColor: colors.KindGrey,
     flexDirection: 'column',
     position: 'absolute',
     top: -50,
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: '#c9bdb9',
+    borderColor: colors.Mud,
   },
   input: {
     position: 'absolute',

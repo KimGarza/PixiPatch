@@ -6,11 +6,14 @@ import {
 } from 'react-native';
 import { useTextCtx } from '../useTextCtx';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 const BackgroundColorMenu = () => {
   const { updateHighlight } = useTextCtx();
 
-  const colors = [
+  const colorSwatches = [
     'red',
     'orange',
     'yellow',
@@ -30,7 +33,7 @@ const BackgroundColorMenu = () => {
           bounces={true}
         >
           <View style={styles.swatches}>
-            {colors.map((color, index) => (
+            {colorSwatches.map((color, index) => (
               <TouchableOpacity key={index} onPress={() => updateHighlight(color)}>
                 <AntDesign name="heart" size={40} color={color}/>
               </TouchableOpacity>
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
   },
   colorSwatch: {
     height: 45, width: 45,
-    borderRadius: 15, borderWidth: 2, borderColor: '#c9bdb9',
+    borderRadius: 15, borderWidth: 2, borderColor: colors.Mud,
   }
 });
 

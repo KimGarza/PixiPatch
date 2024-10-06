@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+
+const { colors } = GlobalTheme();
 
 interface Props {
   children?: React.ReactNode;
@@ -21,13 +24,13 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     padding: 10,
-    backgroundColor: '#c3c5c2',
+    backgroundColor: colors.SageGrey,
     borderRadius: 10,
   },
   bubble: {
-    backgroundColor: '#e4d3d2',
+    backgroundColor: colors.OldPink,
     borderRadius: 10,
-    borderColor: '#795999', borderWidth: 1, borderStyle: 'dashed',
+    borderColor: colors.DarkTwilight, borderWidth: 1, borderStyle: 'dashed',
     padding: 5,
     margin: 2,
   },
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 10,
     borderRightColor: 'transparent',
     borderTopWidth: 10,
-    borderTopColor: '#c3c5c2',
+    borderTopColor: colors.SageGrey,
   },
 });
 

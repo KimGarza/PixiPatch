@@ -3,6 +3,9 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import GlobalTheme from "@/src/hooks/contexts/GlobalTheme";
+
+const { colors } = GlobalTheme();
 
 const ImageEditingTools = () => {
 
@@ -48,8 +51,8 @@ const styles = StyleSheet.create({
        flexWrap: 'wrap',
        justifyContent: 'center',
        alignContent: 'center',
-       borderWidth: 1, borderColor: '#cdb6da', borderRadius: 10,
-       backgroundColor: '#e8deee',
+       borderWidth: 1, borderColor: colors.Twilight, borderRadius: 10,
+       backgroundColor: colors.LightTwilight,
        width: 150,
        padding: 5, gap: 10,
        overflow: 'hidden'

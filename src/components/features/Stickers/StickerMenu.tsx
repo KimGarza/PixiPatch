@@ -10,8 +10,11 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/src/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
+import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
 
-const cinnamon = '#581800';
+const { colors } = GlobalTheme();
+
+
 const { width, height, headerHeight } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
 const canvasHeight = width / aspectRatio;
@@ -144,14 +147,14 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
           <View style={styles.tabs}>
               {packNames.map((name, index) => (
               <TouchableOpacity key={index} onPress={() => handleChangeTab(name)}>
-                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: cinnamon, textAlign: 'center'}]}>{name}</Text>
+                <Text style={[styles.tab, {fontFamily: 'ToThePoint', fontSize: 30, color: colors.DarkRust, textAlign: 'center'}]}>{name}</Text>
               </TouchableOpacity>
                 
               ))}
           </View>
 
           <View style={styles.title}>
-            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: cinnamon, textAlign: 'center'}}>Stickers <AntDesign name="smileo" size={20} color={cinnamon}/></Text>
+            <Text style={{fontFamily: 'ToThePoint', fontSize: 45, color: colors.DarkRust, textAlign: 'center'}}>Stickers <AntDesign name="smileo" size={20} color={colors.DarkRust}/></Text>
           </View>
 
         </View>
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     top: '-10%',
     width: width,
     height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
-    backgroundColor: '#fffaf8',
+    backgroundColor: colors.WhitePeach,
   },
   container: {
     display: 'flex', flexDirection: 'row',
@@ -206,7 +209,7 @@ const styles = StyleSheet.create({
   },
   title: {
     borderWidth: 1, borderBottomWidth: 0, 
-    backgroundColor: '#e2d9d4',
+    backgroundColor: colors.MudLight,
     height: 50
   },
   tabs: {
@@ -215,11 +218,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   tab: {
-    borderWidth: 1, borderBottomWidth: 0, borderColor: cinnamon,
+    borderWidth: 1, borderBottomWidth: 0, borderColor: colors.DarkRust,
     borderTopRightRadius: 100,
     padding: 10,
     alignContent: 'center',
-    backgroundColor: '#d7c8bf',
+    backgroundColor: colors.Oatmeal,
   },
   scrollViewContent: {
     flexDirection: 'row',

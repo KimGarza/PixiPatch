@@ -9,6 +9,7 @@ import { DrawProvider } from '@/src/components/features/drawing/DrawCtx';
 import { TextProvider } from '@/src/components/features/Text/useTextCtx';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ItemProvider } from '@/src/hooks/contexts/useItemCtx';
+import { ThemeCtxProvider } from '@/src/hooks/contexts/useThemeCtx';
 // import { preloadStickerPacks } from '@/loadApp/StickerPacks/loadStickerPacks';
 // import stickerAssets from '@/loadApp/StickerPacks/stickerAssets';
 
@@ -36,6 +37,7 @@ export default function RootLayout() {
   }
 
   return (
+    <ThemeCtxProvider>
     <BackgroundProvider>
     <TextProvider>
     <ItemProvider>
@@ -49,5 +51,6 @@ export default function RootLayout() {
     </ItemProvider>
     </TextProvider>
     </BackgroundProvider>
+    </ThemeCtxProvider>
   );
 }

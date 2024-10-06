@@ -4,7 +4,9 @@ import { useState, useRef, RefObject } from "react";
 import { Fontisto } from '@expo/vector-icons';
 import CaptureAndSave from "./captureAndSave";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
+import GlobalTheme from "@/src/hooks/contexts/GlobalTheme";
 
+const { colors } = GlobalTheme();
 interface SaveWorkButtonProps {
   viewRef: RefObject<View> | null, // ref attached to the View element canvasContainer in EditorContent (has user's work)
 }
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderWidth: 1, borderColor: 'black', borderRadius: 10,
     padding: 8,
-    backgroundColor: "#ffcab0",
+    backgroundColor: colors.BrightPeach,
   },
   saveIcon: {
       display: 'flex',
@@ -111,10 +113,10 @@ const styles = StyleSheet.create({
     right: 1,
     top: 0,
     height: 270,
-    borderWidth: 1, borderColor: '#b46141', borderRadius: 10,
+    borderWidth: 1, borderColor: colors.Clay, borderRadius: 10,
     borderBottomWidth: 2,
     padding: 8,
-    backgroundColor: "#ffc9b5"
+    backgroundColor: colors.BrightPeach
   },
   menu: {
     display: 'flex',
@@ -128,9 +130,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     textAlign: 'center',
     fontSize: 16,
-    borderWidth: .5, borderColor: '#803c22', borderRadius: 10,
+    borderWidth: .5, borderColor: colors.DarkClay, borderRadius: 10,
     padding: 2,
-    backgroundColor: '#ffb79c'
+    backgroundColor: colors.BrightPeach
   },
   close: {
     display: 'flex',
@@ -138,9 +140,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 16,
-    borderWidth: .5, borderColor: '#803c22', borderRadius: 30,
+    borderWidth: .5, borderColor: colors.DarkClay, borderRadius: 30,
     padding: 1, paddingTop: 5, paddingBottom: 5,
-    backgroundColor: '#ffb79c'
+    backgroundColor: colors.BrightPeach
   },
   menuHeader: {
     display: 'flex',
@@ -148,8 +150,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    backgroundColor: '#eea98f',
-    borderWidth: 0, borderColor: '#803c22', borderRadius: 10,
+    backgroundColor: colors.DirtyPeach,
+    borderWidth: 0, borderColor: colors.DarkClay, borderRadius: 10,
     paddingBottom: 5, paddingTop: 5, 
     padding: 5
   }
