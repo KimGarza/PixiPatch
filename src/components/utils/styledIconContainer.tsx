@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'; // react node is union type includes all possible react children. (For the children in stylediconcontainer)
 import { View, Text, StyleSheet } from 'react-native';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 interface StyledIconContainerProps  {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderWidth: .5,
     borderColor: 'black',
     padding: 2,  
-    borderRadius: 5, 
+    borderRadius: 10, 
     backgroundColor: colors.Canvas,
   },
 });

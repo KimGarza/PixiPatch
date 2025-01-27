@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import GlobalDimensions from '../dimensions/globalDimensions';
+import GlobalDimensions from '../global/globalDimensions';
 import * as FileSystem from 'expo-file-system';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { ImageItem, ImageInfo } from '@/src/customTypes/itemTypes';
 
-const { width } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 interface Props {
   toggle: boolean;
 }
@@ -40,8 +40,8 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
       console.log("error ", error)
     }
 
-    const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
-    const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+    const x = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
+    const y = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
 
     const imageItem: ImageItem = { // returns image regardless of if wxh adjustment fails
       id: '', type: 'image', zIndex: 2,
@@ -73,7 +73,7 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
 
     // select the image(s)
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsMultipleSelection: true,
       base64: false,
     });

@@ -6,7 +6,7 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes/itemTypes';
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 interface Props {
@@ -15,9 +15,7 @@ interface Props {
 
 // prettier-ignore
 const MutableItem = ({ item }: Props) => {
-
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
-
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
   const tapCoordinatesX = useSharedValue(0);
@@ -245,7 +243,7 @@ const styles = StyleSheet.create({
   },
   hand: {
     position: 'absolute',
-    zIndex: 9999999999999999999999999999999,
+    zIndex: 9999999,
   },
   toolbox: { position: 'absolute', zIndex: 999 },
   text: {

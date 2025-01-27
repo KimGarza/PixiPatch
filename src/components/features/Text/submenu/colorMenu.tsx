@@ -6,7 +6,7 @@ import {
   } from 'react-native';
   import { useTextCtx } from '../useTextCtx';
   import AntDesign from '@expo/vector-icons/AntDesign';
-  import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+  import GlobalTheme from '@/src/components/global/GlobalTheme';
 
   const { colors } = GlobalTheme();
   

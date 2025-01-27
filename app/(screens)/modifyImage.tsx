@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 import { useLocalSearchParams  } from 'expo-router';
 import { useEffect, useState } from 'react';
 import Crop from '@/src/components/modification/crop/crop';
@@ -9,11 +9,11 @@ import CroppableImage from '@/src/components/modification/crop/croppableImage';
 import FilterableImage from '@/src/components/modification/Filters/filterableImage';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { ImageItem } from '@/src/customTypes/itemTypes';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
+import ImageEditingTools from '@/src/components/ImageSelection/ImageEditingTools';
 
 const { colors } = GlobalTheme();
-
-const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 
 // Content related to the ModifyImageScreen (due to ctx wrappers needed to make this comp but will change how ctx is used to avoid this)
 export default function ModifyImageScreen() {
@@ -61,17 +61,17 @@ export default function ModifyImageScreen() {
   // Reason for using ImageInfo here when canvas uses imageItem is bc some image manipulations affect image at the pixel level.
   const adjustImageSize = (currWidth: number, currHeight: number) => {
 
-    const canvasAspectRatio = width / canvasHeight;
+    const canvasAspectRatio = dimensions.width / dimensions.canvasHeight;
     const imageAspectRatio = currWidth / currHeight;
 
     let imgWidth, imgHeight;
 
     if (imageAspectRatio > canvasAspectRatio ) { // if imageInfo is wider than the container
-        imgWidth = width;
-        imgHeight = width / imageAspectRatio;
+        imgWidth = dimensions.width;
+        imgHeight = dimensions.width / imageAspectRatio;
     } else { // imageInfo is taller than or equal in aspect ratio to the container
-        imgHeight = height;
-        imgWidth = height * imageAspectRatio;
+        imgHeight = dimensions.height;
+        imgWidth = dimensions.height * imageAspectRatio;
     }
     return { imgWidth, imgHeight };
   }
@@ -129,6 +129,7 @@ return (
 
     {/* bottom toolbar */}
     <View style={styles.primaryTools}>
+      <ImageEditingTools/>
     </View>
 
   </View>
@@ -136,12 +137,12 @@ return (
 
 const styles = StyleSheet.create({
   screenContainer: {
-    width: width,
+    width: dimensions.width,
     backgroundColor: colors.DarkCoffee
   },
   headerNav: {
     zIndex: 9999999,
-    height: headerHeight,
+    height: dimensions.headerHeight,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,12 +152,12 @@ const styles = StyleSheet.create({
   },  
   back: {
     position: 'absolute',
-    zIndex: 999999999999999,
+    zIndex: 9999999,
     marginLeft: 10
   },
   canvasContainer: {
-    height: canvasHeight * .85,
-    width: width,
+    height: dimensions.canvasHeight * .85,
+    width: dimensions.width,
   },
   canvas: {
       display: 'flex',
@@ -185,18 +186,16 @@ const styles = StyleSheet.create({
   editSettings: {
     display: 'flex',
     flexDirection: 'row',
-    height: canvasHeight * .15, width: '100%',
+    height: dimensions.canvasHeight * .15, width: '100%',
     backgroundColor: colors.Sage,
   },
   primaryTools: {
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%', 
-    height: height - canvasHeight - headerHeight,
-    gap: 30,
-    zIndex: 99999999999,
-    padding: 15,
+    height: dimensions.height - dimensions.canvasHeight - dimensions.headerHeight,
+    zIndex: 9999999,
     borderTopWidth: .6, borderColor: 'black',
-    backgroundColor: colors.Sage,
+    backgroundColor: 'black',
   },
 });

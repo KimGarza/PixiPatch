@@ -2,7 +2,7 @@ import { TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import GlobalTheme from "@/src/hooks/contexts/GlobalTheme";
+import GlobalTheme from "@/src/components/global/GlobalTheme";
 
 const { colors } = GlobalTheme();
 

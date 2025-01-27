@@ -4,7 +4,7 @@ import { useState, useRef, RefObject } from "react";
 import { Fontisto } from '@expo/vector-icons';
 import CaptureAndSave from "./captureAndSave";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
-import GlobalTheme from "@/src/hooks/contexts/GlobalTheme";
+import GlobalTheme from "@/src/components/global/GlobalTheme";
 
 const { colors } = GlobalTheme();
 interface SaveWorkButtonProps {

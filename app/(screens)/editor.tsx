@@ -18,13 +18,13 @@ import ViewImages from '@/src/components/views/viewImages';
 import ViewDrawings from '@/src/components/views/viewDrawings';
 import ViewText from '@/src/components/views/viewText';
 // misc
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 import TrashButton from '@/src/components/utils/trashButton';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 
-const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 
 const EditorScreen = () => {
   // contexts
@@ -123,18 +123,18 @@ export default EditorScreen;
 
 const styles = StyleSheet.create({
   screenContainer: {
-    width: width,
+    width: dimensions.width,
   },
   headerNav: {
     zIndex: 9999999,
-    height: headerHeight,
+    height: dimensions.headerHeight,
   },
   headerImg: {
     width: '100%',
   },
   canvasContainer: {
-    height: canvasHeight,
-    width: width,
+    height: dimensions.canvasHeight,
+    width: dimensions.width,
   },
   canvas: {
     overflow: 'hidden',
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    height: height - canvasHeight - headerHeight,
+    height: dimensions.height - dimensions.canvasHeight - dimensions.headerHeight,
     gap: 30,
     zIndex: 9999999,
     padding: 15,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     position: 'absolute', // Important for zIndex to take effect
     right: 10,
     top: 10,
-    zIndex: 999999999999,  // High zIndex value
+    zIndex: 9999999,  // High zIndex value
     elevation: 10,
   },
 });

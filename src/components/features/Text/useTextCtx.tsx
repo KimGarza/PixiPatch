@@ -1,8 +1,8 @@
 import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
 import { TextItem } from "@/src/customTypes/itemTypes";
-import GlobalDimensions from "@/src/components/dimensions/globalDimensions";
+import GlobalDimensions from "@/src/components/global/globalDimensions";
 
-const { width } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 interface TextCtxType {
     typing: string;
     setTyping: Dispatch<SetStateAction<string>>;
@@ -17,8 +17,8 @@ interface TextCtxType {
     updateHighlight: (newColor: string) => void;
 }
 
-const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
-const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+const x = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
+const y = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
 
 const defaultValue: TextCtxType = {
 

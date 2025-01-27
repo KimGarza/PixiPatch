@@ -4,9 +4,9 @@ import DrawUtil from '@/src/components/features/drawing/DrawUtil';
 import DrawMenu from '@/src/components/features/drawing/drawMenu';
 import HomeButton from '@/src/components/utils/homeButton';
 import { useDrawCtx } from '@/src/components/features/drawing/DrawCtx';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 
-const { width, height, canvasHeight, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 
 const SketchBookScreen = () => { 
 
@@ -65,18 +65,18 @@ export default SketchBookScreen;
 
 const styles = StyleSheet.create({
   screenContainer: {
-    width: width,
+    width: dimensions.width,
   },
   headerNav: {
     zIndex: 9999999,
-    height: headerHeight
+    height: dimensions.headerHeight
   },
   headerImg: {
     width: '100%',
   },  
   canvasContainer: {
-    height: width,
-    width: width,
+    height: dimensions.width,
+    width: dimensions.width,
   },
   canvas: {
     overflow: 'hidden',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    height: height - (canvasHeight * .79) , //eww
+    height: dimensions.height - (dimensions.canvasHeight * .79) , //eww
     zIndex: 9999999,
     borderTopWidth: .6, borderColor: 'black',
   },

@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/src/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
@@ -18,13 +18,13 @@ import TextSubMenu from './textSubMenu';
 import { useTextCtx } from './useTextCtx';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 
-const { width, height, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 const aspectRatio = 10 / 16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-const canvasHeight = width / aspectRatio;
+const canvasHeight = dimensions.width / aspectRatio;
 
 interface TextMenuProps {
   menuToggle: (menuName: string) => void;
@@ -147,15 +147,15 @@ export default TextMenu;
 const styles = StyleSheet.create({
   moreControl: {
     top: '-10%',
-    width: width,
-    height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
+    width: dimensions.width,
+    height: (dimensions.height - canvasHeight - dimensions.headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
     backgroundColor: colors.WhitePeach,
   },
   container: {
     display: 'flex',
     flexDirection: 'row',
-    width: width,
-    height: height - canvasHeight - headerHeight,
+    width: dimensions.width,
+    height: dimensions.height - canvasHeight - dimensions.headerHeight,
     justifyContent: 'center',
   },
   close: {
@@ -181,14 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     top: '35%',
     gap: 20,
-    width: width,
-
-    // flexDirection: 'row',
-    // justifyContent: 'space-evenly',
-    // alignItems: 'flex-end',
-    // top: '50%',
-    // gap: 20,
-    // width: width,
+    width: dimensions.width,
   },
 
   optionsExpanded: {
@@ -197,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     top: '50%',
     gap: 20,
-    width: width,
+    width: dimensions.width,
   },
   backgrounds: {
     flexDirection: 'row',
@@ -228,7 +221,7 @@ const styles = StyleSheet.create({
   },
   subMenu: {
     position: 'absolute',
-    width: width,
+    width: dimensions.width,
     height: 80,
     top: 45,
     alignItems: 'center',

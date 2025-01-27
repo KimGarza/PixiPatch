@@ -11,7 +11,7 @@ const Trashcan = () => {
 
 const styles = StyleSheet.create({
     trash: {
-        zIndex: 999999999999,
+        zIndex: 9999999,
         position: 'absolute',
         backgroundColor: 'white',
         borderRadius: 100, padding: 8,

@@ -8,9 +8,9 @@ import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import { DrawingItem } from "@/src/customTypes/itemTypes";
 import { useRouter } from "expo-router";
 import SaveDrawing from "@/src/components/save/saveDrawing";
-import GlobalDimensions from "@/src/components/dimensions/globalDimensions";
+import GlobalDimensions from "@/src/components/global/globalDimensions";
 
-const { width } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 interface Props {
     isDone: boolean;
     isCleared: boolean;
@@ -45,8 +45,8 @@ const DrawUtil: React.FC<Props> = ({ isDone, isCleared }) => {
         
                 if (newUri) {
 
-                    const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
-                    const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+                    const x = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
+                    const y = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
                 
                     const drawingItem: DrawingItem[] = [
                         {

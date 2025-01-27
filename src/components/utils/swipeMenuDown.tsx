@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
 import { View, Animated, PanResponder, StyleSheet } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
-import GlobalDimensions from '../dimensions/globalDimensions';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalDimensions from '../global/globalDimensions';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
-const { width, height, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-const canvasHeight = width / aspectRatio;
+const canvasHeight = dimensions.width / aspectRatio;
 
 type SwipeDownMenuProps = {
   children: React.ReactNode; // To pass in the actual menu content
@@ -36,7 +36,7 @@ const SwipeDownMenu = ({ children, menuToggle}: SwipeDownMenuProps) => {
         if (gestureState.dy > 100) {
           // If swiped down far enough, close the menu
           Animated.timing(animatedPosition, {
-            toValue: height, // Move the menu off-screen
+            toValue: dimensions.height, // Move the menu off-screen
             duration: 300,
             useNativeDriver: false,
           }).start(() => {
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    width: width,
-    height: height - canvasHeight - headerHeight + 100,
+    width: dimensions.width,
+    height: dimensions.height - canvasHeight - dimensions.headerHeight + 100,
     zIndex: 9999,
   },
   chevronContainer: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1, // Ensure content takes up available space
     width: '100%',
     display: 'flex', flexDirection: 'row',
-    height: height - canvasHeight - headerHeight,
+    height: dimensions.height - canvasHeight - dimensions.headerHeight,
   },
 });
 

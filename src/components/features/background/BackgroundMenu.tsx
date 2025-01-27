@@ -3,18 +3,18 @@ import { View, Image, StyleSheet, ImageSourcePropType, TouchableOpacity, ScrollV
 import { useContext, useState, useEffect } from 'react';
 import { useBackgroundCtx } from './BackgroundCtx';
 import { backgroundAssets } from './backgroundAssets';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/src/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 
-const { width, height, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-const canvasHeight = width / aspectRatio;
+const canvasHeight = dimensions.width / aspectRatio;
 
 interface BackgroundMenuProps {
   menuToggle: () => void;
@@ -114,8 +114,8 @@ export default BackgroundMenu;
 const styles = StyleSheet.create({
   container: {
     display: 'flex', flexDirection: 'row',
-    width: width,
-    height: height - canvasHeight - headerHeight,
+    width: dimensions.width,
+    height: dimensions.height - canvasHeight - dimensions.headerHeight,
   },
   close: {
     position: 'absolute',

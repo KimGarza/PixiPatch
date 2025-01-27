@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "jsc",
     "name": "Pixi Patch",
     "slug": "pixi-patch",
     "version": "1.0.1",
@@ -10,6 +11,7 @@
       "android",
       "web"
     ],
+    "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
       "src/assets/stickerPacks/**/*"

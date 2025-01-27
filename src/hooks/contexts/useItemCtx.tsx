@@ -109,6 +109,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     })
   }
 
+  // ** 4523 NEWLY CREATED ITEMS ARE NOT SHOWING UP IN FRONT
   const createItem = (item: Item) => {
     bringToFront(item.id); // this already creates largest zindex AND brings to front by default
     return {
@@ -120,7 +121,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   // Create Items
   const createItems = ({ itemType, properties }: CreateItemProps) => {
     const addItem = (newItem: Item) => {
-
 
       setItems((prev) => [...prev, newItem]);
       switch (itemType) {

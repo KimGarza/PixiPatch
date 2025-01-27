@@ -5,19 +5,19 @@ import { useState, useEffect } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { stickerAssets } from './stickerAssets';
 import { Asset } from 'expo-asset';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwipeDownMenu from '@/src/components/utils/swipeMenuDown';
 import { useFonts } from 'expo-font';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 
 
-const { width, height, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 const aspectRatio = 10/16; // 9: 16 is normal, but shrinking height for canvas purposes, may have black on top and bottom
-const canvasHeight = width / aspectRatio;
+const canvasHeight = dimensions.width / aspectRatio;
 
 interface StickerMenuProps {
   menuToggle: () => void;
@@ -111,8 +111,8 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
   // take uri of the sticker and convert to StickerItem
   const convertToStickerItem = (newUri: string) => {
 
-    const x = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
-    const y = Math.floor(Math.random() * (width * 0.5)) + (width * 0.25);
+    const x = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
+    const y = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
 
     const converted: StickerItem = { // returns image regardless of if wxh adjustment fails
       id: '', type: 'sticker', zIndex: 2,
@@ -186,13 +186,13 @@ export default StickerMenu;
 const styles = StyleSheet.create({
   moreControl: {
     top: '-10%',
-    width: width,
-    height: (height - canvasHeight - headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
+    width: dimensions.width,
+    height: (dimensions.height - canvasHeight - dimensions.headerHeight) * 1.7, // if top starts 10% higher, why isn't it * 1.1?
     backgroundColor: colors.WhitePeach,
   },
   container: {
     display: 'flex', flexDirection: 'row',
-    width: width,
+    width: dimensions.width,
     height: '100%'
   },
   close: {

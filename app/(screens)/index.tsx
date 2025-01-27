@@ -7,17 +7,17 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import LoginSignUpButton from '@/src/components/loginAndSignup/loginSignUpButton';
-import GlobalDimensions from '@/src/components/dimensions/globalDimensions';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
 
 import { SupportMeModal } from '@/src/components/Modals/supportMeModal';
 import { useState } from 'react';
-import GlobalTheme from '@/src/hooks/contexts/GlobalTheme';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 
-const { width, headerHeight } = GlobalDimensions();
+const { dimensions } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
-const canvasHeight = width / aspectRatio;
+const canvasHeight = dimensions.width / aspectRatio;
 
 export default function HomeScreen() {
 
@@ -106,22 +106,22 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: {
-    width: width,
+    width: dimensions.width,
     backgroundColor: colors.Musk,
     height: '100%',
     alignItems: 'center',
   },
   headerNav: {
-    width: width,
+    width: dimensions.width,
     zIndex: 9999999,
-    height: headerHeight
+    height: dimensions.headerHeight
   },
   headerImg: {
     width: '100%',
   },
   pageContent: {
     height: canvasHeight,
-    width: width,
+    width: dimensions.width,
   },
   appContent: {
     top: '5%',
