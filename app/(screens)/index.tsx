@@ -1,20 +1,16 @@
-import { Text, StyleSheet, View, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
-
 import { Fontisto } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 import LoginSignUpButton from '@/src/components/loginAndSignup/loginSignUpButton';
 import GlobalDimensions from '@/src/components/global/globalDimensions';
-
 import { SupportMeModal } from '@/src/components/Modals/supportMeModal';
 import { useState } from 'react';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
-
 const { dimensions } = GlobalDimensions();
 const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
 const canvasHeight = dimensions.width / aspectRatio;
@@ -36,14 +32,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.screenContainer}>
-        
-      <View style={styles.headerNav}>
-        <Image
-          style={styles.headerImg}
-          source={require('../../src/assets/images/ElementalEditorBanner.png')}
-        />
-      </View>
+    <View>
 
       <View style={styles.login}>
         <LoginSignUpButton/>
@@ -105,20 +94,6 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    width: dimensions.width,
-    backgroundColor: colors.Musk,
-    height: '100%',
-    alignItems: 'center',
-  },
-  headerNav: {
-    width: dimensions.width,
-    zIndex: 9999999,
-    height: dimensions.headerHeight
-  },
-  headerImg: {
-    width: '100%',
-  },
   pageContent: {
     height: canvasHeight,
     width: dimensions.width,

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import usePanResponder from "./usePanResponder";
 import Svg, { Path } from 'react-native-svg';
-import { useDrawCtx } from "./DrawCtx";
+import { useDrawCtx } from "../../../hooks/contexts/useDrawCtx";
 import { PathData } from "@/src/customTypes/itemTypes";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import { DrawingItem } from "@/src/customTypes/itemTypes";

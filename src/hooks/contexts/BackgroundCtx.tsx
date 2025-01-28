@@ -9,7 +9,7 @@ interface useBackgroundCtxType {
 
 // default value for use with creation of context
 const defaultValue: useBackgroundCtxType = {
-    background: require('../../../assets/images/bgPacks/basic/white.png') as ImageSourcePropType,
+    background: require('../../assets/images/bgPacks/basic/white.png') as ImageSourcePropType,
     setBackground: () => {},
 }
 

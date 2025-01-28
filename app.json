@@ -18,6 +18,7 @@
     ],
     "splash": {
       "image": "./src/assets/images/tempSplash.jpg",
+      "imageWidth": 1920,
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

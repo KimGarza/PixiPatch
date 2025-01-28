@@ -5,6 +5,7 @@ import { Fontisto } from '@expo/vector-icons';
 import CaptureAndSave from "./captureAndSave";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import GlobalTheme from "@/src/components/global/GlobalTheme";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { colors } = GlobalTheme();
 interface SaveWorkButtonProps {
@@ -57,13 +58,14 @@ const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
     outputRange: [0, 100] // Adjust the height as needed
   });
 
-  const iconSize = menuVisible ? 40 : 20; // dynamic sizing of save icon
+  const iconSize = menuVisible ? 40 : 30; // dynamic sizing of save icon
 
   return(
     <View style={[styles.container, menuVisible && styles.menuContainer]}>
         <TouchableOpacity onPress={menuToggle} style={styles.menuHeader}>
-        <Entypo name={'save'} size={iconSize} style={styles.saveIcon}/>
-          {menuVisible && <Fontisto style={styles.close} name={'close'} size={25}/>}
+        {menuVisible && <Ionicons style={styles.close} name={'arrow-back-outline'} size={25}/>}
+        <Entypo name={'save'} size={iconSize}/>
+         
        </TouchableOpacity>
        {menuVisible && <Animated.View style={[styles.menu, { height: menuHeight }]}>
 
@@ -90,69 +92,48 @@ export default SaveButtonAndMenu;
 // // issues figuring out how to get to be 100% height of the header image, may not currently be dynamic enough
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column',
     position: 'absolute',
-    right: 1,
-    top: 0,
-    height: 55,
-    borderWidth: 1, borderColor: 'black', borderRadius: 10,
-    padding: 8,
-    backgroundColor: colors.BrightPeach,
-  },
-  saveIcon: {
-      display: 'flex',
-      top: 0,
+      top: '0%',
+      right: 1,
+      padding: 15,
+      zIndex: 9999
   },
   menuContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    position: 'absolute',
-    right: 1,
-    top: 0,
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // flexDirection: 'column',
+    // position: 'absolute',
+    // right: 1,
+    // top: 0,
     height: 270,
-    borderWidth: 1, borderColor: colors.Clay, borderRadius: 10,
+    borderWidth: 1, borderColor: colors.DarkRust, borderRadius: 10,
     borderBottomWidth: 2,
     padding: 8,
-    backgroundColor: colors.BrightPeach
+    backgroundColor: colors.LightPeach
   },
   menu: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 30,
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center',
+    gap: 25,
     padding: 5,
-    top: 30
+    top: 10
   },
   saveOption: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    textAlign: 'center',
-    fontSize: 16,
-    borderWidth: .5, borderColor: colors.DarkClay, borderRadius: 10,
-    padding: 2,
-    backgroundColor: colors.BrightPeach
+    textAlign: 'center', fontSize: 16,
+    borderWidth: .5, borderColor: colors.DirtyPeach, borderRadius: 10,
+    paddingVertical: 8, paddingHorizontal: 3,
+    backgroundColor: colors.Peach
+  },
+  menuHeader: {
+    display: 'flex', flexWrap: 'wrap', flexDirection: 'row',
+    justifyContent: 'space-around', alignItems: 'center',
+    borderWidth: 0, borderColor: colors.DarkClay, borderRadius: 10,
+    backgroundColor: colors.DirtyPeach,
+    padding: 8
   },
   close: {
     display: 'flex',
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 16,
-    borderWidth: .5, borderColor: colors.DarkClay, borderRadius: 30,
-    padding: 1, paddingTop: 5, paddingBottom: 5,
-    backgroundColor: colors.BrightPeach
+    alignItems: 'center', justifyContent: 'flex-end',
+    fontSize: 24, color: colors.DarkClay,
   },
-  menuHeader: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    backgroundColor: colors.DirtyPeach,
-    borderWidth: 0, borderColor: colors.DarkClay, borderRadius: 10,
-    paddingBottom: 5, paddingTop: 5, 
-    padding: 5
-  }
 })

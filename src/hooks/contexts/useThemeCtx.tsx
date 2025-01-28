@@ -34,6 +34,6 @@ export const useThemeCtx = () => {
     return context;
 }
 
-export const ThemeCtxProvider: React.FC<{children?: React.ReactNode}> = ({children}) => {
+export const ThemeProvider: React.FC<{children?: React.ReactNode}> = ({children}) => {
     return <ThemeCtx.Provider value={theme}>{children}</ThemeCtx.Provider>;
 }

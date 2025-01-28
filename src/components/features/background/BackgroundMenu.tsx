@@ -1,7 +1,7 @@
 
 import { View, Image, StyleSheet, ImageSourcePropType, TouchableOpacity, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
-import { useBackgroundCtx } from './BackgroundCtx';
+import { useBackgroundCtx } from '../../../hooks/contexts/BackgroundCtx';
 import { backgroundAssets } from './backgroundAssets';
 import GlobalDimensions from '@/src/components/global/globalDimensions';
 import EvilIcons from '@expo/vector-icons/EvilIcons';

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import DrawUtil from '@/src/components/features/drawing/DrawUtil';
 import DrawMenu from '@/src/components/features/drawing/drawMenu';
 import HomeButton from '@/src/components/utils/homeButton';
-import { useDrawCtx } from '@/src/components/features/drawing/DrawCtx';
+import { useDrawCtx } from '@/src/hooks/contexts/useDrawCtx';
 import GlobalDimensions from '@/src/components/global/globalDimensions';
 
 const { dimensions } = GlobalDimensions();

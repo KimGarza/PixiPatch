@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState, useRef} from 'react';
 import { TextInput, StyleSheet, View, Keyboard } from 'react-native';
-import { useTextCtx } from './useTextCtx';
+import { useTextCtx } from '../../../hooks/contexts/useTextCtx';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 
 interface Props {

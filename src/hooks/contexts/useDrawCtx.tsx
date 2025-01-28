@@ -23,7 +23,6 @@ const defaultValue: DrawCtxType = {
 }
 
 export const DrawCtx = createContext<DrawCtxType>(defaultValue);
-
 export const useDrawCtx = () => {
     const context = useContext(DrawCtx);
   

@@ -28,7 +28,7 @@ const HomeButton = () => {
     <TouchableOpacity 
         onPress={goHome}
         style={styles.homeIcon} >
-        <AntDesign name={'home'} size={30}/>
+        <AntDesign name={'home'} size={35}/>
     </TouchableOpacity>
   );
 }
@@ -38,14 +38,9 @@ export default HomeButton;
 const styles = StyleSheet.create({
     homeIcon: {
       position: 'absolute',
-      left: '4%',
-      top: '50%',
-      borderWidth: .5,
-      borderColor: 'black',
-      borderRadius: 20,
-      padding: 2,
-      transform: [{ translateY: -15 }],
+      top: '0%',
       color: 'black',
+      padding: 10,
       zIndex: 9999
     },
 })

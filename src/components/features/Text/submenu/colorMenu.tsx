@@ -4,7 +4,7 @@ import {
     ScrollView,
     TouchableOpacity,
   } from 'react-native';
-  import { useTextCtx } from '../useTextCtx';
+  import { useTextCtx } from '../../../../hooks/contexts/useTextCtx';
   import AntDesign from '@expo/vector-icons/AntDesign';
   import GlobalTheme from '@/src/components/global/GlobalTheme';
 

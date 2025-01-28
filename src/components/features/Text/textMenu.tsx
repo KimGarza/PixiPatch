@@ -15,7 +15,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Foundation from '@expo/vector-icons/Foundation';
 import AddText from './addText';
 import TextSubMenu from './textSubMenu';
-import { useTextCtx } from './useTextCtx';
+import { useTextCtx } from '../../../hooks/contexts/useTextCtx';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import GlobalTheme from '@/src/components/global/GlobalTheme';

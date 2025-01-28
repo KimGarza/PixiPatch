@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTextCtx } from '@/src/components/features/Text/useTextCtx';
+import { useTextCtx } from '@/src/hooks/contexts/useTextCtx';
 import MutableItem from '../mutableItem/MutableItem';
 import { useEffect } from 'react';
 import { TextItem } from '@/src/customTypes/itemTypes';

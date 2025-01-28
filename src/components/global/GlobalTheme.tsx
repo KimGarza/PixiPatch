@@ -6,7 +6,7 @@ const GlobalTheme = () => {
             WhitePeach: '#fffaf8',
             LightPeach: '#ffceb7',
             BrightPeach: '#ffc9b5',
-            Peach: '#581800',
+            Peach: '#ffbfa9',
             DirtyPeach: '#eea98f',
             DarkPeach: '#581800',
             FireyPink: '#ff1038',

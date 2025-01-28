@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useDrawCtx } from './DrawCtx';
+import { useDrawCtx } from '../../../hooks/contexts/useDrawCtx';
 import ColorPicker, { OpacitySlider, HueSlider, BrightnessSlider, SaturationSlider } from 'reanimated-color-picker';
 
 const DrawMenu = () => {

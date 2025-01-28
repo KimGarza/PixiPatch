@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { PanResponder, PanResponderInstance, GestureResponderEvent, PanResponderGestureState } from 'react-native';
-import { useDrawCtx } from './DrawCtx';
+import { useDrawCtx } from '../../../hooks/contexts/useDrawCtx';
 import { Point, PathData } from '@/src/customTypes/itemTypes';
 
 function usePanResponder(onPathUpdate: (newPath: PathData) => void) { 

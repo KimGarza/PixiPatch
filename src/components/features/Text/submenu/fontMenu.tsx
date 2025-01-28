@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
   } from 'react-native';
   import { useFonts } from 'expo-font';
-  import { useTextCtx } from '../useTextCtx';
+  import { useTextCtx } from '../../../../hooks/contexts/useTextCtx';
   
   const FontMenu = () => {
     const { updateFont } = useTextCtx();

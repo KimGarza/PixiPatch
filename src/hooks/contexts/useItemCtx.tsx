@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/src/customTypes/itemTypes';
-import { useTextCtx } from '@/src/components/features/Text/useTextCtx';
+import { useTextCtx } from '@/src/hooks/contexts/useTextCtx';
 
 type Item = ImageItem | StickerItem | DrawingItem | TextItem;
 interface CreateItemProps {
