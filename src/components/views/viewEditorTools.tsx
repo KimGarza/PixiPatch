@@ -8,7 +8,14 @@ import { useRouter } from 'expo-router';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
+import GlobalTheme from '@/src/components/global/GlobalTheme';
+import GlobalDimensions from '@/src/components/global/globalDimensions';
+import { Dimensions } from 'react-native';
+const { dimensions } = GlobalDimensions();
+const { colors } = GlobalTheme();
 
+const windowHieght = Dimensions.get('window').height;
+const toolbarHeight = windowHieght - dimensions.headerHeight - dimensions.canvasHeight
 interface ViewEditorToolsProps {
     backgroundMenuToggle: (menuName: string) => void,
     stickerMenuToggle: (menuName: string) => void,
@@ -49,46 +56,46 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
       }
 
     return (
+    <View style={styles.toolIcons}>
+        <StyledIconContainer dimensions={50} > 
 
-        <View style={styles.test}>
-    <StyledIconContainer dimensions={50}> 
+            {/* button to select photos from library */}
+            <PhotoSelectTool>
+                <Fontisto name='photograph' size={35} color={colors.Rust}/> 
+            </PhotoSelectTool>
+            
+            {/* callback used to toggle background menu if x to close is clicked from child */}
+            <BackgroundTool menuToggle={() => handleToggleMenu('background')}>
+                <Ionicons name='image-outline' size={35} color={colors.Rust}/>
+            </BackgroundTool>
 
-        {/* button to select photos from library */}
-        <PhotoSelectTool>
-            <Fontisto name='photograph' size={35}/> 
-        </PhotoSelectTool>
-        
-        {/* callback used to toggle background menu if x to close is clicked from child */}
-        <BackgroundTool menuToggle={() => handleToggleMenu('background')}>
-            <Ionicons name='image-outline' size={35}/>
-        </BackgroundTool>
+            <StickerTool menuToggle={() => handleToggleMenu('sticker')}> 
+                <Octicons name='smiley' size={35} color={colors.Rust}/>
+            </StickerTool>
 
-        <StickerTool menuToggle={() => handleToggleMenu('sticker')}> 
-            <Octicons name='smiley' size={35}/>
-        </StickerTool>
+            <StickerTool menuToggle={() => handleToggleMenu('text')}> 
+                <MaterialCommunityIcons name='format-text' size={35} color={colors.Rust}/>
+            </StickerTool>
 
-        <StickerTool menuToggle={() => handleToggleMenu('text')}> 
-            <MaterialCommunityIcons name='format-text' size={35}/>
-        </StickerTool>
+            <TouchableOpacity onPress={goToSketchbook}>
+                <SimpleLineIcons name='pencil' size={35} color={colors.Rust}/>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={goToSketchbook}>
-            <SimpleLineIcons name='pencil' size={35}/>
-        </TouchableOpacity>
-
-        <Feather name='layout' size={35}/>
-                  
-    </StyledIconContainer>
+            <Feather name='layout' size={35} color={colors.Rust}/>
+                
+        </StyledIconContainer>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-    test: {
-      display: 'flex', flexDirection: 'row',
-      gap: 15,
-      paddingHorizontal: 10,
-      alignItems: 'center'
+    toolIcons: {
+        flex: 1, flexDirection: 'row',
+        zIndex: 9999999,
+        alignItems: 'center', 
+        //**** WANT TO USE BUT GAP WORKS ONLY justifyContent: 'space-evenly',
+        gap: '5%',
+        paddingHorizontal: 10,
     },
 })
 

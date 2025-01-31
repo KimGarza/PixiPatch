@@ -1,7 +1,6 @@
 import { StyleSheet, TouchableOpacity, Animated, Text, View, Alert } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
 import { useState, useRef, RefObject } from "react";
-import { Fontisto } from '@expo/vector-icons';
 import CaptureAndSave from "./captureAndSave";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import GlobalTheme from "@/src/components/global/GlobalTheme";
@@ -63,8 +62,8 @@ const SaveButtonAndMenu: React.FC<SaveWorkButtonProps> = ({ viewRef }) => {
   return(
     <View style={[styles.container, menuVisible && styles.menuContainer]}>
         <TouchableOpacity onPress={menuToggle} style={styles.menuHeader}>
-        {menuVisible && <Ionicons style={styles.close} name={'arrow-back-outline'} size={25}/>}
-        <Entypo name={'save'} size={iconSize}/>
+        {menuVisible && <Ionicons style={styles.close} name={'arrow-back-outline'} size={25} />}
+        <Entypo name={'save'} size={iconSize} color={colors.Rust}/>
          
        </TouchableOpacity>
        {menuVisible && <Animated.View style={[styles.menu, { height: menuHeight }]}>
@@ -93,18 +92,11 @@ export default SaveButtonAndMenu;
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-      top: '0%',
-      right: 1,
-      padding: 15,
-      zIndex: 9999
+    top: 0, right: 0,
+    margin: 5,
+    zIndex: 9999
   },
   menuContainer: {
-    // display: 'flex',
-    // flexWrap: 'wrap',
-    // flexDirection: 'column',
-    // position: 'absolute',
-    // right: 1,
-    // top: 0,
     height: 270,
     borderWidth: 1, borderColor: colors.DarkRust, borderRadius: 10,
     borderBottomWidth: 2,
@@ -114,9 +106,9 @@ const styles = StyleSheet.create({
   menu: {
     display: 'flex', flexDirection: 'column',
     alignItems: 'center',
+    top: 10,
     gap: 25,
     padding: 5,
-    top: 10
   },
   saveOption: {
     textAlign: 'center', fontSize: 16,
@@ -128,7 +120,7 @@ const styles = StyleSheet.create({
     display: 'flex', flexWrap: 'wrap', flexDirection: 'row',
     justifyContent: 'space-around', alignItems: 'center',
     borderWidth: 0, borderColor: colors.DarkClay, borderRadius: 10,
-    backgroundColor: colors.DirtyPeach,
+    backgroundColor: colors.Peach,
     padding: 8
   },
   close: {

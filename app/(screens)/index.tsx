@@ -12,8 +12,6 @@ import GlobalTheme from '@/src/components/global/GlobalTheme';
 
 const { colors } = GlobalTheme();
 const { dimensions } = GlobalDimensions();
-const aspectRatio = 9/12 // need to change aspect ratio for index since global dimensions uses 9:14.5
-const canvasHeight = dimensions.width / aspectRatio;
 
 export default function HomeScreen() {
 
@@ -40,7 +38,7 @@ export default function HomeScreen() {
 
       <View style={styles.pageContent}>
 
-        <View style={styles.appContent}>
+        <View style={styles.homeContent}>
 
           {/* ------------- */}
           {/* Start creating! */}
@@ -95,10 +93,10 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   pageContent: {
-    height: canvasHeight,
-    width: dimensions.width,
+    borderWidth: 3, borderColor: 'green',
+    height: dimensions.homeHeight,
   },
-  appContent: {
+  homeContent: {
     top: '5%',
     gap: 15,
   },

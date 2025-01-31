@@ -11,6 +11,7 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { ImageItem } from '@/src/customTypes/itemTypes';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
 import ImageEditingTools from '@/src/components/ImageSelection/ImageEditingTools';
+import BackToEditorButton from '@/src/components/utils/backToEditorButton';
 
 const { colors } = GlobalTheme();
 const { dimensions } = GlobalDimensions();
@@ -77,49 +78,35 @@ export default function ModifyImageScreen() {
   }
 
 return (
-  <View style={styles.screenContainer}>
+  <View style={styles.pageContent}>
 
-  {/* header */}
-    <View style={styles.headerNav}>
-      <Image
-          style={styles.headerImg}
-          source={require('../../src/assets/images/ElementalEditorBanner.png')}
-      />
-      <TouchableOpacity onPress={() => router.push('/(screens)')} style={styles.back}>
-        <Ionicons name={'arrow-back'} size={35}/>
-      </TouchableOpacity>
-        
-    </View>
+    <BackToEditorButton/>
 
-    <View style={styles.canvasContainer} >
-      <View style={styles.canvas} >
-        <View style={styles.imageContainer} >
-
-        {encodedUri && (
-        <View>
-          {/* Primary image: Appears always, darkened if cropping */}
-          <Image
-            style={[isCropping ? styles.imageDark : styles.image]}
-            resizeMode="contain"
-            source={encodedUri}
-          />
-
-          {/* Conditional rendering based on current mode (cropping, filtering, etc.) */}
-          {isCropping && imageItem && imageDimensions ? (
-            <CroppableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
-          ) : isFiltering && imageItem && imageDimensions ? (
-            <FilterableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
-          // ) : isErasing ? (
-          //   // Default view or image when not in any specific mode
-          //   <ErasableImage image={imageData} encodedUri={encodedUri} />
-          // ) : isDrawing ? (
-          //   // Default view or image when not in any specific mode
-          //   <DrawableImage image={imageData} encodedUri={encodedUri} />
-          ) : (<></>)}
+    <View style={styles.imageContainer} >
+        <View style={styles.imageWrapper} >
+          {encodedUri && (
+          <View>
+            {/* Primary image: Appears always, darkened if cropping */}
+            <Image
+              style={[isCropping ? styles.imageDark : styles.image]}
+              resizeMode="contain" // fits within the space
+              source={encodedUri}
+            />
+            {/* Conditional rendering based on current mode (cropping, filtering, etc.) */}
+            {isCropping && imageItem && imageDimensions ? (
+              <CroppableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
+            ) : isFiltering && imageItem && imageDimensions ? (
+              <FilterableImage image={imageItem} encodedUri={encodedUri} dimensions={imageDimensions}/>
+            // ) : isErasing ? (
+            //   // Default view or image when not in any specific mode
+            //   <ErasableImage image={imageData} encodedUri={encodedUri} />
+            // ) : isDrawing ? (
+            //   // Default view or image when not in any specific mode
+            //   <DrawableImage image={imageData} encodedUri={encodedUri} />
+            ) : (<></>)}
+          </View>
+          )}
         </View>
-      )}
-        </View>
-      </View>
     </View>
 
     {/* placement of settings for active tool, (active tool would be displayed where bottom toolbar is) */}
@@ -128,7 +115,7 @@ return (
     </View>
 
     {/* bottom toolbar */}
-    <View style={styles.primaryTools}>
+    <View style={styles.bottomToolbar}>
       <ImageEditingTools/>
     </View>
 
@@ -136,66 +123,43 @@ return (
 )}
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    width: dimensions.width,
-    backgroundColor: colors.DarkCoffee
+  pageContent: {
+    flex: 1,
   },
-  headerNav: {
-    zIndex: 9999999,
-    height: dimensions.headerHeight,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+  imageContainer: {
+    flex: 1,
+    borderWidth: 3, borderColor: 'red'
   },
-  headerImg: {
-    width: '100%',
+  // image container and image were very tricky to get right and center due to some confusion with alignItems making img disapear
+  imageWrapper: {
+    alignSelf: 'center',
+    height: '95%', width: '95%',
+  },
+  image: {
+    height: '100%',
+    width: '100%', 
   },  
   back: {
     position: 'absolute',
     zIndex: 9999999,
     marginLeft: 10
   },
-  canvasContainer: {
-    height: dimensions.canvasHeight * .85,
-    width: dimensions.width,
-  },
-  canvas: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-      height: '100%', width: '100%',
-      borderWidth: 1, borderColor: 'black',
-  },
-  // image container and image were very tricky to get right and center due to some confusion with alignItems making img disapear
-  imageContainer: {
-      display: 'flex',
-      alignContent: 'center', justifyContent: 'flex-end', // flex end or else it isn't centered??
-      height: '95%', width: '95%',
-      overflow: 'hidden',
-  },
-  image: {
-    height: '100%',
-    width: '100%', 
-  },  
-  imageDark: {
-    height: '100%',
-    width: '100%',
-    opacity: .3 // may need ot add this over a black box the size of the iamge behind it
-  },
   editSettings: {
     display: 'flex',
     flexDirection: 'row',
     height: dimensions.canvasHeight * .15, width: '100%',
-    backgroundColor: colors.Sage,
+    borderWidth: 3, borderColor: 'green'
   },
-  primaryTools: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%', 
-    height: dimensions.height - dimensions.canvasHeight - dimensions.headerHeight,
+  bottomToolbar: {
+    justifyContent: 'flex-end',
+    flex: 1,
     zIndex: 9999999,
-    borderTopWidth: .6, borderColor: 'black',
-    backgroundColor: 'black',
+    // borderTopWidth: .6, borderColor: 'black',
+    borderWidth: 3, borderColor: 'blue'
+  },
+  imageDark: {
+    height: '100%',
+    width: '100%',
+    opacity: .3 // may need ot add this over a black box the size of the iamge behind it
   },
 });

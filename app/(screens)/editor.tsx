@@ -1,6 +1,6 @@
 // react & expo
 import { useContext, useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, ImageBackground} from 'react-native';
+import { StyleSheet, View, ImageBackground, Text} from 'react-native';
 // context
 import { useBackgroundCtx } from '@/src/hooks/contexts/BackgroundCtx';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
@@ -22,8 +22,8 @@ import GlobalDimensions from '@/src/components/global/globalDimensions';
 import TrashButton from '@/src/components/utils/trashButton';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
 
-const { colors } = GlobalTheme();
 const { dimensions } = GlobalDimensions();
+const { colors } = GlobalTheme();
 
 const EditorScreen = () => {
   // contexts
@@ -39,7 +39,7 @@ const EditorScreen = () => {
   useEffect(() => {
   }, [images, drawings, stickers, texts]);
 
-  // Menu Callbacks - allows for conditional displaying of menus based on opened or closed
+
   const handleToggleStickerMenuCallback = () => {
     setStickerMenuToggle(!stickerMenuToggle);
   };
@@ -58,37 +58,45 @@ const EditorScreen = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("Width: ", dimensions.width);
+    console.log("Height: ", dimensions.height);
+    console.log("Canvas Height: ", dimensions.canvasHeight);
+    console.log("Home Height: ", dimensions.homeHeight);
+    console.log("Small Toolbar: ", dimensions.smallToolbar);
+    console.log("Large Toolbar: ", dimensions.largeToolbar);
+    console.log("Header Height: ", dimensions.headerHeight);
+  }, []);
+
   return (
-    <View>
+    <View style={styles.pageContent}>
 
       <HomeButton/>
       {/* viewRef is ref of canvas container 'View' element. Passing into SaveWorkButton bc this contains the user's beautiful creation that will be saved! */}
       <SaveButtonAndMenu viewRef={viewRef.current} />
 
-      {/* main canvas */}
-      <View style={styles.canvasContainer} ref={viewRef} collapsable={false}>
-        <ImageBackground source={background} style={styles.imageBackground}>
-          <View style={styles.canvas}>
+      <ImageBackground source={background} style={styles.imageBackground}>
+        <View style={styles.canvas}>
 
-            {activeItemCtx && 
+          {activeItemCtx && 
             <View style={styles.trashIcon}>
-              <TrashButton/>
-            </View>}
+            <TrashButton/>
+          </View>}
 
-            {/* Stickers */}
-            <ViewStickers stickers={stickers} />
+          {/* Stickers */}
+          <ViewStickers stickers={stickers} />
 
-            {/* Drawing */}
-            <ViewDrawings drawings={drawings} />
+          {/* Drawing */}
+          <ViewDrawings drawings={drawings} />
 
-            {/* Pictures */}
-            <ViewImages images={images} />
+          {/* Pictures */}
+          <ViewImages images={images} />
 
-            <ViewText texts={texts}/>
+          <ViewText texts={texts}/>
 
-          </View>
-        </ImageBackground>
-      </View>
+        </View>
+      </ImageBackground>
+     
 
       {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
       {stickerMenuToggle ? (
@@ -98,53 +106,41 @@ const EditorScreen = () => {
       ) : textMenuToggle ? (
         <TextMenu menuToggle={handleToggleMenuCallback} />
       ) : (
-        // primary tools
-        <View style={styles.primaryTools}>
-          <ViewEditorTools
+      <View style={styles.primaryTools}>
+         <ViewEditorTools
             backgroundMenuToggle={handleToggleMenuCallback}
             stickerMenuToggle={handleToggleMenuCallback}
             textMenuToggle={handleToggleMenuCallback}
           />
-          
-        </View>
-      )}
+      </View>
+       )}
     </View>
   );
-};
+}
 
 export default EditorScreen;
 
 const styles = StyleSheet.create({
-  canvasContainer: {
-    height: dimensions.canvasHeight,
-    width: dimensions.width,
-  },
-  canvas: {
-    overflow: 'hidden',
-    height: '100%',
-    width: '100%',
+  pageContent: {
+    flex: 1,
   },
   imageBackground: {
-    width: '100%',
-    height: '100%',
+    height: dimensions.canvasHeight,
     zIndex: 1,
   },
+  canvas: {
+    flex: 1,
+  },
   primaryTools: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    height: dimensions.height - dimensions.canvasHeight - dimensions.headerHeight,
-    gap: 30,
-    zIndex: 9999999,
-    padding: 15,
-    borderTopWidth: 0.6,
-    borderColor: colors.DarkRust,
+    flex: 1,
+    alignItems: 'center',
+    borderTopWidth: 1, borderColor: colors.Rust
   },
   trashIcon: {
-    position: 'absolute', // Important for zIndex to take effect
+    position: 'absolute', // important for zIndex to take effect
     right: 10,
     top: 10,
-    zIndex: 9999999,  // High zIndex value
+    zIndex: 9999999,
     elevation: 10,
   },
 });

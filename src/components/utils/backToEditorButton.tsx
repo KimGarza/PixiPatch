@@ -1,13 +1,13 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
 import GlobalTheme from "@/src/components/global/GlobalTheme";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { colors } = GlobalTheme();
 
-const HomeButton = () => {
+const BackToEditorButton = () => {
 
   const [disabled, setDisabled] = useState(false);
     
@@ -20,7 +20,7 @@ const HomeButton = () => {
     setDisabled(true);
 
     updatePendingChanges();
-    router.push('/(screens)');
+    router.push('/(screens)/editor');
 
     setTimeout(() => {
       setDisabled(false); // Re-enable the button after 500ms (adjust as needed)
@@ -31,12 +31,12 @@ const HomeButton = () => {
     <TouchableOpacity 
         onPress={goHome}
         style={styles.homeIcon} >
-        <AntDesign name={'home'} size={35} color={colors.Rust}/>
+        <Ionicons name={'arrow-back-outline'} size={25} color={colors.Rust} />
     </TouchableOpacity>
   );
 }
 
-export default HomeButton;
+export default BackToEditorButton;
 
 const styles = StyleSheet.create({
     homeIcon: {

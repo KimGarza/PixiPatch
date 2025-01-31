@@ -40,12 +40,9 @@ export default StyledIconContainer;
 
 const styles = StyleSheet.create({
   iconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: .5,
-    borderColor: 'black',
+    justifyContent: 'center', alignItems: 'center',
+    borderWidth: .5, borderColor: 'black', borderRadius: 10, 
     padding: 2,  
-    borderRadius: 10, 
     backgroundColor: colors.Canvas,
   },
 });
