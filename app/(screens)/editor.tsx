@@ -8,6 +8,7 @@ import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import StickerMenu from '@/src/components/features/Stickers/StickerMenu';
 import BackgroundMenu from '@/src/components/features/background/BackgroundMenu';
 import TextMenu from '@/src/components/features/Text/textMenu';
+import LayoutMenu from '@/src/components/features/layouts/layoutMenu';
 // import FilterMenu from './Filters/FilterMenu';
 import SaveButtonAndMenu from '@/src/components/save/saveButtonAndMenu';
 import HomeButton from '@/src/components/utils/homeButton';
@@ -33,12 +34,12 @@ const EditorScreen = () => {
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
   const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
   const [textMenuToggle, setTextMenuToggle] = useState<boolean>(false);
+  const [layoutMenuToggle, setLayoutMenuToggle] = useState<boolean>(false);
   // misc
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
   }, [images, drawings, stickers, texts]);
-
 
   const handleToggleStickerMenuCallback = () => {
     setStickerMenuToggle(!stickerMenuToggle);
@@ -48,6 +49,10 @@ const EditorScreen = () => {
     setBackgroundMenuToggle(!backgroundMenuToggle);
   };
 
+  const handleToggleLayoutMenuCallback = () => {
+    setLayoutMenuToggle(!layoutMenuToggle);
+  };
+
   const handleToggleMenuCallback = (menuName: string) => {
     if (menuName == 'text') {
       setTextMenuToggle(!textMenuToggle);
@@ -55,6 +60,8 @@ const EditorScreen = () => {
       setBackgroundMenuToggle(!backgroundMenuToggle);
     } else if (menuName == 'sticker') {
       setStickerMenuToggle(!stickerMenuToggle);
+    } else if (menuName == 'layout') {
+      setLayoutMenuToggle(!layoutMenuToggle);
     }
   };
 
@@ -99,21 +106,24 @@ const EditorScreen = () => {
      
 
       {/* Bottom Toolbar - alternates between primary editing tools and menus for active in-use tool */}
+      <View style={styles.primaryTools}>
       {stickerMenuToggle ? (
         <StickerMenu menuToggle={handleToggleStickerMenuCallback} />
       ) : backgroundMenuToggle ? (
         <BackgroundMenu menuToggle={handleToggleBackgroundMenuCallback} />
       ) : textMenuToggle ? (
         <TextMenu menuToggle={handleToggleMenuCallback} />
+      ) : layoutMenuToggle ? (
+        <LayoutMenu menuToggle={handleToggleLayoutMenuCallback} />
       ) : (
-      <View style={styles.primaryTools}>
-         <ViewEditorTools
-            backgroundMenuToggle={handleToggleMenuCallback}
-            stickerMenuToggle={handleToggleMenuCallback}
-            textMenuToggle={handleToggleMenuCallback}
-          />
-      </View>
+        <ViewEditorTools
+          backgroundMenuToggle={handleToggleMenuCallback}
+          stickerMenuToggle={handleToggleMenuCallback}
+          textMenuToggle={handleToggleMenuCallback}
+          layoutMenuToggle={handleToggleMenuCallback}
+        />
        )}
+    </View>
     </View>
   );
 }

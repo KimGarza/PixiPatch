@@ -63,7 +63,7 @@ const BackgroundMenu: React.FC<BackgroundMenuProps> = ({ menuToggle }) => {
   }
 
   return (
-    <SwipeDownMenu menuToggle={handleCloseMenu}>
+    <SwipeDownMenu menuToggle={handleCloseMenu} inTop={-100}>
       <View style={styles.container}>
 
         <View style={styles.close}>
@@ -113,9 +113,8 @@ export default BackgroundMenu;
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex', flexDirection: 'row',
-    width: dimensions.width,
-    height: dimensions.height - canvasHeight - dimensions.headerHeight,
+    flex: 1,
+    borderWidth: 3, borderColor: 'red',
   },
   close: {
     position: 'absolute',
@@ -123,13 +122,32 @@ const styles = StyleSheet.create({
     right: 0, top: 0,
     zIndex: 99999999,
   },
+  scrollViewContent: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
+  scrollView: {
+    width: '100%', height: '50%', paddingTop: '5%',
+    zIndex: 9999,
+    paddingHorizontal: 10,
+  },
+  backgrounds: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    gap: 20,
+    width: '100%', height: '100%',
+    zIndex: 9999,
+  },
+  background: {
+    height: 45, width: 45,
+    borderRadius: 15, borderWidth: 2, borderColor: colors.Mud,
+  },
   titleTabs: {
     flexDirection: 'column',
     position: 'absolute',
     top: -90,
     zIndex: 9,
-    width: '101%',
-    padding: 2,
+    width: '100%',
   },
   title: {
     borderWidth: 1, borderBottomWidth: 0, 
@@ -148,28 +166,4 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: colors.KindGreyWarm,
   },
-  scrollViewContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-  },
-  scrollView: {
-    top: '35%',
-    width: '100%', height: '50%',
-    zIndex: 9999,
-    paddingHorizontal: 10,
-  },
-  backgrounds: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-end',
-    gap: 20,
-    width: '100%', height: '100%',
-    zIndex: 9999,
-  },
-  background: {
-    height: 45, width: 45,
-    borderRadius: 15, borderWidth: 2, borderColor: colors.Mud,
-  }
 })

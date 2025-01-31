@@ -133,7 +133,7 @@ const StickerMenu: React.FC<StickerMenuProps> = ({ menuToggle }) => {
 
   return (
     <View style={styles.moreControl}>
-    <SwipeDownMenu menuToggle={handleCloseMenu}>
+    <SwipeDownMenu menuToggle={handleCloseMenu} inTop={-100}>
       <View style={styles.container}>
 
         <View style={styles.close}>

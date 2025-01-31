@@ -5,6 +5,7 @@ import { BackgroundProvider } from '../hooks/contexts/BackgroundCtx';
 import { TextProvider } from '../hooks/contexts/useTextCtx';
 import { ItemProvider } from '../hooks/contexts/useItemCtx';
 import { DrawProvider } from '../hooks/contexts/useDrawCtx'
+import { LayoutProvider } from '../hooks/contexts/useLayoutCtx';
 
 interface Props {
     children?: React.ReactNode;
@@ -14,6 +15,7 @@ const Providers: React.FC<Props> = ({ children }) => {
   return (
     <ThemeProvider>
       <BackgroundProvider>
+      <LayoutProvider>
         <TextProvider>
           <ItemProvider>
             <DrawProvider>
@@ -23,6 +25,7 @@ const Providers: React.FC<Props> = ({ children }) => {
             </DrawProvider>
           </ItemProvider>
         </TextProvider>
+      </LayoutProvider>
       </BackgroundProvider>
     </ThemeProvider>
   );

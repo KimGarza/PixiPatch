@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View, Animated, PanResponder, StyleSheet } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import GlobalDimensions from '../global/globalDimensions';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const { colors } = GlobalTheme();
 const { dimensions } = GlobalDimensions();
@@ -12,11 +13,36 @@ const canvasHeight = dimensions.width / aspectRatio;
 type SwipeDownMenuProps = {
   children: React.ReactNode; // To pass in the actual menu content
   menuToggle: () => void;
+  inTop: number;
 };
 
-const SwipeDownMenu = ({ children, menuToggle}: SwipeDownMenuProps) => {
+const SwipeDownMenu = ({ inTop, children, menuToggle}: SwipeDownMenuProps) => {
 
   const animatedPosition = useRef(new Animated.Value(0)).current;
+  const handAnimation = useRef(new Animated.Value(0)).current;
+
+  // 🔹 Animate Hand Up and Down
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(handAnimation, {
+          toValue: 10, // Move down
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(handAnimation, {
+          toValue: 0, // Move back up
+          duration: 500,
+          useNativeDriver: false,
+        }),
+      ]),
+      { iterations: 5 } // Runs for 5 cycles (~5 seconds)
+    );
+
+    animation.start();
+
+    return () => animation.stop(); // Cleanup when unmounted
+  }, []);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -54,44 +80,32 @@ const SwipeDownMenu = ({ children, menuToggle}: SwipeDownMenuProps) => {
   ).current;
 
   return (
-    <Animated.View
-      style={[
-        styles.menu,
-        { transform: [{ translateY: animatedPosition }] },
-      ]}
-      
-    >
-      <View style={styles.chevronContainer} {...panResponder.panHandlers}>
-        <Entypo name="chevron-thin-down" size={30} color="#b9a89e" />
+    <Animated.View style={[styles.menu, { transform: [{ translateY: animatedPosition }] }]}>
+      <View style={[styles.handContainer, {top: inTop}]} {...panResponder.panHandlers}>
+        {/* 🔥 Animated Hand Icon */}
+        <Animated.View style={{ transform: [{ translateY: handAnimation }] }}>
+          <FontAwesome5 name="hand-point-down" size={55} color={colors.Oatmeal} />
+        </Animated.View>
       </View>
-      <View style={styles.content}>
-        {children}
-      </View>
+
+      <View style={styles.content}>{children}</View>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   menu: {
-    display: 'flex', flexDirection: 'column',
+    flex: 1, 
+    borderWidth: 3, borderColor: 'blue',
     // borderWidth: .5, borderRadius: 0, borderColor: 'black',
     backgroundColor: colors.WhitePeach,
-    top: -10,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: dimensions.width,
-    height: dimensions.height - canvasHeight - dimensions.headerHeight + 100,
+    width: '100%',
     zIndex: 9999,
   },
-  chevronContainer: {
+  handContainer: {
     position: 'absolute',
-    margin: 5,
-    right: '30%', top: 0,
+    alignSelf: 'center', alignItems: 'center', right: '15%',
     zIndex: 99999999,
-    width: '40%',
-    alignItems: 'center',
   },
   content: {
     flex: 1, // Ensure content takes up available space

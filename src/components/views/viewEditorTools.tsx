@@ -3,6 +3,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import StyledIconContainer from '../utils/styledIconContainer';
 import PhotoSelectTool from '../ImageSelection/PhotoSelectTool';
 import StickerTool from '../features/Stickers/StickerTool';
+import LayoutTool from '../features/layouts/layoutTool';
 import BackgroundTool from '../features/background/BackgroundTool';
 import { useRouter } from 'expo-router';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
@@ -20,9 +21,10 @@ interface ViewEditorToolsProps {
     backgroundMenuToggle: (menuName: string) => void,
     stickerMenuToggle: (menuName: string) => void,
     textMenuToggle: (menuName: string) => void
+    layoutMenuToggle: (menuName: string) => void
 }
 
-const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, stickerMenuToggle, textMenuToggle}) => {
+const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, stickerMenuToggle, layoutMenuToggle, textMenuToggle}) => {
 
     const router = useRouter();
     const { updatePendingChanges } = useItemCtx();
@@ -39,6 +41,8 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
             backgroundMenuToggle(menuName);
         } else if (menuName == 'sticker') {
             stickerMenuToggle(menuName);
+        } else if (menuName == 'layout') {
+            layoutMenuToggle(menuName);
         }
     }
 
@@ -81,7 +85,9 @@ const ViewEditorTools: React.FC<ViewEditorToolsProps> = ({backgroundMenuToggle, 
                 <SimpleLineIcons name='pencil' size={35} color={colors.Rust}/>
             </TouchableOpacity>
 
-            <Feather name='layout' size={35} color={colors.Rust}/>
+            <LayoutTool menuToggle={() => handleToggleMenu('layout')}>
+                <Feather name='layout' size={35} color={colors.Rust}/>
+            </LayoutTool>
                 
         </StyledIconContainer>
     </View>

@@ -68,7 +68,7 @@ const TextMenu: React.FC<TextMenuProps> = ({ menuToggle }) => {
     // prettier-ignore
     <View style={[isTyping || activeTextExists ? styles.moreControl : null]}>
     {/* <View style={styles.moreControl}> */}
-      <SwipeDownMenu menuToggle={handleCloseMenu}>
+      <SwipeDownMenu menuToggle={handleCloseMenu} inTop={-100}>
         <View style={styles.container}>
 
           <View style={styles.close}>
