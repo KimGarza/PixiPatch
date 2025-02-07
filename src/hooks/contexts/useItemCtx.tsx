@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ImageItem, StickerItem, DrawingItem, TextItem, } from '@/src/customTypes/itemTypes';
 import { useTextCtx } from '@/src/hooks/contexts/useTextCtx';
+import { useLayoutCtx } from './useLayoutCtx';
 
 type Item = ImageItem | StickerItem | DrawingItem | TextItem;
 interface CreateItemProps {
@@ -71,11 +72,11 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [texts, setTexts] = useState<TextItem[]>([]);
 
   const { textsCtx } = useTextCtx();
-
+  const { layout } = useLayoutCtx();
   // upon changes to the texts array within TextCtx (which is for handling styling) main ctx will monitor and update accordingly
   useEffect(() => {
     textUpdate(textsCtx);
-  }, [textsCtx]);
+  }, [textsCtx, layout]);
 
   // built to monitor and update ItemCtx's text array from the TextCtx array which is meant for storing and managing text on the design front, here is just where it gets udpated to
   const textUpdate = (textsCtx: TextItem[]) => {
@@ -189,8 +190,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   };
   
   // Add Pending Changes
-  const addPendingChanges = (id: string, inPendingChanges: { positionX: number, positionY: number, rotation: number, scale: number }) => {
-
+  const addPendingChanges = (id: string, inPendingChanges: { positionX?: number, positionY?: number, rotation: number, scale: number}) => {
+    
     const addPending = <T extends Item>(item: T): T => {
       return {
         ...item,
@@ -233,6 +234,15 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const updatePendingChanges = () => {
     
     const updatePending = <T extends Item>(item: T): T => {
+    console.log("update pending changes, item: ", item, "is layout active? ", layout)
+
+    // so if type is iamge and layout is true, we have a value for possibleLayoutX
+    // if that is the case and only if layout is true, we will replace translate x/y with the layoutx + pending as to
+    // start image where it began with layout translations and add pending changes as opposed to altering the pre layout coordinates
+    // so now its either translation as normal or start at layout x,y per image and then adjust if user moved it 
+    // regardless if user moved it, if layout was chosen to be submitted, we replace the current xlation with the layout x and y
+    const possibleLayoutX = item.type === "image" && layout ? item.layoutX : 0;
+    const possibleLayoutY = item.type === "image" && layout ? item.layoutY : 0;
       // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured... :,(
       // if scaling occured, the item's corner will grow to meet a coordinate pair that is unequal to the panned track (pinching to scale although relocates the images corner doesn't trigger the pan)
       // so we must calculate the offset of the variance of the original and new width/height, divide it by 2 (since scaling happens on both sides equally to make the new width/height) 
@@ -257,15 +267,23 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         height: item.height * item.pendingChanges.scale,
         width: item.width * item.pendingChanges.scale,
         rotation: item.pendingChanges.rotation,
-        translateX: grew ? item.pendingChanges.positionX - xOffset : item.pendingChanges.positionX + xOffset,
-        translateY: grew ? item.pendingChanges.positionY - yOffset : item.pendingChanges.positionY + yOffset,
+        translateX: 
+        !layout && grew ? item.pendingChanges.positionX - xOffset
+        : !layout ? item.pendingChanges.positionX + xOffset
+        : possibleLayoutX + item.pendingChanges.positionX, // *offset not being considered no current scaling with layout adjustments
+        translateY: 
+        !layout && grew ? item.pendingChanges.positionY - yOffset
+        : !layout ? item.pendingChanges.positionY + yOffset
+        : possibleLayoutY + item.pendingChanges.positionY,
         pendingChanges: {
           scale: 1,
-          rotation: item.pendingChanges.rotation,
-          positionX: item.pendingChanges.positionX,
-          positionY: item.pendingChanges.positionY,
+          rotation: 0,
+          positionX: 0,
+          positionY: 0,
+          layoutPosX: 0,
+          layoutPosY: 0,
         },
-      };
+      }
     };
 
     setItems((prevItems) => prevItems.map((item) => updatePending(item)));

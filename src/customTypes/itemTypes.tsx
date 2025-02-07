@@ -1,8 +1,10 @@
+import { thumbnails } from "../components/features/layouts/layoutThumbnails";
 export interface BaseItem { 
     id: string; //?? need ot be here?
     type: string; // discriminate within the union
     zIndex: number; //?? need ot be here?
     translateX: number; translateY: number;
+    // layoutX: number; layoutY: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
@@ -13,6 +15,7 @@ export interface BaseItem {
     imageInfo: ImageInfo;
     // ogImageInfo: ImageInfo;
     translateX: number; translateY: number;
+    layoutX: number; layoutY: number;
     width: number; height: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
@@ -23,6 +26,7 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     translateX: number; translateY: number;
+    // layoutX: number; layoutY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
@@ -33,6 +37,7 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     translateX: number; translateY: number;
+    // layoutX: number; layoutY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
@@ -47,6 +52,7 @@ export interface BaseItem {
     color: string,
     highlight: string,
     translateX: number; translateY: number;
+    // layoutX: number; layoutY: number;
     width: number; height: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
@@ -70,3 +76,13 @@ export type PathData = {
   strokeWidth: number;
   strokeColor: string;
 }
+
+// layout
+export type LayoutConfig = {
+  name: string;
+  thumbnail: keyof typeof thumbnails; // Ensures valid keys from thumbnails
+  condition: (images: ImageItem[]) => boolean; // LATER REDUCE AMOUNT OF DATA BEING PASSED IF NONE IS USED
+  algorithm: (images: string[]) => { 
+    gridPositions: 
+    { uri: string; x: number; y: number }[]; lastRowImages: string[]; columns: number };
+};

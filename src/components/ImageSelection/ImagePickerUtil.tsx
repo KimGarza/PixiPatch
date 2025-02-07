@@ -16,6 +16,7 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
 
   const { createItems } = useItemCtx();
 
+  // Width limitation while maintaining aspect ratio for height to adjust
   const adjustImageSize = (width: number, height: number) => {
     const maxWidth = 200;
     const aspectRatio = width / height;
@@ -27,32 +28,39 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
 
   // converts basic photo and converts it to ImageData Type which just adds additional data for app
   const convertToImageItem = (image: ImageInfo) => {
-    let newWidth = 100;
-    let newHeight = 100;
+    let updatedWidth = 100; // default to be changed
+    let updatedHeight = 100; // default to be changed
 
     try { // to adjust the images size to convert to a better viewable on screen (logical units in)
 
       const { width, height } = adjustImageSize(image.width, image.height)
-      newWidth = width;
-      newHeight = height;
+      updatedWidth = width;
+      updatedHeight = height;
 
     } catch (error) {
       console.log("error ", error)
     }
 
-    const x = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
-    const y = Math.floor(Math.random() * (dimensions.width * 0.5)) + (dimensions.width * 0.25);
+    // const canvasWidth = dimensions.width * 0.9; // Allow some margin
+    // const canvasHeight = dimensions.height * 0.8; // Allow some margin
+
+    // const x = Math.random() * (canvasWidth - 100); // Ensure it stays inside width
+    // const y = Math.random() * (canvasHeight - 100); // Ensure it stays inside height
+
+    // Randomizing within bounds of screen dimensions where to make images go on canvas
+    const x = Math.floor(Math.random() * (dimensions.width * 0.1)) + (dimensions.width * 0.25);
+    const y = Math.floor(Math.random() * (dimensions.height * 0.1)) + (dimensions.height * 0.1);
 
     const imageItem: ImageItem = { // returns image regardless of if wxh adjustment fails
       id: '', type: 'image', zIndex: 2,
       imageInfo: image,
       // ogImageInfo: { ...image },
-      translateX: x,
-      translateY: y,
+      translateX: x, translateY: y,
+      layoutX: 0, layoutY: 0,
       rotation: 0,
       pendingChanges: {rotation: 0, positionX: x, positionY: y, scale: 1},
-      width: newWidth,
-      height: newHeight,
+      width: updatedWidth,
+      height: updatedHeight,
     }
 
     return imageItem;

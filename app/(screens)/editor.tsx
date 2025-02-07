@@ -22,6 +22,7 @@ import ViewText from '@/src/components/views/viewText';
 import GlobalDimensions from '@/src/components/global/globalDimensions';
 import TrashButton from '@/src/components/utils/trashButton';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
+import { useLayoutCtx } from '@/src/hooks/contexts/useLayoutCtx';
 
 const { dimensions } = GlobalDimensions();
 const { colors } = GlobalTheme();
@@ -30,6 +31,7 @@ const EditorScreen = () => {
   // contexts
   const { background } = useContext(useBackgroundCtx);
   const { images, stickers, drawings, texts, activeItemCtx } = useItemCtx();
+  const { layout } = useLayoutCtx();
   // menus
   const [stickerMenuToggle, setStickerMenuToggle] = useState<boolean>(false);
   const [backgroundMenuToggle, setBackgroundMenuToggle] = useState<boolean>(false);
@@ -39,7 +41,7 @@ const EditorScreen = () => {
   const viewRef = useRef(null); // used to capture the canvas container View elemenet
 
   useEffect(() => {
-  }, [images, drawings, stickers, texts]);
+  }, [images, drawings, stickers, texts, layout]);
 
   const handleToggleStickerMenuCallback = () => {
     setStickerMenuToggle(!stickerMenuToggle);
@@ -65,16 +67,6 @@ const EditorScreen = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("Width: ", dimensions.width);
-    console.log("Height: ", dimensions.height);
-    console.log("Canvas Height: ", dimensions.canvasHeight);
-    console.log("Home Height: ", dimensions.homeHeight);
-    console.log("Small Toolbar: ", dimensions.smallToolbar);
-    console.log("Large Toolbar: ", dimensions.largeToolbar);
-    console.log("Header Height: ", dimensions.headerHeight);
-  }, []);
-
   return (
     <View style={styles.pageContent}>
 
@@ -97,10 +89,10 @@ const EditorScreen = () => {
           <ViewDrawings drawings={drawings} />
 
           {/* Pictures */}
-          <ViewImages images={images} />
+          <ViewImages images={images} layout={layout}/>
 
           <ViewText texts={texts}/>
-
+          
         </View>
       </ImageBackground>
      
@@ -136,15 +128,17 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     height: dimensions.canvasHeight,
-    zIndex: 1,
   },
   canvas: {
+    zIndex: 1,
     flex: 1,
   },
   primaryTools: {
     flex: 1,
     alignItems: 'center',
-    borderTopWidth: 1, borderColor: colors.Rust
+    borderTopWidth: 1, borderColor: colors.Rust,
+    backgroundColor: colors.MudLight,
+    zIndex: 999999999
   },
   trashIcon: {
     position: 'absolute', // important for zIndex to take effect

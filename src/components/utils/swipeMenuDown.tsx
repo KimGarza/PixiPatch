@@ -96,8 +96,6 @@ const SwipeDownMenu = ({ inTop, children, menuToggle}: SwipeDownMenuProps) => {
 const styles = StyleSheet.create({
   menu: {
     flex: 1, 
-    borderWidth: 3, borderColor: 'blue',
-    // borderWidth: .5, borderRadius: 0, borderColor: 'black',
     backgroundColor: colors.WhitePeach,
     width: '100%',
     zIndex: 9999,

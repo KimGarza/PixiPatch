@@ -5,7 +5,8 @@ type LayoutThumbnail = {
 };
 
 export const thumbnails: LayoutThumbnail = {
-  main: { srcUri: require('../../../assets/images/layouts/images.png')},
-  copy: {srcUri: require('../../../assets/images/layouts/images_copy.png') },
-  copyT: {srcUri: require('../../../assets/images/layouts/images_copy_sec.png') },
+  images: { srcUri: require('../../../assets/images/layouts/images.png')},
+  images_copy: {srcUri: require('../../../assets/images/layouts/images_copy.png') },
+  images_copy_sec: {srcUri: require('../../../assets/images/layouts/images_copy_sec.png') },
+  noLayout: { srcUri: require('../../../assets/images/layouts/images.png')},
 };

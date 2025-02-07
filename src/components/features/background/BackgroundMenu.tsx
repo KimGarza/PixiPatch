@@ -114,7 +114,6 @@ export default BackgroundMenu;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 3, borderColor: 'red',
   },
   close: {
     position: 'absolute',

@@ -7,6 +7,7 @@ import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes
 import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
+import { useLayoutCtx } from '@/src/hooks/contexts/useLayoutCtx';
 
 const { colors } = GlobalTheme();
 interface Props {
@@ -16,11 +17,14 @@ interface Props {
 // prettier-ignore
 const MutableItem = ({ item }: Props) => {
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
+  const { layout } = useLayoutCtx();
+
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
   const tapCoordinatesX = useSharedValue(0);
   const tapCoordinatesY = useSharedValue(0);
 
+  // initial translation values of item are setting up for mutability here
   const positionX = useSharedValue(item?.translateX ?? 0);
   const positionY = useSharedValue(item?.translateY ?? 0);
   const savedPositionX = useSharedValue(item?.translateX ?? 0);
@@ -45,6 +49,21 @@ const updateTransformState = () => {
       setTapCount(0);
     }
   }, [activeItemCtx, frontItem]);
+
+  useEffect(() => {
+    console.log("layout in mutable: ", layout)
+    if (item.type == "image" && layout) {
+      positionX.value = item?.layoutX;
+      positionY.value = item?.layoutY;
+      savedPositionX.value = item?.layoutX;
+      savedPositionY.value = item?.layoutY;
+    } else {
+      positionX.value = item?.translateX;
+      positionY.value = item?.translateY;
+      savedPositionX.value = item?.translateX;
+      savedPositionY.value = item?.translateY;
+    }
+  }, [layout])
 
   // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {
@@ -80,7 +99,7 @@ const updateTransformState = () => {
 
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
-      positionX.value = event.translationX + savedPositionX.value;
+      positionX.value = event.translationX + savedPositionX.value; // we add the x translation to the saved value which equates to where it was b4 + how far moved
       positionY.value = event.translationY + savedPositionY.value;
     })
     .onEnd(() => {

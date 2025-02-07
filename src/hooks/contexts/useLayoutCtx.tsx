@@ -1,27 +1,20 @@
-import { ImageSourcePropType } from "react-native"
-import { createContext, Dispatch, SetStateAction, useState, useContext } from "react"
+import { LayoutConfig } from "@/src/customTypes/itemTypes";
+import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
 
 // what is accessible from context
-interface useLayoutCtxType {
-    layout: ImageSourcePropType,
-    setLayout: Dispatch<SetStateAction<ImageSourcePropType>>,
+interface layoutCtxType {
+    layout: LayoutConfig | null,
+    setLayout: Dispatch<SetStateAction<LayoutConfig | null>>,
+    layoutXY: {x: number, y: number},
+    setLayoutXY: Dispatch<SetStateAction<{x: number, y: number}>>,
 }
 
-// default value for use with creation of context
-const defaultValue: useLayoutCtxType = {
-    layout: require('../../assets/images/layouts/images.png') as ImageSourcePropType,
-    setLayout: () => {},
-}
-
-// create context
-export const layoutCtx = createContext<useLayoutCtxType>(defaultValue);
-
+const LayoutCtx = createContext<layoutCtxType | undefined>(undefined);
 export const useLayoutCtx = () => {
-    const context = useContext(layoutCtx);
-    if (context == undefined) {
+    const context = useContext(LayoutCtx);
+    if (!context) {
         throw new Error("useuseLayoutCtx must be used within an LayoutProvider");
     }
-
     return context;
 }
 
@@ -31,16 +24,12 @@ interface Props {
 
 // create provider to be a wrapper
 export const LayoutProvider: React.FC<Props> = ({ children }) => {
-    const [layout, setLayout] = useState<ImageSourcePropType>(defaultValue.layout);
+    const [layout, setLayout] = useState<LayoutConfig | null>(null);
+    const [layoutXY, setLayoutXY] = useState<{x: number, y: number}>({x: 0, y: 0});
 
     return (
-        <layoutCtx.Provider
-        value={{
-            layout,
-            setLayout,
-        }}
-        >
+        <LayoutCtx.Provider value={{ layout, setLayout, layoutXY, setLayoutXY }}>
             {children}
-        </layoutCtx.Provider> 
+        </LayoutCtx.Provider> 
     );
 }

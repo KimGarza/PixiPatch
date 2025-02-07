@@ -55,7 +55,6 @@ export default function AuthScreen() {
           discoveryDocument
         );
         setAuthTokens(tokenResponse);
-          console.log("response", tokenResponse?.state)
       } catch (error) {
         console.error('Token exchange failed:', error);
       }

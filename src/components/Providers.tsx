@@ -6,7 +6,6 @@ import { TextProvider } from '../hooks/contexts/useTextCtx';
 import { ItemProvider } from '../hooks/contexts/useItemCtx';
 import { DrawProvider } from '../hooks/contexts/useDrawCtx'
 import { LayoutProvider } from '../hooks/contexts/useLayoutCtx';
-
 interface Props {
     children?: React.ReactNode;
 }

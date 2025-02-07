@@ -26,7 +26,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      console.log("height and width", height, width)
       // loadStickerPacks(stickerPacks); // load the stickers based on users purchased packs based on pruchase table dynamodb
       SplashScreen.hideAsync();
     }
@@ -39,7 +38,6 @@ export default function RootLayout() {
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
     setContainerSize({ width, height });
-    console.log("📏 screenContainer Size:", width, height);
   };
 
   return (
