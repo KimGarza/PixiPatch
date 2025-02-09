@@ -14,16 +14,27 @@ interface ViewImagesProps {
 const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
     // If a layout exists, apply its algorithm
     const computedLayout = layout ? layout.algorithm(images.map(img => img.imageInfo.uri)) : null;
-    const gridCellWidth = computedLayout ? dimensions.width / computedLayout.columns : dimensions.width;
-    const gridCellHeight = gridCellWidth * (9 / 14.5);
+
     useEffect(() => {
-        console.log("images in view", images)
-        // console.log("layout in view: ", layout)
-    }, [layout]);
+        if (computedLayout) {
+          // Loop through each image and update layoutX and layoutY with computed positions
+          images.forEach((image, index) => {
+            const gridPos = computedLayout.gridPositions[index];
+            if (gridPos) {
+                // Setting the layoutX and layoutY for each image to center within its respective grid cell
+                image.layoutX = gridPos.x + (computedLayout.gridCellWidth - image.width) / 2;
+                image.layoutY = gridPos.y + (computedLayout.gridCellHeight - image.height) / 2;
+                // console.log("viewimages config: x translation per image", gridPos.x);
+
+            }
+          });
+        }
+      }, [layout, computedLayout]);
 
     return (
         <View style={{ height: '100%' }}>
             {computedLayout ? (
+                
                 computedLayout.gridPositions.map((item, index) => {
                 const image = images.find(img => img.imageInfo.uri === item.uri);
                 if (!image) return null; // Safety check
@@ -32,12 +43,13 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
                         key={image.id}
                         style={{
                             position: "absolute",
+                            overflow: 'hidden',
                             zIndex: 999999999999,
                             left: item.x,
                             top: item.y,
-                            width: '100%',
-                            height: '100%',
-                            borderWidth: 3, borderColor: "blue",
+                            width: computedLayout.gridCellWidth,
+                            height: computedLayout.gridCellHeight,
+                            borderWidth: 2, borderColor: "blue",
                             justifyContent: 'center', alignItems: 'center'
                         }}
                     >

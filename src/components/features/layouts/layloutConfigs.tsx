@@ -1,7 +1,7 @@
-import { thumbnails } from "./layoutThumbnails";
 import { LayoutConfig, ImageItem } from "@/src/customTypes/itemTypes";
+import GlobalDimensions from "../../global/globalDimensions";
 
-
+const { dimensions } = GlobalDimensions();
 export const layoutConfigs: Record<string, LayoutConfig> = {
     smartGrid: {
       name: "Smart Grid",
@@ -9,42 +9,48 @@ export const layoutConfigs: Record<string, LayoutConfig> = {
       condition: (images: ImageItem[]) => images.length > 0, // Always available
       algorithm: (images: string[]) => {
         const total = images.length;
-        let columns = 1; // Start with 1 column for a single image
-  
-        // Dynamically adjust columns based on total images
-        if (total === 1) columns = 1; // Single image takes full width
-        else if (total <= 4) columns = 2; // 2x2 for 2-4 images
-        else if (total <= 9) columns = 3; // 3x3 for 5-9 images
-        else if (total <= 16) columns = 4; // 4x4 for 10-16 images
-        else columns = 5; // Max at 5 columns for 17+
-  
-        // Ensure that the grid has more rows than columns or is equal
-        let rows = Math.ceil(total / columns);
-        while (columns > rows && columns > 1) { // just a check/maintaining that rows will be > columns and if not, adjust the setup a bit
-          columns--;
-          rows = Math.ceil(total / columns);
+        let columns = Math.ceil(Math.sqrt(total)); // Start with square-like grid
+        let rows = Math.ceil(total / columns); // Calculate rows to fit the columns
+
+        // Step 2: Adjust to ensure the grid is balanced (columns should not be greater than rows)
+        if (columns > rows) {
+          // If columns > rows, swap the values to maintain balance
+          [columns, rows] = [rows, columns];
         }
-  
-        const remainder = total % columns; // Extra images in last row
-  
-        // Generate grid positions
+
+        // Step 3: Calculate grid cell size based on screen size and the calculated columns and rows
+        const gridCellWidth = dimensions.width / columns; // Width per grid cell
+        const gridCellHeight = dimensions.canvasHeight / rows; // Height per grid cell
+
+        // Calculate the number of images that will be in the last row
+        const lastRowImageCount = total % columns === 0 ? columns : total % columns;
+
+        // Step 4: Generate grid positions for each image
         const gridPositions = images.map((image, index) => {
-          let x = (index % columns) * 100; // we take the index of image in array, find how many times it goes into the column count and somehow allows it to align correctly to each column with math and reaminders
-          let y = Math.floor(index / columns) * 100;
-  
-          return { uri: image, x, y };
+        const x = (index % columns) * gridCellWidth; // X position based on columns
+        const y = Math.floor(index / columns) * gridCellHeight; // Y position based on rows
+
+        return { uri: image, x, y };
+      });
+
+      // Handle last row images to ensure they are centered
+      const lastRowImages = images.slice(total - lastRowImageCount);
+      if (lastRowImages.length > 0) {
+        // Add flex-style handling for last row images
+        const lastRowX = (dimensions.width - lastRowImageCount * gridCellWidth) / 2; // Center the images
+        lastRowImages.forEach((image, index) => {
+          gridPositions[total - lastRowImageCount + index].x = lastRowX + index * gridCellWidth;
         });
-  
-        // Detect if last row is incomplete (not full)
-        if (remainder > 0) {
-          return {
-            gridPositions: gridPositions.slice(0, rows * columns), // Regular grid
-            lastRowImages: images.slice(rows * columns), // Separate last row images
-            columns, // Columns used
-          };
-        }
-  
-        return { gridPositions, lastRowImages: [], columns };
+      }
+
+      return {
+        gridPositions,
+        columns,
+        gridCellWidth,
+        gridCellHeight,
+        rows,
+        lastRowImages,
+      };
       },
     },
     // staggeredGrid: {
@@ -83,23 +89,23 @@ export const layoutConfigs: Record<string, LayoutConfig> = {
     //     };
     //   },
     // },
-    noLayout: {
-      name: "No Layout",
-      thumbnail: "images",
-      condition: (images: ImageItem[]) => images.length > 0, // Always available
-      algorithm: (images: string[]) => {
-        const gridPositions = images.map((image, index) => ({
-          uri: image,
-          x: 0, // Align to left
-          y: index * 120, // Vertical stacking
-        }));
+    // noLayout: {
+    //   name: "No Layout",
+    //   thumbnail: "images",
+    //   condition: (images: ImageItem[]) => images.length > 0, // Always available
+    //   algorithm: (images: string[]) => {
+    //     const gridPositions = images.map((image, index) => ({
+    //       uri: image,
+    //       x: 0, // Align to left
+    //       y: index * 120, // Vertical stacking
+    //     }));
 
-        return {
-          gridPositions, // The mapped array (as expected by LayoutConfig)
-          lastRowImages: [], // Since staggeredGrid may not have a "last row" handling
-          columns: 3, // Fixed column count for staggered layout
-        };
-      },
-    },
+    //     return {
+    //       gridPositions, // The mapped array (as expected by LayoutConfig)
+    //       lastRowImages: [], // Since staggeredGrid may not have a "last row" handling
+    //       columns: 3, // Fixed column count for staggered layout
+    //     };
+    //   },
+    // },
   }
   

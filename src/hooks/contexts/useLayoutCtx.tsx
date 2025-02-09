@@ -5,8 +5,6 @@ import { createContext, Dispatch, SetStateAction, useState, useContext, useEffec
 interface layoutCtxType {
     layout: LayoutConfig | null,
     setLayout: Dispatch<SetStateAction<LayoutConfig | null>>,
-    layoutXY: {x: number, y: number},
-    setLayoutXY: Dispatch<SetStateAction<{x: number, y: number}>>,
 }
 
 const LayoutCtx = createContext<layoutCtxType | undefined>(undefined);
@@ -25,10 +23,9 @@ interface Props {
 // create provider to be a wrapper
 export const LayoutProvider: React.FC<Props> = ({ children }) => {
     const [layout, setLayout] = useState<LayoutConfig | null>(null);
-    const [layoutXY, setLayoutXY] = useState<{x: number, y: number}>({x: 0, y: 0});
 
     return (
-        <LayoutCtx.Provider value={{ layout, setLayout, layoutXY, setLayoutXY }}>
+        <LayoutCtx.Provider value={{ layout, setLayout }}>
             {children}
         </LayoutCtx.Provider> 
     );

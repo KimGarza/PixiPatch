@@ -78,6 +78,10 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     textUpdate(textsCtx);
   }, [textsCtx, layout]);
 
+  useEffect(() => {
+    // console.log("context images update? ", images)
+  }, [images])
+
   // built to monitor and update ItemCtx's text array from the TextCtx array which is meant for storing and managing text on the design front, here is just where it gets udpated to
   const textUpdate = (textsCtx: TextItem[]) => {
     textsCtx.map((textCtx) => { // map through TextCtx texts for matching text within text array here in itemCtx lol
@@ -234,8 +238,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const updatePendingChanges = () => {
     
     const updatePending = <T extends Item>(item: T): T => {
-    console.log("update pending changes, item: ", item, "is layout active? ", layout)
-
     // so if type is iamge and layout is true, we have a value for possibleLayoutX
     // if that is the case and only if layout is true, we will replace translate x/y with the layoutx + pending as to
     // start image where it began with layout translations and add pending changes as opposed to altering the pre layout coordinates

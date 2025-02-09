@@ -77,12 +77,15 @@ export type PathData = {
   strokeColor: string;
 }
 
-// layout
 export type LayoutConfig = {
   name: string;
-  thumbnail: keyof typeof thumbnails; // Ensures valid keys from thumbnails
-  condition: (images: ImageItem[]) => boolean; // LATER REDUCE AMOUNT OF DATA BEING PASSED IF NONE IS USED
-  algorithm: (images: string[]) => { 
-    gridPositions: 
-    { uri: string; x: number; y: number }[]; lastRowImages: string[]; columns: number };
-};
+  thumbnail: string;
+  condition: (images: ImageItem[]) => boolean;
+  algorithm: (images: string[]) => {
+    gridPositions: { uri: string; x: number; y: number }[];
+    lastRowImages: string[];
+    columns: number;
+    gridCellWidth: number;
+    gridCellHeight: number;
+  };
+}

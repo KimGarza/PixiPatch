@@ -43,6 +43,13 @@ const updateTransformState = () => {
     });
   }
 
+    // check for updates to front and active items to rerender upon change
+    useEffect(() => {
+      if (item.type == "image") { // the image is no longer active or in front so tap counter starts over
+        console.log("layoutx or position x reported to check if position x caused chagne", positionX.value, item.layoutX)
+      }
+    }, [positionX]);
+
   // check for updates to front and active items to rerender upon change
   useEffect(() => {
     if (frontItem?.id != item.id) { // the image is no longer active or in front so tap counter starts over
@@ -51,12 +58,14 @@ const updateTransformState = () => {
   }, [activeItemCtx, frontItem]);
 
   useEffect(() => {
-    console.log("layout in mutable: ", layout)
+    if (item.type == "image") {
+      console.log("item layoutx", item.layoutX)
+    }
     if (item.type == "image" && layout) {
-      positionX.value = item?.layoutX;
-      positionY.value = item?.layoutY;
-      savedPositionX.value = item?.layoutX;
-      savedPositionY.value = item?.layoutY;
+      positionX.value = 0;
+      positionY.value = 0;
+      savedPositionX.value = 0;
+      savedPositionY.value = 0;
     } else {
       positionX.value = item?.translateX;
       positionY.value = item?.translateY;
@@ -206,6 +215,7 @@ const updateTransformState = () => {
             width: item.width,
             height: item.height,
             zIndex: item.zIndex,
+            
           },
           animatedStyle,
         ]}
@@ -226,7 +236,7 @@ const updateTransformState = () => {
         </View>) : (<></>)}
 
           {item.type !== 'text' ? (
-            <Image source={{ uri: item.imageInfo.uri }} style={[{ width: item.width, height: item.height, zIndex: item.zIndex },
+            <Image source={{ uri: item.imageInfo.uri }} style={[{ opacity: 1, width: item.width, height: item.height, zIndex: item.zIndex, objectFit: 'fill' },
               activeItemCtx?.id == item.id &&
               styles.itemSelected
             ]} />
