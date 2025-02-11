@@ -24,8 +24,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
                 // Setting the layoutX and layoutY for each image to center within its respective grid cell
                 image.layoutX = gridPos.x + (computedLayout.gridCellWidth - image.width) / 2;
                 image.layoutY = gridPos.y + (computedLayout.gridCellHeight - image.height) / 2;
-                // console.log("viewimages config: x translation per image", gridPos.x);
-
+                image.layoutActive = true;
             }
           });
         }
@@ -49,7 +48,7 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
                             top: item.y,
                             width: computedLayout.gridCellWidth,
                             height: computedLayout.gridCellHeight,
-                            borderWidth: 2, borderColor: "blue",
+                            borderWidth: 2, borderColor: "orange",
                             justifyContent: 'center', alignItems: 'center'
                         }}
                     >

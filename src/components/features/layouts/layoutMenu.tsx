@@ -15,7 +15,6 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const { colors } = GlobalTheme();
 const { dimensions } = GlobalDimensions();
-// const { updatePendingChanges } = useItemCtx();
 
 interface Props {
   menuToggle: () => void;
@@ -32,6 +31,7 @@ const LayoutMenu: React.FC<Props> = ({ menuToggle }) => {
   ([]);
 
   useEffect(() => {
+    console.log("updatePendingChanges in useeffect of layout menu")
     updatePendingChanges();
     // converting thumbnails object into an array for mapping
     const layoutsArray = Object.entries(layoutConfigs).map(([key, config]) => ({
@@ -66,6 +66,7 @@ const LayoutMenu: React.FC<Props> = ({ menuToggle }) => {
   }
 
   const handleSubmitLayout = () => {
+    console.log("updatePendingChanges in handleSubmitLayout of layout menu")
     updatePendingChanges();
     setLayout(null);
   }

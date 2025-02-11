@@ -43,13 +43,6 @@ const updateTransformState = () => {
     });
   }
 
-    // check for updates to front and active items to rerender upon change
-    useEffect(() => {
-      if (item.type == "image") { // the image is no longer active or in front so tap counter starts over
-        console.log("layoutx or position x reported to check if position x caused chagne", positionX.value, item.layoutX)
-      }
-    }, [positionX]);
-
   // check for updates to front and active items to rerender upon change
   useEffect(() => {
     if (frontItem?.id != item.id) { // the image is no longer active or in front so tap counter starts over
@@ -58,14 +51,12 @@ const updateTransformState = () => {
   }, [activeItemCtx, frontItem]);
 
   useEffect(() => {
-    if (item.type == "image") {
-      console.log("item layoutx", item.layoutX)
-    }
-    if (item.type == "image" && layout) {
+    if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0
       positionX.value = 0;
       positionY.value = 0;
       savedPositionX.value = 0;
       savedPositionY.value = 0;
+
     } else {
       positionX.value = item?.translateX;
       positionY.value = item?.translateY;
@@ -215,7 +206,7 @@ const updateTransformState = () => {
             width: item.width,
             height: item.height,
             zIndex: item.zIndex,
-            
+            overflow: item.type == "image" && item.layoutActive ? 'hidden' : 'visible', // Conditionally apply overflow
           },
           animatedStyle,
         ]}

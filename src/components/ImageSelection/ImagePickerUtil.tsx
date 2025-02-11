@@ -41,12 +41,6 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
       console.log("error ", error)
     }
 
-    // const canvasWidth = dimensions.width * 0.9; // Allow some margin
-    // const canvasHeight = dimensions.height * 0.8; // Allow some margin
-
-    // const x = Math.random() * (canvasWidth - 100); // Ensure it stays inside width
-    // const y = Math.random() * (canvasHeight - 100); // Ensure it stays inside height
-
     // Randomizing within bounds of screen dimensions where to make images go on canvas
     const x = Math.floor(Math.random() * (dimensions.width * 0.1)) + (dimensions.width * 0.25);
     const y = Math.floor(Math.random() * (dimensions.height * 0.1)) + (dimensions.height * 0.1);
@@ -61,6 +55,7 @@ const ImagePickerUtil: React.FC<Props> = ({ toggle }) => {
       pendingChanges: {rotation: 0, positionX: x, positionY: y, scale: 1},
       width: updatedWidth,
       height: updatedHeight,
+      layoutActive: false
     }
 
     return imageItem;

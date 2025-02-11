@@ -78,10 +78,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     textUpdate(textsCtx);
   }, [textsCtx, layout]);
 
-  useEffect(() => {
-    // console.log("context images update? ", images)
-  }, [images])
-
   // built to monitor and update ItemCtx's text array from the TextCtx array which is meant for storing and managing text on the design front, here is just where it gets udpated to
   const textUpdate = (textsCtx: TextItem[]) => {
     textsCtx.map((textCtx) => { // map through TextCtx texts for matching text within text array here in itemCtx lol
@@ -196,6 +192,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   // Add Pending Changes
   const addPendingChanges = (id: string, inPendingChanges: { positionX?: number, positionY?: number, rotation: number, scale: number}) => {
     
+    console.log("IN ADD PENDING CHANGES", layout)
     const addPending = <T extends Item>(item: T): T => {
       return {
         ...item,
@@ -234,67 +231,69 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
     }
   }
 
-  // Update Pending Changes
   const updatePendingChanges = () => {
-    
     const updatePending = <T extends Item>(item: T): T => {
-    // so if type is iamge and layout is true, we have a value for possibleLayoutX
-    // if that is the case and only if layout is true, we will replace translate x/y with the layoutx + pending as to
-    // start image where it began with layout translations and add pending changes as opposed to altering the pre layout coordinates
-    // so now its either translation as normal or start at layout x,y per image and then adjust if user moved it 
-    // regardless if user moved it, if layout was chosen to be submitted, we replace the current xlation with the layout x and y
-    const possibleLayoutX = item.type === "image" && layout ? item.layoutX : 0;
-    const possibleLayoutY = item.type === "image" && layout ? item.layoutY : 0;
-      // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured... :,(
-      // if scaling occured, the item's corner will grow to meet a coordinate pair that is unequal to the panned track (pinching to scale although relocates the images corner doesn't trigger the pan)
-      // so we must calculate the offset of the variance of the original and new width/height, divide it by 2 (since scaling happens on both sides equally to make the new width/height) 
-      // and add or subtrack based on growing or shrinking to get a more accurate x and y translation
+      // 🚨 Check if this specific image has only default pending changes
+      const hasOnlyDefaultPendingChanges =
+        item.pendingChanges.scale === 1 &&
+        item.pendingChanges.rotation === 0 &&
+        item.pendingChanges.positionX === 0 &&
+        item.pendingChanges.positionY === 0;
+  
+
+        console.log("layout", layout, "item.pendingchanges", item.pendingChanges)
+      // 🚨 If this image has only default pending changes, return it unchanged
+      if (hasOnlyDefaultPendingChanges && !layout) {
+        console.log(`Skipping update for image ${item.id} as it has default pending changes.`);
+        return item;
+      }
+  
+      // Determine whether layout is active and assign X/Y positions accordingly
+      const possibleLayoutX = item.type === "image" && item.layoutActive ? item.layoutX : item.translateX;
+      const possibleLayoutY = item.type === "image" && item.layoutActive ? item.layoutY : item.translateY;
+  
+      // Scaling calculations for translation offsets
       const newHeight = item.height * item.pendingChanges.scale;
       const newWidth = item.width * item.pendingChanges.scale;
       let grew = false;
-
-      let xOffset = 0; let yOffset = 0;
-
-      if (item.width > newWidth) { // the item shrank
+  
+      let xOffset = 0;
+      let yOffset = 0;
+  
+      if (item.width > newWidth) { // If the item shrank
         xOffset = (item.width - newWidth) / 2;
         yOffset = (item.height - newHeight) / 2;
-      } else { // grew
+      } else { // If the item grew
         grew = true;
         xOffset = (newWidth - item.width) / 2;
         yOffset = (newHeight - item.height) / 2;
       }
-
+  
       return {
         ...item,
-        height: item.height * item.pendingChanges.scale,
-        width: item.width * item.pendingChanges.scale,
+        height: newHeight,
+        width: newWidth,
         rotation: item.pendingChanges.rotation,
         translateX: 
-        !layout && grew ? item.pendingChanges.positionX - xOffset
-        : !layout ? item.pendingChanges.positionX + xOffset
-        : possibleLayoutX + item.pendingChanges.positionX, // *offset not being considered no current scaling with layout adjustments
+          !layout && grew ? item.pendingChanges.positionX - xOffset
+          : !layout ? item.pendingChanges.positionX + xOffset
+          : possibleLayoutX + item.pendingChanges.positionX,
         translateY: 
-        !layout && grew ? item.pendingChanges.positionY - yOffset
-        : !layout ? item.pendingChanges.positionY + yOffset
-        : possibleLayoutY + item.pendingChanges.positionY,
-        pendingChanges: {
-          scale: 1,
-          rotation: 0,
-          positionX: 0,
-          positionY: 0,
-          layoutPosX: 0,
-          layoutPosY: 0,
-        },
-      }
+          !layout && grew ? item.pendingChanges.positionY - yOffset
+          : !layout ? item.pendingChanges.positionY + yOffset
+          : possibleLayoutY + item.pendingChanges.positionY,
+        // 🔥 ONLY RESET pendingChanges IF an update was necessary 🔥
+        pendingChanges: { scale: 1, rotation: 0, positionX: 0, positionY: 0 },
+      };
     };
-
-    setItems((prevItems) => prevItems.map((item) => updatePending(item)));
-    setImages((prevImages) => prevImages.map((item) => updatePending(item)));
-    setStickers((prevStickers) => prevStickers.map((item) => updatePending(item)));
-    setDrawings((prevDrawings) => prevDrawings.map((item) => updatePending(item)));
-    setTexts((prevTexts) => prevTexts.map((item) => updatePending(item)));
-  }
-
+  
+    // Apply updates only to images that actually need them
+    setItems((prevItems) => prevItems.map(updatePending));
+    setImages((prevImages) => prevImages.map(updatePending));
+    setStickers((prevStickers) => prevStickers.map(updatePending));
+    setDrawings((prevDrawings) => prevDrawings.map(updatePending));
+    setTexts((prevTexts) => prevTexts.map(updatePending));
+  };
 
   return (
     <ItemCtx.Provider

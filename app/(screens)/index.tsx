@@ -93,7 +93,6 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   pageContent: {
-    borderWidth: 3, borderColor: 'green',
     height: dimensions.homeHeight,
   },
   homeContent: {

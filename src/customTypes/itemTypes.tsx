@@ -4,7 +4,6 @@ export interface BaseItem {
     type: string; // discriminate within the union
     zIndex: number; //?? need ot be here?
     translateX: number; translateY: number;
-    // layoutX: number; layoutY: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
@@ -13,12 +12,12 @@ export interface BaseItem {
     type: 'image'; // discriminate
     zIndex: number;
     imageInfo: ImageInfo;
-    // ogImageInfo: ImageInfo;
     translateX: number; translateY: number;
     layoutX: number; layoutY: number;
     width: number; height: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
+    layoutActive: boolean;
   }
   export interface StickerItem extends BaseItem {
     id: string;
@@ -26,7 +25,6 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     translateX: number; translateY: number;
-    // layoutX: number; layoutY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
@@ -37,7 +35,6 @@ export interface BaseItem {
     zIndex: number;
     imageInfo: ImageInfo;
     translateX: number; translateY: number;
-    // layoutX: number; layoutY: number;
     height: number, width: number;
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
