@@ -12,12 +12,17 @@ import { useLayoutCtx } from '@/src/hooks/contexts/useLayoutCtx';
 const { colors } = GlobalTheme();
 interface Props {
   item: ImageItem | StickerItem | DrawingItem | TextItem;
+  tempLayoutScale?: number | undefined;
 }
 
 // prettier-ignore
 const MutableItem = ({ item }: Props) => {
+  const { tempScales, layout } = useLayoutCtx();
+  
+  // Get temporary scale value from context, or default to 1
+  
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
-  const { layout, tempScales } = useLayoutCtx();
+  const tempLayoutScale = useSharedValue(tempScales[item.id] ?? 1);
 
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
@@ -29,7 +34,7 @@ const MutableItem = ({ item }: Props) => {
   const positionY = useSharedValue(item?.translateY ?? 0);
   const savedPositionX = useSharedValue(item?.translateX ?? 0);
   const savedPositionY = useSharedValue(item?.translateY ?? 0);
-  const scale = useSharedValue(tempScales[item.id] ?? 1)
+  const scale = useSharedValue(tempScales[item.id] ?? 1);
   const savedScale = useSharedValue(1);
   const rotation = useSharedValue(item?.rotation ?? 0);
   const savedRotation = useSharedValue(item?.rotation ?? 0);
@@ -43,7 +48,6 @@ const updateTransformState = () => {
     });
   }
 
-  // check for updates to front and active items to rerender upon change
   useEffect(() => {
     if (tempScales[item.id]) {
       scale.value = tempScales[item.id];
@@ -52,18 +56,21 @@ const updateTransformState = () => {
 
   useEffect(() => {
     if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while 
-      console.log("image")
       positionX.value = 0;
       positionY.value = 0;
       savedPositionX.value = 0;
       savedPositionY.value = 0;
+      scale.value = tempLayoutScale.value;
+      savedScale.value = tempLayoutScale.value;
+      runOnJS(updateTransformState)(); // sync the new position with the state
+
     } else {
       positionX.value = item?.translateX;
       positionY.value = item?.translateY;
       savedPositionX.value = item?.translateX;
       savedPositionY.value = item?.translateY;
     }
-  }, [layout])
+  }, [layout, scale])
 
   // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {

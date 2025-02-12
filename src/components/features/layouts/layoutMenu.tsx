@@ -22,7 +22,7 @@ interface Props {
 
 const LayoutMenu: React.FC<Props> = ({ menuToggle }) => {
   const { images, updatePendingChanges } = useItemCtx();
-  const { setLayout } = useLayoutCtx();
+  const { setLayout, setTempScales } = useLayoutCtx();
   const [layoutOptions, setLayoutOptions] = useState<{ 
     id: string; 
     name: string; 
@@ -31,7 +31,6 @@ const LayoutMenu: React.FC<Props> = ({ menuToggle }) => {
   ([]);
 
   useEffect(() => {
-    console.log("updatePendingChanges in useeffect of layout menu")
     updatePendingChanges();
     // converting thumbnails object into an array for mapping
     const layoutsArray = Object.entries(layoutConfigs).map(([key, config]) => ({
@@ -62,12 +61,13 @@ const LayoutMenu: React.FC<Props> = ({ menuToggle }) => {
 
   const handleCloseMenu = () => {
     setLayout(null);
+    setTempScales({});
     menuToggle();
   }
 
   const handleSubmitLayout = () => {
-    console.log("updatePendingChanges in handleSubmitLayout of layout menu")
     updatePendingChanges();
+    setTempScales({});
     setLayout(null);
   }
 

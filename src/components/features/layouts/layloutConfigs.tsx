@@ -29,7 +29,6 @@ export const layoutConfigs: Record<string, LayoutConfig> = {
         const gridPositions = images.map((image, index) => {
         const x = (index % columns) * gridCellWidth; // X position based on columns
         const y = Math.floor(index / columns) * gridCellHeight; // Y position based on rows
-
         return { uri: image, x, y };
       });
 

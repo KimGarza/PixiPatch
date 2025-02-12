@@ -72,7 +72,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   const [texts, setTexts] = useState<TextItem[]>([]);
 
   const { textsCtx } = useTextCtx();
-  const { layout } = useLayoutCtx();
+  const { layout, tempScales } = useLayoutCtx();
   // upon changes to the texts array within TextCtx (which is for handling styling) main ctx will monitor and update accordingly
   useEffect(() => {
     textUpdate(textsCtx);
@@ -192,7 +192,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   // Add Pending Changes
   const addPendingChanges = (id: string, inPendingChanges: { positionX?: number, positionY?: number, rotation: number, scale: number}) => {
     
-    console.log("IN ADD PENDING CHANGES", layout)
+    console.log("IN ADD PENDING CHANGES", inPendingChanges)
     const addPending = <T extends Item>(item: T): T => {
       return {
         ...item,
@@ -240,21 +240,22 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
         item.pendingChanges.positionX === 0 &&
         item.pendingChanges.positionY === 0;
   
-
-        console.log("layout", layout, "item.pendingchanges", item.pendingChanges)
       // 🚨 If this image has only default pending changes, return it unchanged
       if (hasOnlyDefaultPendingChanges && !layout) {
         console.log(`Skipping update for image ${item.id} as it has default pending changes.`);
         return item;
       }
   
+      // 🔥 Retrieve the temp scale factor from context if layout is active
+      const tempScale = layout && tempScales[item.id] ? tempScales[item.id] : item.pendingChanges.scale;
+
       // Determine whether layout is active and assign X/Y positions accordingly
       const possibleLayoutX = item.type === "image" && item.layoutActive ? item.layoutX : item.translateX;
       const possibleLayoutY = item.type === "image" && item.layoutActive ? item.layoutY : item.translateY;
-  
       // Scaling calculations for translation offsets
-      const newHeight = item.height * item.pendingChanges.scale;
-      const newWidth = item.width * item.pendingChanges.scale;
+       // Scaling calculations for translation offsets
+      const newHeight = !layout ? item.height * tempScale : item.height * tempScale;
+      const newWidth = !layout ? item.width * tempScale : item.width * tempScale;
       let grew = false;
   
       let xOffset = 0;
