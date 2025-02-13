@@ -8,6 +8,7 @@ import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
 import { useLayoutCtx } from '@/src/hooks/contexts/useLayoutCtx';
+import { useInteractiveLayoutCtx } from '@/src/hooks/contexts/useInteractiveCtx';
 
 const { colors } = GlobalTheme();
 interface Props {
@@ -18,7 +19,7 @@ interface Props {
 const MutableItem = ({ item }: Props) => {
   const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
   const { layout, tempScales } = useLayoutCtx();
-
+  const { setFirstSelected, firstSelected, setSecondSelected, secondSelected} = useInteractiveLayoutCtx();
   const [tapCount, setTapCount] = useState(0);
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
   const tapCoordinatesX = useSharedValue(0);
@@ -51,8 +52,11 @@ const updateTransformState = () => {
   }, [tempScales]);
 
   useEffect(() => {
-    if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while 
-      console.log("image")
+    console.log("first: ", firstSelected, "second: ", secondSelected)
+  }, [firstSelected, secondSelected])
+
+  useEffect(() => {
+    if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while
       positionX.value = 0;
       positionY.value = 0;
       savedPositionX.value = 0;
@@ -65,37 +69,43 @@ const updateTransformState = () => {
     }
   }, [layout])
 
+  useEffect(() => {
+    console.log("first: ", firstSelected, "second: ", secondSelected);
+  }, [firstSelected, secondSelected]);
+
   // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {
-  
-    if (!activeItemCtx && item.id == frontItem?.id) { // if THIS item IS in the front and is NOT currently active...
-      setActiveItemCtx(item); 
+    if (layout) {
+      console.log("layout")
+      if (firstSelected === null) { setFirstSelected(item.id); console.log("if (!firstSelected) ", item.id, firstSelected); }
+      else if (firstSelected === item.id) { setFirstSelected(null); console.log("else if (firstSelected === item.id)"); }
+      else if (firstSelected) { setSecondSelected(item.id); console.log("else if (firstSelected === item.id)"); }
+    } if (!activeItemCtx && item.id == frontItem?.id) { // if THIS item IS in the front and is NOT currently active...
+      setActiveItemCtx(item);
     } else if (tapCount == 0) { // if THIS item is NOT in front and user tapped: they wish to bring to front...
-
       setTapCount(1);
       bringToFront(item.id, item.type);
-
       // editing pencil popup location for images
-      const { locationX, locationY } = evt.nativeEvent; 
+      const { locationX, locationY } = evt.nativeEvent;
       tapCoordinatesX.value = locationX;
       tapCoordinatesY.value = locationY;
-
     } else if (tapCount == 1) { // if THIS item was brought to front but not yet activated: user wishes to active...
-
+    if (layout) {
+      setFirstSelected(null);
+      setSecondSelected(null);
+    } else {
       setTapCount(2);
       setActiveItemCtx(item);
-
-      // editing pencil popup location for images
-      setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value });
-
+    }
+    // editing pencil popup location for images
+    setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value });
     } else if (tapCount == 2) { // if THIS item is activated, user taps again: they wish to deactivate
-
       setTapCoordinates({ x: 0, y: 0 });
       setActiveItemCtx(undefined);
       setFrontItem(undefined);
       setTapCount(0);
-    }
   };
+}
 
   const panGesture = Gesture.Pan() // drag item
     .onUpdate((event) => {
@@ -180,18 +190,22 @@ const updateTransformState = () => {
     return {
       transform: [
         // inverting the rotation & scale to prevent trashcan icon from rotating with image (like a counter balance)
-        { rotateZ: `${-rotation.value}rad` }, 
+        { rotateZ: `${-rotation.value}rad` },
         { scale: 1 / scale.value },
       ],
     };
   });
 
   const animatedStyle = useAnimatedStyle(() => {
+    const pivotX = item.width / 2;
+    const pivotY = item.height / 2;
     return {
       transform: [
-        { translateX: positionX.value },
-        { translateY: positionY.value },
+        { translateX: positionX.value + pivotX },
+        { translateY: positionY.value + pivotY },
         { rotateZ: `${rotation.value}rad` },
+        { translateX: -pivotX }, // Move back after rotation
+        { translateY: -pivotY },
         { scale: scale.value },
       ],
     };
@@ -214,8 +228,8 @@ const updateTransformState = () => {
 
         {/* Tapping item */}
         <TouchableOpacity onPress={handleOnTap} style={{ zIndex: item.zIndex }} activeOpacity={0.9}>
-        
-        {activeItemCtx?.id == item.id ? (
+
+        {!layout && activeItemCtx?.id == item.id ? (
           <View>
           <GestureDetector gesture={handSparklesDragGesture}>
             <View style={[styles.hand, { left: -15 + item.width, top: -15 }]}>
@@ -237,7 +251,7 @@ const updateTransformState = () => {
         </TouchableOpacity>
 
         {/* pencil popup for editing options on a specific image only for images */}
-        {(item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) ? (
+        {(!layout && item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) ? (
           <Animated.View style={[styles.toolbox, toolBoxAnimated]}>
             <ViewModifyImageToolbox />
           </Animated.View>
