@@ -21,12 +21,13 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
 
           // Loop through each image and update layoutX and layoutY with computed positions
           images.forEach((image, index) => {
+
             const gridPos = computedLayout.gridPositions[index];
             if (gridPos) {
 
                 // Setting the layoutX and layoutY for each image to center within its respective grid cell
-                image.layoutX = gridPos.x + (computedLayout.gridCellWidth - image.width) / 2;
-                image.layoutY = gridPos.y + (computedLayout.gridCellHeight - image.height) / 2;
+                image.layoutX = gridPos.x;
+                image.layoutY = gridPos.y;
                 image.layoutActive = true;
 
                 const gridWidth = computedLayout.gridCellWidth;

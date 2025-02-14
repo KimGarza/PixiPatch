@@ -52,15 +52,19 @@ const updateTransformState = () => {
   }, [tempScales]);
 
   useEffect(() => {
-    console.log("first: ", firstSelected, "second: ", secondSelected)
   }, [firstSelected, secondSelected])
 
   useEffect(() => {
+  }, [positionX.value])
+
+  useEffect(() => {
+
     if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while
       positionX.value = 0;
       positionY.value = 0;
       savedPositionX.value = 0;
       savedPositionY.value = 0;
+
     } else {
       positionX.value = item?.translateX;
       positionY.value = item?.translateY;
@@ -70,16 +74,15 @@ const updateTransformState = () => {
   }, [layout])
 
   useEffect(() => {
-    console.log("first: ", firstSelected, "second: ", secondSelected);
   }, [firstSelected, secondSelected]);
 
   // **check for efficicey**
   const handleOnTap = (evt: GestureResponderEvent) => {
     if (layout) {
-      console.log("layout")
-      if (firstSelected === null) { setFirstSelected(item.id); console.log("if (!firstSelected) ", item.id, firstSelected); }
-      else if (firstSelected === item.id) { setFirstSelected(null); console.log("else if (firstSelected === item.id)"); }
-      else if (firstSelected) { setSecondSelected(item.id); console.log("else if (firstSelected === item.id)"); }
+      // console.log("layout")
+      // if (firstSelected === null) { setFirstSelected(item.id); console.log("if (!firstSelected) ", item.id, firstSelected); }
+      // else if (firstSelected === item.id) { setFirstSelected(null); console.log("else if (firstSelected === item.id)"); }
+      // else if (firstSelected) { setSecondSelected(item.id); console.log("else if (firstSelected === item.id)"); }
     } if (!activeItemCtx && item.id == frontItem?.id) { // if THIS item IS in the front and is NOT currently active...
       setActiveItemCtx(item);
     } else if (tapCount == 0) { // if THIS item is NOT in front and user tapped: they wish to bring to front...
@@ -197,15 +200,11 @@ const updateTransformState = () => {
   });
 
   const animatedStyle = useAnimatedStyle(() => {
-    const pivotX = item.width / 2;
-    const pivotY = item.height / 2;
     return {
       transform: [
-        { translateX: positionX.value + pivotX },
-        { translateY: positionY.value + pivotY },
+        { translateX: positionX.value },
+        { translateY: positionY.value },
         { rotateZ: `${rotation.value}rad` },
-        { translateX: -pivotX }, // Move back after rotation
-        { translateY: -pivotY },
         { scale: scale.value },
       ],
     };

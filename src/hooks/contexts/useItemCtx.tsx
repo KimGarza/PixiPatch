@@ -191,8 +191,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
   // Add Pending Changes
   const addPendingChanges = (id: string, inPendingChanges: { positionX?: number, positionY?: number, rotation: number, scale: number}) => {
-    
-    console.log("IN ADD PENDING CHANGES", inPendingChanges)
     const addPending = <T extends Item>(item: T): T => {
       return {
         ...item,
@@ -233,6 +231,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
 
   const updatePendingChanges = () => {
     const updatePending = <T extends Item>(item: T): T => {
+
       // 🚨 Check if this specific image has only default pending changes
       const hasOnlyDefaultPendingChanges =
         item.pendingChanges.scale === 1 &&
@@ -242,7 +241,6 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
       // 🚨 If this image has only default pending changes, return it unchanged
       if (hasOnlyDefaultPendingChanges && !layout) {
-        console.log(`Skipping update for image ${item.id} as it has default pending changes.`);
         return item;
       }
   
@@ -260,16 +258,15 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
       let xOffset = 0;
       let yOffset = 0;
+
+      const newTranslateX = !layout && grew ? item.pendingChanges.positionX - xOffset
+      : !layout ? item.pendingChanges.positionX + xOffset
+      : (item.type == "image" && item.layoutActive ? item.layoutX : item.translateX) + item.pendingChanges.positionX;
   
-      if (item.width > newWidth) { // If the item shrank
-        xOffset = (item.width - newWidth) / 2;
-        yOffset = (item.height - newHeight) / 2;
-      } else { // If the item grew
-        grew = true;
-        xOffset = (newWidth - item.width) / 2;
-        yOffset = (newHeight - item.height) / 2;
-      }
-  
+    const newTranslateY = !layout && grew ? item.pendingChanges.positionY - yOffset
+      : !layout ? item.pendingChanges.positionY + yOffset
+      : (item.type == "image" && item.layoutActive ? item.layoutY : item.translateY) + item.pendingChanges.positionY;
+
       return {
         ...item,
         height: newHeight,
