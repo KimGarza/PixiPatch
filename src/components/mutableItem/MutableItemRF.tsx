@@ -50,23 +50,25 @@ const MutableItemRF = ({ item }: Props) => {
       <Animated.View
         style={[
           styles.itemContainer,
-          { width: item.width, height: item.height, zIndex: item.zIndex },
+          { width: item.width, height: item.height, zIndex: item.zIndex,
+             overflow: item.type == "image" && item.layoutActive ? 'hidden' : 'visible'
+           },
           animatedStyle,
-        ]}
-      >
+        ]}>
+        
         <TouchableOpacity onPress={(evt) => handleTap(evt, item, layout, setFirstSelected, setSecondSelected, setTapCoordinates, tapCoordinatesX, tapCoordinatesY)} activeOpacity={0.9}>
           {/* <MutableItemRenderer item={item} active={activeItemCtx?.id === item.id} /> */}
            {item.type !== 'text' ? (
-                      <Image source={{ uri: item.imageInfo.uri }} style={[{ opacity: 1, width: item.width, height: item.height, zIndex: item.zIndex, objectFit: 'fill' },
-                        activeItemCtx?.id == item.id &&
-                        styles.itemSelected
-                      ]} />
-                    ) : (
-                      <Text style={[{ borderWidth: 1, fontFamily: item.font, width: item.width, height: item.height, fontSize: 42, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
-                    )}
+            <Image source={{ uri: item.imageInfo.uri }} style={[{ opacity: 1, width: item.width, height: item.height, zIndex: item.zIndex, objectFit: 'fill' },
+              activeItemCtx?.id == item.id &&
+              styles.itemSelected
+            ]} />
+            ) : (
+              <Text style={[{ borderWidth: 1, fontFamily: item.font, width: item.width, height: item.height, fontSize: 42, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
+            )}
         </TouchableOpacity>
 
-        {(!layout && item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) && (
+          {(!layout && item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) && (
           <Animated.View style={[styles.toolbox, { transform: [{ translateX: tapCoordinatesX.value - 30 }, { translateY: tapCoordinatesY.value - 30 }] }]}>  
             <ViewModifyImageToolbox />
           </Animated.View>

@@ -1,25 +1,28 @@
 import { useSharedValue, runOnJS } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
 import { Item } from '@/src/customTypes/itemTypes';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { GestureResponderEvent } from 'react-native';
 import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { LayoutConfig } from '@/src/customTypes/itemTypes';
+import { useLayoutCtx } from './useLayoutCtx';
 
 const useMutableGestures = (item: Item, setTapCoordinates: Dispatch<SetStateAction<{x: number, y: number}>>) => {
   const { addPendingChanges } = useItemCtx();
+  const { layout, tempScales } = useLayoutCtx();
 
   const positionX = useSharedValue(item?.translateX ?? 0);
   const positionY = useSharedValue(item?.translateY ?? 0);
   const savedPositionX = useSharedValue(positionX.value);
   const savedPositionY = useSharedValue(positionY.value);
-  const scale = useSharedValue(1);
+  const scale = useSharedValue(tempScales[item.id] ?? 1)
   const savedScale = useSharedValue(1);
   const rotation = useSharedValue(item?.rotation ?? 0);
   const savedRotation = useSharedValue(rotation.value);
   const tapCoordinatesX = useSharedValue(0);
   const tapCoordinatesY = useSharedValue(0);
 
+  // adds the current positioning into context to later be officially changed (not immediately due to app crashing issues)
   const updateTransformState = () => {
     addPendingChanges(item.id, {
       positionX: positionX.value,
@@ -28,6 +31,30 @@ const useMutableGestures = (item: Item, setTapCoordinates: Dispatch<SetStateActi
       scale: scale.value,
     });
   };
+
+  // listens for layout toggle
+  useEffect(() => {
+    if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while
+      positionX.value = 0;
+      positionY.value = 0;
+      savedPositionX.value = 0;
+      savedPositionY.value = 0;
+
+    } else {
+      positionX.value = item?.translateX;
+      positionY.value = item?.translateY;
+      savedPositionX.value = item?.translateX;
+      savedPositionY.value = item?.translateY;
+      scale.value = 1;
+    }
+  }, [layout])
+
+  // check for updates to front and active items to rerender upon change
+  useEffect(() => {
+    if (tempScales[item.id]) {
+      scale.value = tempScales[item.id];
+    }
+  }, [tempScales]);
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
