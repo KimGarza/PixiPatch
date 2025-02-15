@@ -39,7 +39,6 @@ export interface BaseItem {
     rotation: number;
     pendingChanges: {rotation: number, positionX: number, positionY: number, scale: number};
   }
-
   export interface TextItem extends BaseItem {
     id: string,
     type: 'text'; // discriminate

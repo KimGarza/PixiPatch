@@ -245,27 +245,31 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
       }
   
       // 🔥 Retrieve the temp scale factor from context if layout is active
-      const tempScale = layout && tempScales[item.id] ? tempScales[item.id] : item.pendingChanges.scale;
+      const pendingScale = layout && tempScales[item.id] ? tempScales[item.id] : item.pendingChanges.scale;
 
       // Determine whether layout is active and assign X/Y positions accordingly
       const possibleLayoutX = item.type === "image" && item.layoutActive ? item.layoutX : item.translateX;
       const possibleLayoutY = item.type === "image" && item.layoutActive ? item.layoutY : item.translateY;
-      // Scaling calculations for translation offsets
-       // Scaling calculations for translation offsets
-      const newHeight = !layout ? item.height * tempScale : item.height * tempScale;
-      const newWidth = !layout ? item.width * tempScale : item.width * tempScale;
+      
+      // one does not simply equate the tranlations of x and y to the x,y position data from gesture.pan when scaling has also occured... :,(
+      // if scaling occured, the item's corner will grow to meet a coordinate pair that is unequal to the panned track (pinching to scale although relocates the images corner doesn't trigger the pan)
+      // so we must calculate the offset of the variance of the original and new width/height, divide it by 2 (since scaling happens on both sides equally to make the new width/height) 
+      // and add or subtrack based on growing or shrinking to get a more accurate x and y translation
+      const newHeight = !layout ? item.height * pendingScale : item.height * pendingScale;
+      const newWidth = !layout ? item.width * pendingScale : item.width * pendingScale;
       let grew = false;
   
       let xOffset = 0;
       let yOffset = 0;
 
-      const newTranslateX = !layout && grew ? item.pendingChanges.positionX - xOffset
-      : !layout ? item.pendingChanges.positionX + xOffset
-      : (item.type == "image" && item.layoutActive ? item.layoutX : item.translateX) + item.pendingChanges.positionX;
-  
-    const newTranslateY = !layout && grew ? item.pendingChanges.positionY - yOffset
-      : !layout ? item.pendingChanges.positionY + yOffset
-      : (item.type == "image" && item.layoutActive ? item.layoutY : item.translateY) + item.pendingChanges.positionY;
+      if (item.width > newWidth) { // the item shrank
+        xOffset = (item.width - newWidth) / 2;
+        yOffset = (item.height - newHeight) / 2;
+      } else { // grew
+        grew = true;
+        xOffset = (newWidth - item.width) / 2;
+        yOffset = (newHeight - item.height) / 2;
+      }
 
       return {
         ...item,

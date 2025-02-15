@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { useEffect } from "react";
-import MutableItem from "../mutableItem/MutableItem";
+// import MutableItem from "../mutableItem/MutableItem";
+import MutableItemRF from "../mutableItem/MutableItemRF";
 import { ImageItem, LayoutConfig } from '@/src/customTypes/itemTypes';
 import { useLayoutCtx } from "@/src/hooks/contexts/useLayoutCtx";
 
@@ -75,14 +76,14 @@ const ViewImages: React.FC<ViewImagesProps> = ({images, layout}) => {
                             justifyContent: 'center', alignItems: 'center'
                         }}
                     >
-                        <MutableItem item={image} />
+                        <MutableItemRF item={image} />
                     </View>
                 ); })
             ) : (
             // ✅ If no layout, render in a default flex-wrap style
             <View>
                 {images.map((image) => (
-                    <MutableItem
+                    <MutableItemRF
                         key={image.id}
                         item={image}
                     />
