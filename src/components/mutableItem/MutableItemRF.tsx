@@ -35,9 +35,6 @@ const MutableItemRF = ({ item }: Props) => {
     tapCoordinatesY
   } = useMutableGestures(item, setTapCoordinates);
 
-  useEffect(() => {
-    console.log("positionx update", positionX.value)
-  }, [positionX.value])
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [

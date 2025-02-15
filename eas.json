@@ -7,6 +7,7 @@
     "development": {
       "distribution": "internal",
       "android": {
+        "permissions": ["MEDIA_LIBRARY", "CAMERA"],
         "buildType": "app-bundle",
         "credentialsSource": "remote",
         "autoIncrement": true

@@ -1,28 +1,25 @@
-import React from 'react';
-import { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import ImagePickerUtil from './ImagePickerUtil';
+import React from "react";
+import { View, TouchableOpacity } from "react-native";
+import { useItemCtx } from "@/src/hooks/contexts/useItemCtx";
+import { handlePickImage } from "./ImagePickerUtil"; // ✅ Import function
+
 interface PhotoSelectToolProps {
-  children?: React.ReactNode; // children will be icon as a button
+  children?: React.ReactNode;
 }
 
-// Acts as a button to activate ImagePicker using a toggle to conditionally render ImagePickerUtil coponent
-const PhotoSelectTool: React.FC<PhotoSelectToolProps> = ({children}) => {
+const PhotoSelectTool: React.FC<PhotoSelectToolProps> = ({ children }) => {
+  const { createItems } = useItemCtx(); // ✅ Get `createItems` from context
 
-  const [toggleImagePicker, setToggleImagePicker] = useState<boolean>(false);
-
-  const handlePickPhotos = () => {
-    setToggleImagePicker(!toggleImagePicker);
+  const handlePickPhotos = async () => {
+    console.log("button");
+    await handlePickImage(createItems); // ✅ Call imported function immediately
   };
 
   return (
     <TouchableOpacity onPress={handlePickPhotos}>
-      <View>
-        {children}
-        {toggleImagePicker && <ImagePickerUtil toggle={toggleImagePicker}/>}
-      </View>
+      <View>{children}</View>
     </TouchableOpacity>
   );
-}
+};
 
 export default PhotoSelectTool;
