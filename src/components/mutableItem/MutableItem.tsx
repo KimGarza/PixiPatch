@@ -49,6 +49,10 @@ const MutableItem = ({ item }: Props) => {
     }
   }, [item.height, item.translateY, layout])
 
+  const handStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 / scale.value }], // Inverse scaling
+  }));
+
   // Animated styles for item transformation
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -74,9 +78,9 @@ const MutableItem = ({ item }: Props) => {
 
           {activeItemCtx?.id === item.id && (
             <GestureDetector gesture={handSparklesDragGesture}>
-              <View style={[styles.hand, { left: item.width - 20, top: -20 }]}>
-                <FontAwesome5 name={'hand-sparkles'} size={30} color={colors.FireyPink} style={styles.editingIcon} />
-              </View>
+              <Animated.View style={[styles.hand, { left: item.width - 20, top: -20 }, handStyle]}>
+                <FontAwesome5 name={'hand-sparkles'} size={30} color={colors.FireyPink} style={styles.sparkleHand}/>
+              </Animated.View>
             </GestureDetector>
           )}
           
@@ -105,10 +109,11 @@ const styles = StyleSheet.create({
     borderColor: colors.FireyPink,
     zIndex: 999,
   },
-  editingIcon: {
+  sparkleHand: {
     backgroundColor: 'white',
     borderRadius: 30,
     overflow: 'hidden',
+    fontSize: 30
   },
   hand: {
     position: 'absolute',
