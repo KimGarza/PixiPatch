@@ -10,7 +10,6 @@ const { dimensions } = GlobalDimensions();
 
 // Dirty work of picking photos from users photo library using ImagePicker from react native. Stores them in useState in ImageCtx.
 export const handlePickImage = async (createItems: any) => {
-  console.log("handlePickImage");
 
   // Request permission
   const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();

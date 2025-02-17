@@ -11,7 +11,6 @@ const PhotoSelectTool: React.FC<PhotoSelectToolProps> = ({ children }) => {
   const { createItems } = useItemCtx(); // ✅ Get `createItems` from context
 
   const handlePickPhotos = async () => {
-    console.log("button");
     await handlePickImage(createItems); // ✅ Call imported function immediately
   };
 

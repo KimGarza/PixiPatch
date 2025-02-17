@@ -191,6 +191,7 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
   // Add Pending Changes
   const addPendingChanges = (id: string, inPendingChanges: { positionX?: number, positionY?: number, rotation: number, scale: number}) => {
+
     const addPending = <T extends Item>(item: T): T => {
       return {
         ...item,
@@ -230,8 +231,10 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   }
 
   const updatePendingChanges = () => {
-    const updatePending = <T extends Item>(item: T): T => {
+    setActiveItemCtx(undefined);
 
+    const updatePending = <T extends Item>(item: T): T => {
+      console.log("UPDATE PENDING: ", item.pendingChanges.scale, "height and width now", item.height, item.width)
       // 🚨 Check if this specific image has only default pending changes
       const hasOnlyDefaultPendingChanges =
         item.pendingChanges.scale === 1 &&
@@ -261,6 +264,8 @@ export const ItemProvider: React.FC<{children?: React.ReactNode}> = ({ children 
   
       let xOffset = 0;
       let yOffset = 0;
+
+      console.log("offsets x,y", xOffset, yOffset)
 
       if (item.width > newWidth) { // the item shrank
         xOffset = (item.width - newWidth) / 2;

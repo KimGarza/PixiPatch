@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { useEffect } from "react";
 // import MutableItem from "../mutableItem/MutableItem";
-import MutableItemRF from "../mutableItem/MutableItemRF";
+import MutableItemRF from "../mutableItem/MutableItem";
 import { ImageItem, LayoutConfig } from '@/src/customTypes/itemTypes';
 import { useLayoutCtx } from "@/src/hooks/contexts/useLayoutCtx";
 

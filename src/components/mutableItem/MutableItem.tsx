@@ -1,266 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
-import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
-import { DrawingItem, ImageItem, StickerItem, TextItem } from '@/src/customTypes/itemTypes';
-import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import GlobalTheme from '@/src/components/global/GlobalTheme';
+import ViewModifyImageToolbox from '../views/viewModifyImageToolbox';
+import { useItemCtx } from '@/src/hooks/contexts/useItemCtx';
 import { useLayoutCtx } from '@/src/hooks/contexts/useLayoutCtx';
 import { useInteractiveLayoutCtx } from '@/src/hooks/contexts/useInteractiveCtx';
+import useMutableGestures from '@/src/hooks/contexts/useMutableGestures';
+import { Item } from '@/src/customTypes/itemTypes';
 
 const { colors } = GlobalTheme();
+
 interface Props {
-  item: ImageItem | StickerItem | DrawingItem | TextItem;
+  item: Item;
 }
 
-// prettier-ignore
 const MutableItem = ({ item }: Props) => {
-  const { setActiveItemCtx, setFrontItem, addPendingChanges, activeItemCtx, bringToFront, frontItem } = useItemCtx();
-  const { layout, tempScales } = useLayoutCtx();
-  const { setFirstSelected, firstSelected, setSecondSelected, secondSelected} = useInteractiveLayoutCtx();
-  const [tapCount, setTapCount] = useState(0);
+  const { activeItemCtx, items } = useItemCtx();
+  const { layout } = useLayoutCtx();
+  const { setFirstSelected, setSecondSelected } = useInteractiveLayoutCtx();
   const [tapCoordinates, setTapCoordinates] = useState({ x: 0, y: 0 });
-  const tapCoordinatesX = useSharedValue(0);
-  const tapCoordinatesY = useSharedValue(0);
 
-  // initial translation values of item are setting up for mutability here
-  const positionX = useSharedValue(item?.translateX ?? 0);
-  const positionY = useSharedValue(item?.translateY ?? 0);
-  const savedPositionX = useSharedValue(item?.translateX ?? 0);
-  const savedPositionY = useSharedValue(item?.translateY ?? 0);
-  const scale = useSharedValue(tempScales[item.id] ?? 1)
-  const savedScale = useSharedValue(1);
-  const rotation = useSharedValue(item?.rotation ?? 0);
-  const savedRotation = useSharedValue(item?.rotation ?? 0);
+  const {
+    positionX,
+    positionY,
+    rotation,
+    scale,
+    handleTap,
+    gestures,
+    handSparklesDragGesture,
+    tapCoordinatesX,
+    tapCoordinatesY,
+  } = useMutableGestures(item, setTapCoordinates);
 
-const updateTransformState = () => {
-    addPendingChanges(item.id, {
-      positionX: positionX.value,
-      positionY: positionY.value,
-      rotation: rotation.value,
-      scale: scale.value,
-    });
-  }
-
-  // check for updates to front and active items to rerender upon change
+  // this is required in order to prevent temporary inaccurate depictions of translation during layout config selection, over or underscaling due to changes being doubled since
+  // animated values and context values are being combined.
   useEffect(() => {
-    if (tempScales[item.id]) {
-      scale.value = tempScales[item.id];
-    }
-  }, [tempScales]);
-
-  useEffect(() => {
-  }, [firstSelected, secondSelected])
-
-  useEffect(() => {
-  }, [positionX.value])
-
-  useEffect(() => {
-
-    if (item.type == "image" && layout) { // have to be 0 so that the x,y location can be starting at 0 while
+    if (layout) {
       positionX.value = 0;
       positionY.value = 0;
-      savedPositionX.value = 0;
-      savedPositionY.value = 0;
-
+      rotation.value = 0;
     } else {
-      positionX.value = item?.translateX;
-      positionY.value = item?.translateY;
-      savedPositionX.value = item?.translateX;
-      savedPositionY.value = item?.translateY;
+      scale.value = 1;
+      positionX.value = item.translateX;
+      positionY.value = item.translateY;
     }
-  }, [layout])
+  }, [item.height, item.translateY, layout])
 
-  useEffect(() => {
-  }, [firstSelected, secondSelected]);
-
-  // **check for efficicey**
-  const handleOnTap = (evt: GestureResponderEvent) => {
-    if (layout) {
-      // console.log("layout")
-      // if (firstSelected === null) { setFirstSelected(item.id); console.log("if (!firstSelected) ", item.id, firstSelected); }
-      // else if (firstSelected === item.id) { setFirstSelected(null); console.log("else if (firstSelected === item.id)"); }
-      // else if (firstSelected) { setSecondSelected(item.id); console.log("else if (firstSelected === item.id)"); }
-    } if (!activeItemCtx && item.id == frontItem?.id) { // if THIS item IS in the front and is NOT currently active...
-      setActiveItemCtx(item);
-    } else if (tapCount == 0) { // if THIS item is NOT in front and user tapped: they wish to bring to front...
-      setTapCount(1);
-      bringToFront(item.id, item.type);
-      // editing pencil popup location for images
-      const { locationX, locationY } = evt.nativeEvent;
-      tapCoordinatesX.value = locationX;
-      tapCoordinatesY.value = locationY;
-    } else if (tapCount == 1) { // if THIS item was brought to front but not yet activated: user wishes to active...
-    if (layout) {
-      setFirstSelected(null);
-      setSecondSelected(null);
-    } else {
-      setTapCount(2);
-      setActiveItemCtx(item);
-    }
-    // editing pencil popup location for images
-    setTapCoordinates({ x: tapCoordinatesX.value, y: tapCoordinatesY.value });
-    } else if (tapCount == 2) { // if THIS item is activated, user taps again: they wish to deactivate
-      setTapCoordinates({ x: 0, y: 0 });
-      setActiveItemCtx(undefined);
-      setFrontItem(undefined);
-      setTapCount(0);
-  };
-}
-
-  const panGesture = Gesture.Pan() // drag item
-    .onUpdate((event) => {
-      positionX.value = event.translationX + savedPositionX.value; // we add the x translation to the saved value which equates to where it was b4 + how far moved
-      positionY.value = event.translationY + savedPositionY.value;
-    })
-    .onEnd(() => {
-      savedPositionX.value = positionX.value;
-      savedPositionY.value = positionY.value;
-      runOnJS(updateTransformState)(); // sync the new position with the state
-    });
-
-  const pinchGesture = Gesture.Pinch() // scale item
-    .onUpdate((event) => {
-      scale.value = savedScale.value * event.scale;
-    })
-    .onEnd(() => {
-      savedScale.value = scale.value;
-      runOnJS(updateTransformState)();
-    });
-
-  // rotation gesture includes altering the actual rotation angle to snap at 90 increment
-  // when near 90 degrees within about 5 degrees (could not use runOnJS or app would still crash)
-  const ROTATION_SNAP_THRESHOLD = Math.PI / 36;
-  const SNAP_ANGLES = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2, 2 * Math.PI]; // 90, 180, 270, 360 in radians
-
-  const rotationGesture = Gesture.Rotation() // rotate item
-    .onUpdate((event) => {
-      rotation.value = savedRotation.value + event.rotation;
-      for (let snapAngle of SNAP_ANGLES) {
-        if (Math.abs(rotation.value - snapAngle) < ROTATION_SNAP_THRESHOLD) {
-          rotation.value = snapAngle;
-          break;
-        }
-      }
-    })
-    .onEnd(() => {
-      savedRotation.value = rotation.value;
-      runOnJS(updateTransformState)();
-    });
-
-  // Gesture for the hand sparkles icon to rotate and scale the image without panning
-  const handSparklesDragGesture = Gesture.Pan()
-    .onUpdate((event) => {
-      // Adjust the scaling so that dragging upward increases size and dragging downward decreases size
-      const scaleChange = 1 - (event.translationY * 0.007); // Subtract instead of add to invert behavior
-      scale.value = savedScale.value * scaleChange;
-
-      // Adjust rotation based on translationX
-      const rotationChange = event.translationX * 0.007; // Adjust sensitivity for rotation as needed
-      rotation.value = savedRotation.value + rotationChange;
-      for (let snapAngle of SNAP_ANGLES) {
-        if (Math.abs(rotation.value - snapAngle) < ROTATION_SNAP_THRESHOLD) {
-          rotation.value = snapAngle;
-          break;
-        }
-      }
-    })
-    .onStart(() => {
-      savedScale.value = scale.value;
-      savedRotation.value = rotation.value;
-    })
-    .onEnd(() => {
-      savedScale.value = scale.value;
-      savedRotation.value = rotation.value;
-      runOnJS(updateTransformState)();
-    });
-
-  // item animatedStyle
-  const toolBoxAnimated = useAnimatedStyle(() => { // item animatedStyle
-    return {
-      transform: [
-        { translateX: tapCoordinatesX.value - 30 },
-        { translateY: tapCoordinatesY.value - 30 },
-        { rotateZ: `${-rotation.value}rad` },
-        { scale: 1 / scale.value },
-      ],
-    };
-  });
-
-  const trashIconAnimated = useAnimatedStyle(() => { // trashcan animatedStyle
-    return {
-      transform: [
-        // inverting the rotation & scale to prevent trashcan icon from rotating with image (like a counter balance)
-        { rotateZ: `${-rotation.value}rad` },
-        { scale: 1 / scale.value },
-      ],
-    };
-  });
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: positionX.value },
-        { translateY: positionY.value },
-        { rotateZ: `${rotation.value}rad` },
-        { scale: scale.value },
-      ],
-    };
-  });
+  // Animated styles for item transformation
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: positionX.value },
+      { translateY: positionY.value },
+      { rotateZ: `${rotation.value}rad` },
+      { scale: scale.value },
+    ],
+  }));
 
   return (
-    <GestureDetector gesture={Gesture.Simultaneous(rotationGesture, pinchGesture, panGesture)}>
+    <GestureDetector gesture={gestures}>
       <Animated.View
         style={[
           styles.itemContainer,
-          {
-            width: item.width,
-            height: item.height,
-            zIndex: item.zIndex,
-            overflow: item.type == "image" && item.layoutActive ? 'hidden' : 'visible', // Conditionally apply overflow
-          },
+          { width: item.width, height: item.height, zIndex: item.zIndex },
           animatedStyle,
-        ]}
-      >
+        ]}>
 
-        {/* Tapping item */}
-        <TouchableOpacity onPress={handleOnTap} style={{ zIndex: item.zIndex }} activeOpacity={0.9}>
+        <TouchableOpacity
+          onPress={(evt) => handleTap(evt, item, layout, setFirstSelected, setSecondSelected, setTapCoordinates, tapCoordinatesX, tapCoordinatesY)}
+          activeOpacity={0.9}>
 
-        {!layout && activeItemCtx?.id == item.id ? (
-          <View>
-          <GestureDetector gesture={handSparklesDragGesture}>
-            <View style={[styles.hand, { left: -15 + item.width, top: -15 }]}>
-                <Animated.View style={trashIconAnimated}>
-                  <FontAwesome5 name={'hand-sparkles'} size={30} color={colors.FireyPink} style={styles.editingIcon}/>
-                </Animated.View>
-            </View>
-          </GestureDetector>
-        </View>) : (<></>)}
-
+          {activeItemCtx?.id === item.id && (
+            <GestureDetector gesture={handSparklesDragGesture}>
+              <View style={[styles.hand, { left: item.width - 20, top: -20 }]}>
+                <FontAwesome5 name={'hand-sparkles'} size={30} color={colors.FireyPink} style={styles.editingIcon} />
+              </View>
+            </GestureDetector>
+          )}
+          
           {item.type !== 'text' ? (
-            <Image source={{ uri: item.imageInfo.uri }} style={[{ opacity: 1, width: item.width, height: item.height, zIndex: item.zIndex, objectFit: 'fill' },
-              activeItemCtx?.id == item.id &&
-              styles.itemSelected
-            ]} />
+            <Image source={{ uri: item.imageInfo.uri }} style={[{ width: item.width, height: item.height, zIndex: item.zIndex }, activeItemCtx?.id == item.id && styles.itemSelected]} />
           ) : (
-            <Text style={[{ borderWidth: 1, fontFamily: item.font, width: item.width, height: item.height, fontSize: 42, textAlignVertical: 'center', textAlign: 'center', color: item.color, zIndex: item.zIndex }, styles.text]}>{item.text}</Text>
+            <Text style={[styles.text, { fontFamily: item.font, color: item.color }]}>{item.text}</Text>
           )}
         </TouchableOpacity>
 
-        {/* pencil popup for editing options on a specific image only for images */}
-        {(!layout && item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x && tapCoordinates.y) ? (
-          <Animated.View style={[styles.toolbox, toolBoxAnimated]}>
+        {/* Toolbox for modifying images */}
+        {(item.type === 'image' && activeItemCtx?.id === item.id && tapCoordinates.x !== 0 && tapCoordinates.y !== 0) && (
+          <Animated.View style={[styles.toolbox, { transform: [{ translateX: tapCoordinatesX.value - 30 }, { translateY: tapCoordinatesY.value - 30 }] }]}>
             <ViewModifyImageToolbox />
           </Animated.View>
-        ) : (<></>)}
+        )}
       </Animated.View>
     </GestureDetector>
   );
 };
-
-export default MutableItem;
 
 const styles = StyleSheet.create({
   itemContainer: { position: 'absolute' },
@@ -283,6 +119,8 @@ const styles = StyleSheet.create({
     zIndex: 9,
     textAlign: 'center',
     textAlignVertical: 'center',
-    position: 'absolute'
-}
+    position: 'absolute',
+  }
 });
+
+export default MutableItem;
